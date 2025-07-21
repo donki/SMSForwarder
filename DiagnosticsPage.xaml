@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SMSForwarder.DiagnosticsPage"
+             Title="Diagnósticos"
+             BackgroundColor="#F8F9FA">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="24" Spacing="20">
+            
+            <!-- Header unificado -->
+            <VerticalStackLayout Spacing="8">
+                <Label Text="Diagnósticos"
+                       FontSize="24"
+                       FontAttributes="Bold"
+                       TextColor="#212529"
+                       HorizontalOptions="Center" />
+                <Label Text="Monitoreo y estado del sistema"
+                       FontSize="14"
+                       TextColor="#6C757D"
+                       HorizontalOptions="Center" />
+            </VerticalStackLayout>
+
+            <!-- Status Cards -->
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="12" RowSpacing="12">
+                
+                <!-- Permisos Card -->
+                <Border Grid.Column="0" 
+                        BackgroundColor="White" 
+                        Stroke="#E9ECEF" 
+                        StrokeThickness="1" 
+                        StrokeShape="RoundRectangle 12" 
+                        Padding="16">
+                    <Border.Shadow>
+                        <Shadow Brush="Black" Opacity="0.05" Radius="6" Offset="0,2" />
+                    </Border.Shadow>
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="🔒" FontSize="24" HorizontalOptions="Center" />
+                        <Label Text="Permisos" FontSize="14" FontAttributes="Bold" TextColor="#212529" HorizontalTextAlignment="Center" />
+                        <Label x:Name="PermissionsStatus" Text="Verificando..." FontSize="12" TextColor="#6C757D" HorizontalTextAlignment="Center" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Números Card -->
+                <Border Grid.Column="1" 
+                        BackgroundColor="White" 
+                        Stroke="#E9ECEF" 
+                        StrokeThickness="1" 
+                        StrokeShape="RoundRectangle 12" 
+                        Padding="16">
+                    <Border.Shadow>
+                        <Shadow Brush="Black" Opacity="0.05" Radius="6" Offset="0,2" />
+                    </Border.Shadow>
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="📱" FontSize="24" HorizontalOptions="Center" />
+                        <Label Text="Números" FontSize="14" FontAttributes="Bold" TextColor="#212529" HorizontalTextAlignment="Center" />
+                        <Label x:Name="PhonesCount" Text="0" FontSize="12" TextColor="#6C757D" HorizontalTextAlignment="Center" />
+                    </VerticalStackLayout>
+                </Border>
+                
+            </Grid>
+
+            <!-- Actions -->
+            <VerticalStackLayout Spacing="12">
+                <Button Text="Actualizar estado" 
+                        Clicked="OnRefreshClicked" 
+                        BackgroundColor="#2196F3" 
+                        TextColor="White"
+                        FontSize="16"
+                        CornerRadius="8"
+                        HeightRequest="44" />
+                
+                <Button Text="Enviar SMS de prueba" 
+                        Clicked="OnTestSmsClicked" 
+                        BackgroundColor="White" 
+                        TextColor="#2196F3"
+                        BorderColor="#2196F3"
+                        BorderWidth="1"
+                        FontSize="16"
+                        CornerRadius="8"
+                        HeightRequest="44" />
+            </VerticalStackLayout>
+
+            <!-- Logs Section -->
+            <VerticalStackLayout Spacing="12">
+                <Label Text="Registro de actividad"
+                       FontSize="18"
+                       FontAttributes="Bold"
+                       TextColor="#212529"
+                       HorizontalOptions="Center" />
+                
+                <Border BackgroundColor="White" 
+                        Stroke="#E9ECEF" 
+                        StrokeThickness="1" 
+                        StrokeShape="RoundRectangle 8" 
+                        Padding="12">
+                    <Border.Shadow>
+                        <Shadow Brush="Black" Opacity="0.05" Radius="4" Offset="0,2" />
+                    </Border.Shadow>
+                    <ScrollView HeightRequest="180">
+                        <Label x:Name="LogsLabel" 
+                               Text="Sin actividad reciente..." 
+                               FontSize="12" 
+                               FontFamily="Courier" 
+                               TextColor="#495057"
+                               LineBreakMode="WordWrap" />
+                    </ScrollView>
+                </Border>
+                
+                <Button Text="Limpiar registro" 
+                        Clicked="OnClearLogsClicked" 
+                        BackgroundColor="#6C757D" 
+                        TextColor="White"
+                        FontSize="14"
+                        CornerRadius="6"
+                        HeightRequest="40" />
+            </VerticalStackLayout>
+            
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

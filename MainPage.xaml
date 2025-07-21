@@ -1,0 +1,115 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SMSForwarder.MainPage"
+             Title="Configuración"
+             BackgroundColor="#F8F9FA">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="24" Spacing="20">
+            
+            <!-- Header unificado -->
+            <VerticalStackLayout Spacing="8">
+                <Label Text="Configuración"
+                       FontSize="24"
+                       FontAttributes="Bold"
+                       TextColor="#212529"
+                       HorizontalOptions="Center" />
+                <Label Text="Configura los números donde reenviar SMS"
+                       FontSize="14"
+                       TextColor="#6C757D"
+                       HorizontalOptions="Center" />
+            </VerticalStackLayout>
+            
+            <!-- Input section -->
+            <VerticalStackLayout Spacing="12">
+                <Border BackgroundColor="White" 
+                        Stroke="#E9ECEF" 
+                        StrokeThickness="1" 
+                        StrokeShape="RoundRectangle 8" 
+                        Padding="4">
+                    <Border.Shadow>
+                        <Shadow Brush="Black" Opacity="0.05" Radius="4" Offset="0,2" />
+                    </Border.Shadow>
+                    <Entry x:Name="PhoneEntry" 
+                           Placeholder="Ej: +34 600 123 456" 
+                           BackgroundColor="Transparent" 
+                           TextColor="#212529"
+                           PlaceholderColor="#ADB5BD"
+                           FontSize="16" />
+                </Border>
+                
+                <Button Text="Agregar número" 
+                        Clicked="OnAddClicked" 
+                        BackgroundColor="#2196F3" 
+                        TextColor="White"
+                        FontSize="16"
+                        FontAttributes="Bold"
+                        CornerRadius="8"
+                        HeightRequest="48" />
+            </VerticalStackLayout>
+            
+            <!-- Lista de números -->
+            <VerticalStackLayout Spacing="12">
+                <Label Text="Números configurados"
+                       FontSize="18"
+                       FontAttributes="Bold"
+                       TextColor="#212529"
+                       HorizontalOptions="Center"
+                       Margin="0,8,0,0" />
+                
+                <CollectionView x:Name="PhoneList" SelectionMode="None">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Border BackgroundColor="White" 
+                                    Stroke="#E9ECEF" 
+                                    StrokeThickness="1" 
+                                    StrokeShape="RoundRectangle 8" 
+                                    Margin="0,4">
+                                <Border.Shadow>
+                                    <Shadow Brush="Black" Opacity="0.05" Radius="4" Offset="0,2" />
+                                </Border.Shadow>
+                                <SwipeView>
+                                    <SwipeView.RightItems>
+                                        <SwipeItems>
+                                            <SwipeItem Text="Eliminar" 
+                                                     BackgroundColor="#DC3545" 
+                                                     Invoked="OnDeleteClicked" 
+                                                     CommandParameter="{Binding .}" />
+                                        </SwipeItems>
+                                    </SwipeView.RightItems>
+                                    <Grid Padding="16,12" ColumnDefinitions="Auto,*,Auto">
+                                        <Border Grid.Column="0" 
+                                                BackgroundColor="#E3F2FD" 
+                                                StrokeShape="RoundRectangle 16" 
+                                                WidthRequest="32" 
+                                                HeightRequest="32"
+                                                VerticalOptions="Center">
+                                            <Label Text="📱" 
+                                                   FontSize="16" 
+                                                   HorizontalOptions="Center" 
+                                                   VerticalOptions="Center" />
+                                        </Border>
+                                        <Label Grid.Column="1" 
+                                               Text="{Binding .}" 
+                                               FontSize="16" 
+                                               TextColor="#212529"
+                                               VerticalOptions="Center" 
+                                               Margin="12,0,0,0" />
+                                        <Label Grid.Column="2" 
+                                               Text="→" 
+                                               FontSize="16" 
+                                               TextColor="#ADB5BD"
+                                               VerticalOptions="Center" />
+                                    </Grid>
+                                </SwipeView>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </VerticalStackLayout>
+            
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

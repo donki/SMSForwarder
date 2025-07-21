@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SMSForwarder.SplashPage"
+             BackgroundColor="#F8F9FA"
+             NavigationPage.HasNavigationBar="False">
+    
+    <Grid>
+        <!-- Fondo con gradiente sutil -->
+        <Rectangle>
+            <Rectangle.Fill>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop Color="#F8F9FA" Offset="0.0" />
+                    <GradientStop Color="#E9ECEF" Offset="1.0" />
+                </LinearGradientBrush>
+            </Rectangle.Fill>
+        </Rectangle>
+        
+        <!-- Contenido principal -->
+        <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="24">
+            
+            <!-- Logo profesional -->
+            <Border BackgroundColor="White" 
+                    Stroke="#2196F3" 
+                    StrokeThickness="3" 
+                    StrokeShape="RoundRectangle 20" 
+                    WidthRequest="120" 
+                    HeightRequest="120"
+                    HorizontalOptions="Center"
+                    x:Name="LogoFrame">
+                <Border.Shadow>
+                    <Shadow Brush="#2196F3" Opacity="0.2" Radius="15" Offset="0,8" />
+                </Border.Shadow>
+                <Image Source="smsforwadericon.png" 
+                       WidthRequest="80" 
+                       HeightRequest="80"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center" />
+            </Border>
+            
+            <!-- Título minimalista -->
+            <Label Text="SMS Forwarder" 
+                   FontSize="28" 
+                   FontAttributes="Bold"
+                   TextColor="#212529"
+                   HorizontalOptions="Center"
+                   x:Name="TitleLabel" />
+            
+            <!-- Subtítulo recortado -->
+            <Label Text="Reenvío inteligente" 
+                   FontSize="14" 
+                   TextColor="#6C757D"
+                   HorizontalOptions="Center"
+                   x:Name="SubtitleLabel" />
+            
+            <!-- Indicador de carga elegante -->
+            <VerticalStackLayout Spacing="12" Margin="0,32,0,0">
+                <ActivityIndicator IsRunning="True" 
+                                 Color="#2196F3" 
+                                 WidthRequest="32" 
+                                 HeightRequest="32"
+                                 HorizontalOptions="Center" />
+            </VerticalStackLayout>
+            
+        </VerticalStackLayout>
+        
+        <!-- Footer minimalista -->
+        <Label Text="Organic Coating" 
+               FontSize="12" 
+               TextColor="#ADB5BD"
+               HorizontalOptions="Center"
+               VerticalOptions="End"
+               Margin="0,0,0,40" />
+        
+    </Grid>
+</ContentPage>
