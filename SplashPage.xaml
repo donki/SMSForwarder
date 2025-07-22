@@ -65,7 +65,7 @@
         </VerticalStackLayout>
         
         <!-- Footer minimalista -->
-        <Label Text="Organic Coating" 
+        <Label Text="sOCratic" 
                FontSize="12" 
                TextColor="#ADB5BD"
                HorizontalOptions="Center"
