@@ -1,0 +1,16 @@
+✅ Poner sOCratic en vez de Organic Coating. - COMPLETADO
+✅ Al recibir mensajes peta. - CORREGIDO (SMSReceiver mejorado)
+✅ No se instala correctamente la version release. No arranca y dice algo de los permisos - SOLUCIONADO (AndroidManifest corregido)
+✅ Poner el 4 numero de version - COMPLETADO (v1.4.0)
+✅ Añadir permisos para autostart y optimización de batería - COMPLETADO (v1.5.0)
+
+NUEVAS FUNCIONALIDADES v1.5.0:
+✅ Sistema completo de gestión de permisos
+✅ Verificación y solicitud de permisos de optimización de batería
+✅ Configuración de autostart para diferentes fabricantes (Xiaomi, Huawei, OPPO, Vivo, Samsung, OnePlus)
+✅ Interfaz mejorada con botones para gestionar permisos individualmente
+✅ Solicitud automática de permisos SMS al iniciar la aplicación
+✅ Estado de permisos visible para el usuario
+✅ Guías específicas por fabricante para configuración de autostart
+
+TODAS LAS TAREAS COMPLETADAS EXITOSAMENTE ✅

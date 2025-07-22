@@ -40,7 +40,7 @@
                            VerticalOptions="Center" />
                 </Border>
                 
-                <Label Text="SMS Forwarder v1.0.0" 
+                <Label Text="SMS Forwarder v1.5.0" 
                        FontSize="16" 
                        FontAttributes="Bold"
                        TextColor="#2196F3"
@@ -143,13 +143,13 @@
             
             <!-- Footer -->
             <VerticalStackLayout Spacing="8" Margin="0,16,0,0">
-                <Label Text="Organic Coating" 
+                <Label Text="sOCratic" 
                        FontSize="14" 
                        FontAttributes="Bold"
                        TextColor="#2196F3"
                        HorizontalOptions="Center" />
                 
-                <Label Text="© 2025 Todos los derechos reservados" 
+                <Label Text="© 2025 sOCratic - Todos los derechos reservados" 
                        FontSize="11" 
                        TextColor="#ADB5BD"
                        HorizontalOptions="Center" />
