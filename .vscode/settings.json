@@ -1,0 +1,27 @@
+{
+    "debug.onTaskErrors": "debugAnyway",
+    "security.workspace.trust.enabled": false,
+    "debug.confirmOnExit": "never",
+    "debug.showInStatusBar": "always",
+    "debug.toolBarLocation": "docked",
+    "debug.internalConsoleOptions": "openOnSessionStart",
+    "debug.openDebug": "openOnSessionStart",
+    "debug.console.closeOnEnd": false,
+    "dotnet.enableDebugging": true,
+    "debug.confirmDelete": false,
+    "debug.saveBeforeStart": "none",
+    "debug.allowBreakpointsEverywhere": true,
+    "adb.commandLine": "adb",
+    "editor.formatOnSave": true,
+    "editor.formatOnType": true,
+    "files.autoSave": "afterDelay",
+    "files.autoSaveDelay": 1000,
+    "editor.acceptSuggestionOnEnter": "on",
+    "editor.quickSuggestions": {
+        "other": true,
+        "comments": true,
+        "strings": true
+    },
+    "editor.suggestOnTriggerCharacters": true,
+    "editor.acceptSuggestionOnCommitCharacter": true
+}

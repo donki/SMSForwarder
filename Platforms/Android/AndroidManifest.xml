@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+  
+  <!-- Permisos SMS necesarios -->
+  <uses-permission android:name="android.permission.RECEIVE_SMS" />
+  <uses-permission android:name="android.permission.SEND_SMS" />
+  <uses-permission android:name="android.permission.READ_SMS" />
+  <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+  <uses-permission android:name="android.permission.WAKE_LOCK" />
+  
+  <!-- Permisos para optimización de batería y autostart -->
+  <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+  <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+  <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+  
+  <!-- Características requeridas -->
+  <uses-feature android:name="android.hardware.telephony" android:required="true" />
+  
+  <application android:allowBackup="true" 
+               android:supportsRtl="true"
+               android:label="SMS Forwarder">
+    
+    <!-- Receptor SMS -->
+    <receiver android:name="crc64888828d6f2cc81be.SmsReceiver"
+              android:enabled="true"
+              android:exported="true">
+      <intent-filter android:priority="1000">
+        <action android:name="android.provider.Telephony.SMS_RECEIVED" />
+      </intent-filter>
+    </receiver>
+    
+  </application>
+</manifest>
