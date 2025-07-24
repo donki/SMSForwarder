@@ -1,10 +1,14 @@
-✅ Poner sOCratic en vez de Organic Coating. - COMPLETADO
-✅ Al recibir mensajes peta. - CORREGIDO (SMSReceiver mejorado)
-✅ No se instala correctamente la version release. No arranca y dice algo de los permisos - SOLUCIONADO (AndroidManifest corregido)
-✅ Poner el 4 numero de version - COMPLETADO (v1.4.0)
-✅ Añadir permisos para autostart y optimización de batería - COMPLETADO (v1.5.0)
+NUEVAS FUNCIONALIDADES v1.6.0:
+✅ Receptor SMS completamente reescrito con protección total contra crashes
+✅ Manejo seguro de errores en todo el flujo de procesamiento SMS
+✅ Interfaz reorganizada: MainPage solo para configurar números de teléfono
+✅ Sección de permisos movida a DiagnosticsPage con herramientas completas
+✅ Conversión segura de PDUs con múltiples métodos de fallback
+✅ Logging mejorado para debugging sin causar crashes
+✅ Compatibilidad mejorada con diferentes versiones de Android
+✅ Manejo robusto de SmsManager para evitar obsolescencias
 
-NUEVAS FUNCIONALIDADES v1.5.0:
+FUNCIONALIDADES PREVIAS v1.5.0:
 ✅ Sistema completo de gestión de permisos
 ✅ Verificación y solicitud de permisos de optimización de batería
 ✅ Configuración de autostart para diferentes fabricantes (Xiaomi, Huawei, OPPO, Vivo, Samsung, OnePlus)
@@ -12,5 +16,14 @@ NUEVAS FUNCIONALIDADES v1.5.0:
 ✅ Solicitud automática de permisos SMS al iniciar la aplicación
 ✅ Estado de permisos visible para el usuario
 ✅ Guías específicas por fabricante para configuración de autostart
+✅ Poner sOCratic en vez de Organic Coating. - COMPLETADO
+✅ Al recibir mensajes peta. - CORREGIDO (SMSReceiver mejorado)
+✅ No se instala correctamente la version release. No arranca y dice algo de los permisos - SOLUCIONADO (AndroidManifest corregido)
+✅ Poner el 4 numero de version - COMPLETADO (v1.4.0)
+✅ Añadir permisos para autostart y optimización de batería - COMPLETADO (v1.5.0)
+✅ Sigue petando cuando recibe un sms y además se apaga - SOLUCIONADO (v1.6.0)
+✅ Reorganizar interfaz: configuración móviles en MainPage, permisos en Diagnósticos - COMPLETADO (v1.6.0)
 
 TODAS LAS TAREAS COMPLETADAS EXITOSAMENTE ✅
+
+VERSIÓN ACTUAL: v1.6.0 - APK: SMSForwarder-v1.6-Release.apk

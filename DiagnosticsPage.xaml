@@ -60,23 +60,91 @@
                 
             </Grid>
 
-            <!-- Actions -->
+            <!-- Sección de Permisos Avanzados -->
             <VerticalStackLayout Spacing="12">
-                <Button Text="Actualizar estado" 
-                        Clicked="OnRefreshClicked" 
-                        BackgroundColor="#2196F3" 
+                <Label Text="Configuración de Permisos"
+                       FontSize="18"
+                       FontAttributes="Bold"
+                       TextColor="#212529"
+                       HorizontalOptions="Center"
+                       Margin="0,8,0,0" />
+                
+                <!-- Botón verificar permisos -->
+                <Button Text="🔍 Verificar Estado de Permisos" 
+                        Clicked="OnCheckPermissionsClicked" 
+                        BackgroundColor="#17A2B8" 
                         TextColor="White"
-                        FontSize="16"
+                        FontSize="14"
                         CornerRadius="8"
                         HeightRequest="44" />
                 
-                <Button Text="Enviar SMS de prueba" 
+                <!-- Botón configurar todos los permisos -->
+                <Button Text="⚙️ Configurar Todos los Permisos" 
+                        Clicked="OnConfigureAllPermissionsClicked" 
+                        BackgroundColor="#28A745" 
+                        TextColor="White"
+                        FontSize="14"
+                        CornerRadius="8"
+                        HeightRequest="44" />
+                
+                <!-- Botones individuales -->
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="8">
+                    <Button Grid.Column="0"
+                            Text="🔋 Batería" 
+                            Clicked="OnBatteryOptimizationClicked" 
+                            BackgroundColor="#FFC107" 
+                            TextColor="#212529"
+                            FontSize="12"
+                            CornerRadius="8"
+                            HeightRequest="40" />
+                    
+                    <Button Grid.Column="1"
+                            Text="🚀 Autostart" 
+                            Clicked="OnAutostartClicked" 
+                            BackgroundColor="#6F42C1" 
+                            TextColor="White"
+                            FontSize="12"
+                            CornerRadius="8"
+                            HeightRequest="40" />
+                </Grid>
+                
+                <!-- Información adicional -->
+                <Border BackgroundColor="#FFF3CD" 
+                        Stroke="#FFEAA7" 
+                        StrokeThickness="1" 
+                        StrokeShape="RoundRectangle 8" 
+                        Padding="12">
+                    <Label Text="💡 Para un funcionamiento óptimo, configure todos los permisos. Esto asegura que la aplicación pueda recibir y reenviar SMS incluso cuando esté en segundo plano."
+                           FontSize="12"
+                           TextColor="#856404"
+                           LineBreakMode="WordWrap" />
+                </Border>
+            </VerticalStackLayout>
+
+            <!-- Actions de Diagnóstico -->
+            <VerticalStackLayout Spacing="12">
+                <Label Text="Herramientas de Diagnóstico"
+                       FontSize="18"
+                       FontAttributes="Bold"
+                       TextColor="#212529"
+                       HorizontalOptions="Center"
+                       Margin="0,16,0,0" />
+                
+                <Button Text="🔄 Actualizar Estado" 
+                        Clicked="OnRefreshClicked" 
+                        BackgroundColor="#2196F3" 
+                        TextColor="White"
+                        FontSize="14"
+                        CornerRadius="8"
+                        HeightRequest="44" />
+                
+                <Button Text="📤 Enviar SMS de Prueba" 
                         Clicked="OnTestSmsClicked" 
                         BackgroundColor="White" 
                         TextColor="#2196F3"
                         BorderColor="#2196F3"
                         BorderWidth="1"
-                        FontSize="16"
+                        FontSize="14"
                         CornerRadius="8"
                         HeightRequest="44" />
             </VerticalStackLayout>

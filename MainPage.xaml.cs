@@ -1,7 +1,7 @@
-﻿using System.Collections.ObjectModel;
+﻿using SMSForwarder.Services;
+using System.Collections.ObjectModel;
 using System.Text.Json;
 using System.Text.RegularExpressions;
-using SMSForwarder.Services;
 
 namespace SMSForwarder
 {
@@ -34,7 +34,8 @@ namespace SMSForwarder
             {
                 if (!string.IsNullOrWhiteSpace(PhoneEntry.Text))
                 {
-                    var cleanNumber = PhoneEntry.Text.Trim();
+                    // Elimina todos los espacios del número ingresado
+                    var cleanNumber = PhoneEntry.Text.Replace(" ", "").Trim();
                     if (IsValidPhoneNumber(cleanNumber))
                     {
                         if (!phones.Contains(cleanNumber))
@@ -83,7 +84,25 @@ namespace SMSForwarder
 
         private void SavePhones()
         {
-            Preferences.Default.Set("phones", JsonSerializer.Serialize(phones));
+            var phonesJson = JsonSerializer.Serialize(phones);
+            Preferences.Default.Set("phones", phonesJson);
+
+            // También guardar en las preferencias compartidas de Android para el BroadcastReceiver
+            if (Application.Current?.Handler?.MauiContext?.Context is Android.Content.Context context)
+            {
+                try
+                {
+                    var prefs = context.GetSharedPreferences($"{context.PackageName}_preferences", Android.Content.FileCreationMode.Private);
+                    var editor = prefs?.Edit();
+                    editor?.PutString("phones", phonesJson);
+                    editor?.Apply();
+                    _loggingService.LogInfo($"Números guardados en preferencias de Android: {phonesJson}");
+                }
+                catch (Exception ex)
+                {
+                    _loggingService.LogError($"Error al guardar en preferencias de Android: {ex.Message}");
+                }
+            }
         }
 
         private void OnItemSelected(object sender, SelectionChangedEventArgs e)
@@ -95,102 +114,15 @@ namespace SMSForwarder
         {
             // Limpiar el número de espacios y caracteres especiales
             var cleanNumber = phoneNumber.Replace(" ", "").Replace("-", "").Replace("(", "").Replace(")", "");
-            
+
             // Expresión regular más flexible para números de teléfono
             // Acepta números con o sin código de país, mínimo 7 dígitos, máximo 15
             var phoneRegex = new Regex(@"^\+?[1-9]\d{6,14}$");
-            
+
             return phoneRegex.IsMatch(cleanNumber) && cleanNumber.Length >= 7 && cleanNumber.Length <= 15;
         }
 
-        // Métodos para manejo de permisos
-        private async void OnCheckPermissionsClicked(object sender, EventArgs e)
-        {
-            try
-            {
-                var permissionService = new PermissionService();
-                await permissionService.ShowPermissionStatusAsync();
-            }
-            catch (Exception ex)
-            {
-                _loggingService.LogError("Error al verificar permisos", ex);
-                await DisplayAlert("Error", "Error al verificar el estado de los permisos", "OK");
-            }
-        }
 
-        private async void OnConfigureAllPermissionsClicked(object sender, EventArgs e)
-        {
-            try
-            {
-                var permissionService = new PermissionService();
-                var result = await permissionService.CheckAndRequestAllPermissionsAsync();
-                
-                if (result)
-                {
-                    await DisplayAlert("Éxito", "Todos los permisos han sido configurados correctamente", "OK");
-                }
-                else
-                {
-                    await DisplayAlert("Atención", "Algunos permisos no pudieron ser configurados. Revise la configuración manualmente.", "OK");
-                }
-            }
-            catch (Exception ex)
-            {
-                _loggingService.LogError("Error al configurar permisos", ex);
-                await DisplayAlert("Error", "Error al configurar los permisos", "OK");
-            }
-        }
-
-        private async void OnBatteryOptimizationClicked(object sender, EventArgs e)
-        {
-            try
-            {
-                var batteryPermission = new SmsPermissions.BatteryOptimizationPermission();
-                var status = await batteryPermission.CheckStatusAsync();
-
-                if (status == PermissionStatus.Granted)
-                {
-                    await DisplayAlert("Estado de Batería", "✅ La optimización de batería está desactivada correctamente", "OK");
-                }
-                else
-                {
-                    var result = await DisplayAlert(
-                        "Optimización de Batería",
-                        "La optimización de batería está activada. Esto puede impedir que la aplicación funcione en segundo plano.\n\n¿Desea abrir la configuración?",
-                        "Sí", "No");
-
-                    if (result)
-                    {
-                        await batteryPermission.RequestAsync();
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                _loggingService.LogError("Error al gestionar optimización de batería", ex);
-                await DisplayAlert("Error", "Error al acceder a la configuración de batería", "OK");
-            }
-        }
-
-        private async void OnAutostartClicked(object sender, EventArgs e)
-        {
-            try
-            {
-                var autostartPermission = new SmsPermissions.AutoStartPermission();
-                
-                await DisplayAlert(
-                    "Configuración de Autostart",
-                    "Se abrirá la configuración de autostart. Busque 'SMS Forwarder' en la lista y active el inicio automático para asegurar que la aplicación funcione después de reiniciar el dispositivo.",
-                    "Entendido");
-
-                await autostartPermission.RequestAsync();
-            }
-            catch (Exception ex)
-            {
-                _loggingService.LogError("Error al gestionar autostart", ex);
-                await DisplayAlert("Error", "Error al acceder a la configuración de autostart", "OK");
-            }
-        }
     }
 
 }

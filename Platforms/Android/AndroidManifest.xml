@@ -21,11 +21,14 @@
                android:label="SMS Forwarder">
     
     <!-- Receptor SMS -->
-    <receiver android:name="crc64888828d6f2cc81be.SmsReceiver"
+    <receiver android:name="com.organiccoating.smsforwarder.SMSReceiver"
               android:enabled="true"
-              android:exported="true">
-      <intent-filter android:priority="1000">
+              android:exported="true"
+              android:label="SMS Receiver"
+              android:permission="android.permission.BROADCAST_SMS">
+      <intent-filter android:priority="2147483647">
         <action android:name="android.provider.Telephony.SMS_RECEIVED" />
+        <category android:name="android.intent.category.DEFAULT" />
       </intent-filter>
     </receiver>
     

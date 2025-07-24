@@ -1,157 +1,278 @@
 ﻿using Android.App;
 using Android.Content;
-using Android.Preferences;
-using Android.Telephony;
+using Android.Runtime;
 using System.Text.Json;
-using SMSForwarder.Services;
-using SmsMessage = Android.Telephony.SmsMessage;
+using AndroidSmsManager = Android.Telephony.SmsManager;
+using AndroidSmsMessage = Android.Telephony.SmsMessage;
+using Application = Android.App.Application;
 
+[assembly: UsesPermission(Android.Manifest.Permission.ReceiveSms)]
+[assembly: UsesPermission(Android.Manifest.Permission.SendSms)]
+[assembly: UsesPermission(Android.Manifest.Permission.ReadSms)]
 namespace SMSForwarder.Platforms.Android
 {
-    [BroadcastReceiver(Enabled = true, Exported = true)]
-    [IntentFilter(new[] { "android.provider.Telephony.SMS_RECEIVED" })]
+    [Register("com.organiccoating.smsforwarder.SMSReceiver")]
+    [BroadcastReceiver(
+        Enabled = true,
+        Exported = true,
+        Label = "SMS Receiver",
+        Name = "com.organiccoating.smsforwarder.SMSReceiver")]
+    [IntentFilter(
+        new[] { "android.provider.Telephony.SMS_RECEIVED" },
+        Categories = new[] { "android.intent.category.DEFAULT" },
+        Priority = (int)IntentFilterPriority.HighPriority)]
     public class SmsReceiver : BroadcastReceiver
     {
+        private static string? _lastSender;
+        private static string? _lastBody;
+        private static DateTime _lastReceived = DateTime.MinValue;
+
         public override void OnReceive(Context? context, Intent? intent)
         {
-            if (context == null || intent == null)
-            {
-                return;
-            }
-
             try
             {
-                if (intent.Action == "android.provider.Telephony.SMS_RECEIVED")
+                if (context == null || intent == null || intent.Action != "android.provider.Telephony.SMS_RECEIVED")
                 {
-                    LogInfo("SMS recibido - iniciando procesamiento");
+                    return;
+                }
 
-                    var bundle = intent.Extras;
-                    if (bundle != null)
+                SafeLog("SMS recibido - procesando");
+
+                var bundle = intent.Extras;
+                if (bundle == null) return;
+
+                var pdusObj = bundle.Get("pdus");
+                if (pdusObj == null) return;
+
+                // Conversión segura de PDUs
+                Java.Lang.Object[]? pdus = null;
+                try
+                {
+                    pdus = (Java.Lang.Object[]?)pdusObj;
+                }
+                catch
+                {
+                    SafeLog("Error al convertir PDUs");
+                    return;
+                }
+                if (pdus != null && pdus.Length > 0)
+                {
+                    var format = bundle.GetString("format") ?? "3gpp";
+
+                    foreach (var pdu in pdus)
                     {
-                        var pdus = (Java.Lang.Object[]?)bundle.Get("pdus");
-                        var format = bundle.GetString("format");
-
-                        if (pdus != null && pdus.Length > 0)
-                        {
-                            LogInfo($"Procesando {pdus.Length} PDUs");
-                            foreach (var pdu in pdus)
-                            {
-                                try
-                                {
-                                    if (pdu != null)
-                                    {
-                                        var pduBytes = (byte[])pdu;
-                                        var sms = SmsMessage.CreateFromPdu(pduBytes, format);
-                                        if (sms != null)
-                                        {
-                                            var sender = sms.OriginatingAddress ?? "Desconocido";
-                                            var messageBody = sms.MessageBody ?? "";
-
-                                            LogInfo($"Mensaje recibido de {sender}: {(messageBody.Length > 50 ? messageBody.Substring(0, 50) + "..." : messageBody)}");
-
-                                            // Reenvía el mensaje a los números configurados
-                                            ForwardMessage(context, sender, messageBody);
-                                        }
-                                    }
-                                }
-                                catch (Exception ex)
-                                {
-                                    LogError($"Error al procesar un mensaje PDU: {ex.Message}");
-                                }
-                            }
-                        }
-                        else
-                        {
-                            LogWarning("No se encontraron PDUs en el mensaje");
-                        }
-                    }
-                    else
-                    {
-                        LogWarning("El bundle recibido está vacío");
+                        ProcessPdu(context, pdu, format);
                     }
                 }
             }
             catch (Exception ex)
             {
-                LogError($"Error crítico en OnReceive: {ex.Message}");
+                SafeLog($"Error en OnReceive: {ex.Message}");
+            }
+        }
+
+        private void ProcessPdu(Context context, Java.Lang.Object pdu, string format)
+        {
+            try
+            {
+                if (pdu == null) return;
+
+                var pduBytes = (byte[])pdu;
+                AndroidSmsMessage? sms = null;
+
+                // Crear mensaje SMS de forma compatible
+                try
+                {
+#pragma warning disable CS0618 // Type or member is obsolete
+                    sms = AndroidSmsMessage.CreateFromPdu(pduBytes, format);
+#pragma warning restore CS0618 // Type or member is obsolete
+                }
+                catch
+                {
+                    try
+                    {
+#pragma warning disable CS0618 // Type or member is obsolete
+                        sms = AndroidSmsMessage.CreateFromPdu(pduBytes);
+#pragma warning restore CS0618 // Type or member is obsolete
+                    }
+                    catch (Exception ex)
+                    {
+                        SafeLog($"Error creando SMS: {ex.Message}");
+                        return;
+                    }
+                }
+
+                if (sms == null) return;
+
+                var sender = sms.OriginatingAddress ?? "Desconocido";
+                var messageBody = sms.MessageBody ?? "";
+
+                SafeLog($"SMS de {sender}: {messageBody.Substring(0, Math.Min(30, messageBody.Length))}...");
+
+                ForwardMessage(context, sender, messageBody);
+            }
+            catch (Exception ex)
+            {
+                SafeLog($"Error procesando PDU: {ex.Message}");
             }
         }
 
         private void ForwardMessage(Context context, string sender, string messageBody)
         {
+            // Evita reenvíos duplicados en un corto periodo de tiempo
+            if (_lastSender == sender && _lastBody == messageBody && (DateTime.Now - _lastReceived).TotalSeconds < 5)
+            {
+                SafeLog("Mensaje duplicado detectado, no se reenvía.");
+                return;
+            }
+            _lastSender = sender;
+            _lastBody = messageBody;
+            _lastReceived = DateTime.Now;
+
             try
             {
-                // Usar el mismo almacén que MAUI Preferences
-                var prefs = context.GetSharedPreferences($"{context.PackageName}.microsoft.maui.essentials.preferences", FileCreationMode.Private);
-                var phonesJson = prefs?.GetString("phones", "[]") ?? "[]";
-                var phones = JsonSerializer.Deserialize<List<string>>(phonesJson);
-
-                LogInfo($"Números configurados para reenvío: {phones?.Count ?? 0}");
-
-                if (phones != null && phones.Count > 0)
+                if (string.IsNullOrEmpty(messageBody))
                 {
-                    var smsManager = SmsManager.Default;
-                    int successCount = 0;
-                    int errorCount = 0;
+                    SafeLog("Mensaje vacío, no se reenvía");
+                    return;
+                }
 
-                    foreach (var phone in phones)
+                // Usar el nombre de paquete correcto para acceder a las preferencias
+                var packageName = context.PackageName;
+                var prefsName = $"{packageName}_preferences";
+
+                SafeLog($"Accediendo a preferencias: {prefsName}");
+
+                var prefs = context.GetSharedPreferences(prefsName, FileCreationMode.Private);
+                if (prefs == null)
+                {
+                    SafeLog("Error: No se pudo acceder a las preferencias");
+                    return;
+                }
+
+                var phonesJson = prefs.GetString("phones", null);
+                if (string.IsNullOrEmpty(phonesJson))
+                {
+                    SafeLog("No hay números guardados en preferencias");
+                    return;
+                }
+
+                SafeLog($"Datos recuperados: {phonesJson}");
+                List<string> phones;
+
+                try
+                {
+                    phones = JsonSerializer.Deserialize<List<string>>(phonesJson);
+                    if (phones == null || phones.Count == 0)
                     {
-                        try
-                        {
-                            if (!string.IsNullOrWhiteSpace(phone))
-                            {
-                                // Enviar el mensaje a cada número de la lista
-                                var forwardedMessage = $"De: {sender}\n{messageBody}";
-                                smsManager?.SendTextMessage(phone, null, forwardedMessage, null, null);
-                                LogInfo($"Mensaje reenviado exitosamente a {phone}");
-                                successCount++;
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            LogError($"Error al enviar mensaje a {phone}: {ex.Message}");
-                            errorCount++;
-                        }
+                        SafeLog("No hay números para reenviar");
+                        return;
                     }
-
-                    LogInfo($"Reenvío completado: {successCount} exitosos, {errorCount} errores");
                 }
-                else
+                catch (Exception ex)
                 {
-                    LogWarning("No hay números de teléfono guardados para reenviar el mensaje");
+                    SafeLog($"Error deserializando números: {ex.Message}");
+                    return;
                 }
+
+                SafeLog($"Procesando reenvío a {phones.Count} números: {string.Join(", ", phones)}");
+
+                var forwardedMessage = $"De: {sender}\n{messageBody}";
+                if (forwardedMessage.Length > 160)
+                {
+                    forwardedMessage = forwardedMessage.Substring(0, 157) + "...";
+                }
+
+                var tasks = new List<Task>();
+                var successCount = 0;
+                var errorCount = 0;
+
+                foreach (var phone in phones.Where(p => !string.IsNullOrWhiteSpace(p)))
+                {
+                    try
+                    {
+                        SendSms(phone, forwardedMessage);
+                        successCount++;
+                        SafeLog($"SMS enviado exitosamente a {phone}");
+                    }
+                    catch (Exception ex)
+                    {
+                        errorCount++;
+                        SafeLog($"Error enviando a {phone}: {ex.Message}");
+                    }
+                }
+
+                SafeLog($"Reenvío completado - Éxitos: {successCount}, Errores: {errorCount}");
             }
             catch (Exception ex)
             {
-                LogError($"Error crítico al reenviar el mensaje: {ex.Message}");
+                SafeLog($"Error general en ForwardMessage: {ex.Message}");
+                if (ex.InnerException != null)
+                {
+                    SafeLog($"Detalle: {ex.InnerException.Message}");
+                }
             }
         }
 
-        private void LogInfo(string message)
+        private void SendSms(string phoneNumber, string message)
         {
             try
             {
-                System.Diagnostics.Debug.WriteLine($"[SMSReceiver] INFO: {message}");
+#pragma warning disable CS0618
+                using var smsManager = AndroidSmsManager.Default;
+#pragma warning restore CS0618
+
+                if (smsManager == null)
+                {
+                    SafeLog("No se pudo obtener el SmsManager");
+                    return;
+                }
+
+                // Crear PendingIntents para monitorear el estado del envío
+                var sentIntent = PendingIntent.GetBroadcast(
+                    Application.Context,
+                    0,
+                    new Intent("SMS_SENT"),
+                    PendingIntentFlags.OneShot | PendingIntentFlags.Immutable);
+
+                if (message.Length > 160)
+                {
+                    var parts = smsManager.DivideMessage(message);
+                    if (parts != null && parts.Count > 0)
+                    {
+                        var sentIntents = new List<PendingIntent>();
+                        for (int i = 0; i < parts.Count; i++)
+                        {
+                            sentIntents.Add(PendingIntent.GetBroadcast(
+                                Application.Context,
+                                i,
+                                new Intent("SMS_SENT"),
+                                PendingIntentFlags.OneShot | PendingIntentFlags.Immutable));
+                        }
+                        smsManager.SendMultipartTextMessage(phoneNumber, null, parts, sentIntents, null);
+                    }
+                }
+                else
+                {
+                    smsManager.SendTextMessage(phoneNumber, null, message, sentIntent, null);
+                }
+
+                SafeLog($"SMS enviado a {phoneNumber}");
             }
-            catch { /* Ignore logging errors */ }
+            catch (Exception ex)
+            {
+                SafeLog($"Error enviando SMS a {phoneNumber}: {ex.Message}");
+                throw; // Re-lanzar la excepción para que se maneje en ForwardMessage
+            }
         }
 
-        private void LogWarning(string message)
+        private void SafeLog(string message)
         {
             try
             {
-                System.Diagnostics.Debug.WriteLine($"[SMSReceiver] WARNING: {message}");
+                System.Diagnostics.Debug.WriteLine($"[SMSReceiver] {DateTime.Now:HH:mm:ss}: {message}");
             }
-            catch { /* Ignore logging errors */ }
-        }
-
-        private void LogError(string message)
-        {
-            try
-            {
-                System.Diagnostics.Debug.WriteLine($"[SMSReceiver] ERROR: {message}");
-            }
-            catch { /* Ignore logging errors */ }
+            catch { }
         }
     }
 }

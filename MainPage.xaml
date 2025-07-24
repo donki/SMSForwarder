@@ -109,66 +109,24 @@
                 </CollectionView>
             </VerticalStackLayout>
             
-            <!-- Sección de Permisos -->
-            <VerticalStackLayout Spacing="12">
-                <Label Text="Permisos y Configuración"
-                       FontSize="18"
-                       FontAttributes="Bold"
-                       TextColor="#212529"
-                       HorizontalOptions="Center"
-                       Margin="0,16,0,0" />
-                
-                <!-- Botón verificar permisos -->
-                <Button Text="🔍 Verificar Estado de Permisos" 
-                        Clicked="OnCheckPermissionsClicked" 
-                        BackgroundColor="#17A2B8" 
-                        TextColor="White"
-                        FontSize="14"
-                        CornerRadius="8"
-                        HeightRequest="44" />
-                
-                <!-- Botón configurar todos los permisos -->
-                <Button Text="⚙️ Configurar Todos los Permisos" 
-                        Clicked="OnConfigureAllPermissionsClicked" 
-                        BackgroundColor="#28A745" 
-                        TextColor="White"
-                        FontSize="14"
-                        CornerRadius="8"
-                        HeightRequest="44" />
-                
-                <!-- Botones individuales -->
-                <Grid ColumnDefinitions="*,*" ColumnSpacing="8">
-                    <Button Grid.Column="0"
-                            Text="🔋 Batería" 
-                            Clicked="OnBatteryOptimizationClicked" 
-                            BackgroundColor="#FFC107" 
-                            TextColor="#212529"
-                            FontSize="12"
-                            CornerRadius="8"
-                            HeightRequest="40" />
-                    
-                    <Button Grid.Column="1"
-                            Text="🚀 Autostart" 
-                            Clicked="OnAutostartClicked" 
-                            BackgroundColor="#6F42C1" 
-                            TextColor="White"
-                            FontSize="12"
-                            CornerRadius="8"
-                            HeightRequest="40" />
-                </Grid>
-                
-                <!-- Información adicional -->
-                <Border BackgroundColor="#FFF3CD" 
-                        Stroke="#FFEAA7" 
-                        StrokeThickness="1" 
-                        StrokeShape="RoundRectangle 8" 
-                        Padding="12">
-                    <Label Text="💡 Para un funcionamiento óptimo, configure todos los permisos. Esto asegura que la aplicación pueda recibir y reenviar SMS incluso cuando esté en segundo plano."
+            <!-- Información de ayuda -->
+            <Border BackgroundColor="#E3F2FD" 
+                    Stroke="#BBDEFB" 
+                    StrokeThickness="1" 
+                    StrokeShape="RoundRectangle 8" 
+                    Padding="16"
+                    Margin="0,8,0,0">
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="💡 Información"
+                           FontSize="14"
+                           FontAttributes="Bold"
+                           TextColor="#1976D2" />
+                    <Label Text="• Los SMS recibidos se reenviarán automáticamente a estos números&#x0a;• Para configurar permisos avanzados, ve a la sección Diagnósticos&#x0a;• Desliza hacia la izquierda en un número para eliminarlo"
                            FontSize="12"
-                           TextColor="#856404"
+                           TextColor="#1565C0"
                            LineBreakMode="WordWrap" />
-                </Border>
-            </VerticalStackLayout>
+                </VerticalStackLayout>
+            </Border>
             
         </VerticalStackLayout>
     </ScrollView>
