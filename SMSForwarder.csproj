@@ -27,8 +27,8 @@
     <AndroidUseAapt2>true</AndroidUseAapt2>
     <AndroidCreatePackagePerAbi>false</AndroidCreatePackagePerAbi>
 
-    <AssemblyVersion>1.7.0.4</AssemblyVersion>
-    <FileVersion>1.7.0.4</FileVersion>
+    <AssemblyVersion>1.7.0.5</AssemblyVersion>
+    <FileVersion>1.7.0.5</FileVersion>
   </PropertyGroup>
 
   <!-- Release configuration for Android -->

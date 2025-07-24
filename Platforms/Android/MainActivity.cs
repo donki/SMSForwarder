@@ -3,8 +3,6 @@ using Android.Content;
 using Android.Content.PM;
 using Android.OS;
 using SMSForwarder.Platforms.Android;
-using Microsoft.Maui.ApplicationModel;
-using System.Threading.Tasks;
 
 namespace SMSForwarder
 {
@@ -107,6 +105,7 @@ namespace SMSForwarder
         public override void OnBackPressed()
         {
             MoveTaskToBack(true);
+            FinishAndRemoveTask();
         }
     }
 }
