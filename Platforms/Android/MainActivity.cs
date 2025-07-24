@@ -103,6 +103,11 @@ namespace SMSForwarder
                 Console.WriteLine("SmsReceiver desregistrado correctamente.");
             }
         }
+
+        public override void OnBackPressed()
+        {
+            MoveTaskToBack(true);
+        }
     }
 }
 
