@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>net9.0-android</TargetFrameworks>
@@ -16,8 +16,8 @@
     <ApplicationId>com.organiccoating.smsforwarder</ApplicationId>
 
     <!-- Versions -->
-    <ApplicationDisplayVersion>1.7</ApplicationDisplayVersion>
-    <ApplicationVersion>7</ApplicationVersion>
+    <ApplicationDisplayVersion>1.8.3</ApplicationDisplayVersion>
+    <ApplicationVersion>11</ApplicationVersion>
 
     <!-- Platform versions -->
     <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
@@ -27,17 +27,17 @@
     <AndroidUseAapt2>true</AndroidUseAapt2>
     <AndroidCreatePackagePerAbi>false</AndroidCreatePackagePerAbi>
 
-    <AssemblyVersion>1.7.0.5</AssemblyVersion>
-    <FileVersion>1.7.0.5</FileVersion>
+    <AssemblyVersion>1.8.3.0</AssemblyVersion>
+    <FileVersion>1.8.3.0</FileVersion>
   </PropertyGroup>
 
   <!-- Release configuration for Android -->
   <PropertyGroup Condition="'$(Configuration)' == 'Release' and '$(TargetFramework)' == 'net9.0-android'">
-    <AndroidKeyStore>false</AndroidKeyStore>
-    <AndroidSigningKeyStore></AndroidSigningKeyStore>
-    <AndroidSigningKeyAlias></AndroidSigningKeyAlias>
-    <AndroidSigningKeyPass></AndroidSigningKeyPass>
-    <AndroidSigningStorePass></AndroidSigningStorePass>
+    <AndroidKeyStore>true</AndroidKeyStore>
+    <AndroidSigningKeyStore>smsforwarder.keystore</AndroidSigningKeyStore>
+    <AndroidSigningKeyAlias>smsforwarder</AndroidSigningKeyAlias>
+    <AndroidSigningKeyPass>$(KEYSTORE_PASSWORD)</AndroidSigningKeyPass>
+    <AndroidSigningStorePass>$(KEYSTORE_PASSWORD)</AndroidSigningStorePass>
     <RunAOTCompilation>false</RunAOTCompilation>
     <PublishTrimmed>true</PublishTrimmed>
   </PropertyGroup>

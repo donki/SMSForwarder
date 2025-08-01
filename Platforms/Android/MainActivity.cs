@@ -47,6 +47,15 @@ namespace SMSForwarder
                     return false;
                 }
 
+                // Solicitar permiso para SMS premium
+                var statusPremiumSms = await Permissions.RequestAsync<SmsPremiumPermission>();
+                if (statusPremiumSms != PermissionStatus.Granted)
+                {
+                    Console.WriteLine("Permiso SEND_SMS_NO_CONFIRMATION no otorgado.");
+                    // Puedes mostrar un diálogo explicativo aquí si lo deseas
+                    return false;
+                }
+
                 Console.WriteLine("Todos los permisos fueron otorgados.");
                 return true;
             }

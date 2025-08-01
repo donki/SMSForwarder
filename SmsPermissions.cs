@@ -1,5 +1,3 @@
-using Microsoft.Maui.Authentication;
-
 public class SmsPermissions
 {
     // Clase para manejar permisos de autostart
@@ -13,7 +11,7 @@ public class SmsPermissions
                 var context = Platform.CurrentActivity ?? Android.App.Application.Context;
                 var packageManager = context.PackageManager;
                 var packageName = context.PackageName;
-                
+
                 // Verificar si la app está en la lista blanca de autostart
                 // Esto es aproximado ya que cada fabricante tiene su propio sistema
                 return Task.FromResult(PermissionStatus.Unknown);
@@ -33,45 +31,45 @@ public class SmsPermissions
             try
             {
                 var context = Platform.CurrentActivity ?? Android.App.Application.Context;
-                
+
                 // Intentar abrir configuración de autostart según el fabricante
                 var intent = new Android.Content.Intent();
                 var packageName = context.PackageName;
-                
+
                 // Xiaomi
                 if (IsManufacturer("xiaomi"))
                 {
-                    intent.SetComponent(new Android.Content.ComponentName("com.miui.securitycenter", 
+                    intent.SetComponent(new Android.Content.ComponentName("com.miui.securitycenter",
                         "com.miui.permcenter.autostart.AutoStartManagementActivity"));
                 }
                 // Huawei
                 else if (IsManufacturer("huawei"))
                 {
-                    intent.SetComponent(new Android.Content.ComponentName("com.huawei.systemmanager", 
+                    intent.SetComponent(new Android.Content.ComponentName("com.huawei.systemmanager",
                         "com.huawei.systemmanager.startupmgr.ui.StartupNormalAppListActivity"));
                 }
                 // OPPO
                 else if (IsManufacturer("oppo"))
                 {
-                    intent.SetComponent(new Android.Content.ComponentName("com.coloros.safecenter", 
+                    intent.SetComponent(new Android.Content.ComponentName("com.coloros.safecenter",
                         "com.coloros.safecenter.permission.startup.StartupAppListActivity"));
                 }
                 // Vivo
                 else if (IsManufacturer("vivo"))
                 {
-                    intent.SetComponent(new Android.Content.ComponentName("com.vivo.permissionmanager", 
+                    intent.SetComponent(new Android.Content.ComponentName("com.vivo.permissionmanager",
                         "com.vivo.permissionmanager.activity.BgStartUpManagerActivity"));
                 }
                 // Samsung
                 else if (IsManufacturer("samsung"))
                 {
-                    intent.SetComponent(new Android.Content.ComponentName("com.samsung.android.lool", 
+                    intent.SetComponent(new Android.Content.ComponentName("com.samsung.android.lool",
                         "com.samsung.android.sm.ui.battery.BatteryActivity"));
                 }
                 // OnePlus
                 else if (IsManufacturer("oneplus"))
                 {
-                    intent.SetComponent(new Android.Content.ComponentName("com.oneplus.security", 
+                    intent.SetComponent(new Android.Content.ComponentName("com.oneplus.security",
                         "com.oneplus.security.chainlaunch.view.ChainLaunchAppListActivity"));
                 }
                 else
@@ -83,7 +81,7 @@ public class SmsPermissions
 
                 intent.AddFlags(Android.Content.ActivityFlags.NewTask);
                 context.StartActivity(intent);
-                
+
                 return PermissionStatus.Unknown; // No podemos verificar automáticamente
             }
             catch
@@ -125,14 +123,14 @@ public class SmsPermissions
             {
                 var context = Platform.CurrentActivity ?? Android.App.Application.Context;
                 var powerManager = context.GetSystemService(Android.Content.Context.PowerService) as Android.OS.PowerManager;
-                
+
                 if (powerManager != null && Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.M)
                 {
                     var packageName = context.PackageName;
                     bool isIgnoringOptimizations = powerManager.IsIgnoringBatteryOptimizations(packageName);
                     return Task.FromResult(isIgnoringOptimizations ? PermissionStatus.Granted : PermissionStatus.Denied);
                 }
-                
+
                 return Task.FromResult(PermissionStatus.Granted);
             }
             catch
@@ -150,25 +148,25 @@ public class SmsPermissions
             try
             {
                 var context = Platform.CurrentActivity ?? Android.App.Application.Context;
-                
+
                 if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.M)
                 {
                     var intent = new Android.Content.Intent();
                     var packageName = context.PackageName;
-                    
+
                     intent.SetAction(Android.Provider.Settings.ActionRequestIgnoreBatteryOptimizations);
                     intent.SetData(Android.Net.Uri.Parse($"package:{packageName}"));
                     intent.AddFlags(Android.Content.ActivityFlags.NewTask);
-                    
+
                     context.StartActivity(intent);
-                    
+
                     // Esperar un momento para que el usuario pueda interactuar
                     await Task.Delay(1000);
-                    
+
                     // Verificar el estado después de la solicitud
                     return await CheckStatusAsync();
                 }
-                
+
                 return PermissionStatus.Granted;
             }
             catch
@@ -329,5 +327,31 @@ public class SmsPermissions
         {
             // No es necesario en MAUI moderno
         }
+    }
+
+    public class SmsPremiumPermission : Permissions.BasePlatformPermission
+    {
+        public override Task<PermissionStatus> CheckStatusAsync()
+        {
+#if ANDROID
+            // Aquí puedes agregar la lógica para verificar el permiso premium si es necesario
+            return Task.FromResult(PermissionStatus.Granted);
+#else
+            return Task.FromResult(PermissionStatus.Granted);
+#endif
+        }
+
+        public override Task<PermissionStatus> RequestAsync()
+        {
+#if ANDROID
+            // Aquí puedes agregar la lógica para solicitar el permiso premium si es necesario
+            return Task.FromResult(PermissionStatus.Granted);
+#else
+            return Task.FromResult(PermissionStatus.Granted);
+#endif
+        }
+
+        public override bool ShouldShowRationale() => false;
+        public override void EnsureDeclared() { }
     }
 }
