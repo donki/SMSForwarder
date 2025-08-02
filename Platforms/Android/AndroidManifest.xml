@@ -9,7 +9,7 @@
 	<uses-feature android:name="android.hardware.telephony" android:required="true" />
 	<application android:allowBackup="true" android:supportsRtl="true" android:label="SMS Forwarder" android:icon="@mipmap/smsforwadericon">
 		<!-- Receptor SMS -->
-		<receiver android:name="com.organiccoating.smsforwarder.SMSReceiver" android:enabled="true" android:exported="true" android:label="SMS Receiver" android:permission="android.permission.BROADCAST_SMS">
+		<receiver android:name="com.socratic.smsforwarder.SMSReceiver" android:enabled="true" android:exported="true" android:label="SMS Receiver" android:permission="android.permission.BROADCAST_SMS">
 			<intent-filter android:priority="2147483647">
 				<action android:name="android.provider.Telephony.SMS_RECEIVED" />
 				<category android:name="android.intent.category.DEFAULT" />

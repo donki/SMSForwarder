@@ -13,22 +13,22 @@
     <ApplicationTitle>SMS Forwarder</ApplicationTitle>
 
     <!-- App Identifier -->
-    <ApplicationId>com.organiccoating.smsforwarder</ApplicationId>
+    <ApplicationId>com.socratic.smsforwarder</ApplicationId>
 
     <!-- Versions -->
-    <ApplicationDisplayVersion>1.8.3</ApplicationDisplayVersion>
-    <ApplicationVersion>11</ApplicationVersion>
+    <ApplicationDisplayVersion>1.9.0</ApplicationDisplayVersion>
+    <ApplicationVersion>12</ApplicationVersion>
 
     <!-- Platform versions -->
     <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
 
     <!-- Android specific -->
-    <AndroidPackageFormat>apk</AndroidPackageFormat>
+    <AndroidPackageFormat>aab</AndroidPackageFormat>
     <AndroidUseAapt2>true</AndroidUseAapt2>
     <AndroidCreatePackagePerAbi>false</AndroidCreatePackagePerAbi>
 
-    <AssemblyVersion>1.8.3.0</AssemblyVersion>
-    <FileVersion>1.8.3.0</FileVersion>
+    <AssemblyVersion>1.9.0.0</AssemblyVersion>
+    <FileVersion>1.9.0.0</FileVersion>
   </PropertyGroup>
 
   <!-- Release configuration for Android -->
@@ -36,8 +36,8 @@
     <AndroidKeyStore>true</AndroidKeyStore>
     <AndroidSigningKeyStore>smsforwarder.keystore</AndroidSigningKeyStore>
     <AndroidSigningKeyAlias>smsforwarder</AndroidSigningKeyAlias>
-    <AndroidSigningKeyPass>$(KEYSTORE_PASSWORD)</AndroidSigningKeyPass>
-    <AndroidSigningStorePass>$(KEYSTORE_PASSWORD)</AndroidSigningStorePass>
+    <AndroidSigningKeyPass>07052012</AndroidSigningKeyPass>
+    <AndroidSigningStorePass>07052012</AndroidSigningStorePass>
     <RunAOTCompilation>false</RunAOTCompilation>
     <PublishTrimmed>true</PublishTrimmed>
   </PropertyGroup>

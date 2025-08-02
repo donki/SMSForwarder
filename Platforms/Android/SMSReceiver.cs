@@ -11,12 +11,12 @@ using Application = Android.App.Application;
 [assembly: UsesPermission(Android.Manifest.Permission.ReadSms)]
 namespace SMSForwarder.Platforms.Android
 {
-    [Register("com.organiccoating.smsforwarder.SMSReceiver")]
+    [Register("com.socratic.smsforwarder.SMSReceiver")]
     [BroadcastReceiver(
         Enabled = true,
         Exported = true,
         Label = "SMS Receiver",
-        Name = "com.organiccoating.smsforwarder.SMSReceiver")]
+        Name = "com.socratic.smsforwarder.SMSReceiver")]
     [IntentFilter(
         new[] { "android.provider.Telephony.SMS_RECEIVED" },
         Categories = new[] { "android.intent.category.DEFAULT" },
