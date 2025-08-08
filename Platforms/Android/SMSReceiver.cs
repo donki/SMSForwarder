@@ -175,12 +175,40 @@ namespace SMSForwarder.Platforms.Android
                     return;
                 }
 
+                // PREVENCIÓN DE BUCLES INFINITOS
+                // Verificar si el remitente está en nuestra lista de números de reenvío
+                var cleanSender = CleanPhoneNumber(sender);
+                var isFromForwardingNumber = phones.Any(phone => 
+                {
+                    var cleanPhone = CleanPhoneNumber(phone);
+                    return ArePhoneNumbersEqual(cleanSender, cleanPhone);
+                });
+
+                if (isFromForwardingNumber)
+                {
+                    SafeLog($"BUCLE DETECTADO: El mensaje proviene de un número en la lista de reenvío ({sender}). No se reenvía para evitar bucle infinito.");
+                    return;
+                }
+
+                // Verificar si el mensaje parece ser un reenvío de nuestra aplicación
+                if (IsForwardedMessage(messageBody))
+                {
+                    SafeLog($"BUCLE DETECTADO: El mensaje parece ser un reenvío de SMSForwarder. No se reenvía para evitar bucle infinito.");
+                    return;
+                }
+
                 SafeLog($"Procesando reenvío a {phones.Count} números: {string.Join(", ", phones)}");
 
-                var forwardedMessage = $"De: {sender}\n{messageBody}";
+                // Crear mensaje con formato identificable para prevenir bucles
+                var forwardedMessage = $"[SMSForwarder] De: {sender}\n{messageBody}";
                 if (forwardedMessage.Length > 160)
                 {
-                    forwardedMessage = forwardedMessage.Substring(0, 157) + "...";
+                    // Asegurar que el identificador siempre esté presente
+                    var maxBodyLength = 160 - "[SMSForwarder] De: ".Length - sender.Length - 4; // 4 para \n y ...
+                    var truncatedBody = messageBody.Length > maxBodyLength 
+                        ? messageBody.Substring(0, maxBodyLength) + "..."
+                        : messageBody;
+                    forwardedMessage = $"[SMSForwarder] De: {sender}\n{truncatedBody}";
                 }
 
                 var tasks = new List<Task>();
@@ -273,6 +301,80 @@ namespace SMSForwarder.Platforms.Android
                 System.Diagnostics.Debug.WriteLine($"[SMSReceiver] {DateTime.Now:HH:mm:ss}: {message}");
             }
             catch { }
+        }
+
+        /// <summary>
+        /// Limpia un número de teléfono removiendo espacios, guiones y otros caracteres
+        /// </summary>
+        private string CleanPhoneNumber(string phoneNumber)
+        {
+            if (string.IsNullOrWhiteSpace(phoneNumber))
+                return "";
+
+            // Remover espacios, guiones, paréntesis y otros caracteres
+            var cleaned = phoneNumber.Replace(" ", "")
+                                   .Replace("-", "")
+                                   .Replace("(", "")
+                                   .Replace(")", "")
+                                   .Replace(".", "")
+                                   .Replace("+", "")
+                                   .Trim();
+
+            return cleaned;
+        }
+
+        /// <summary>
+        /// Compara dos números de teléfono para ver si son equivalentes
+        /// </summary>
+        private bool ArePhoneNumbersEqual(string phone1, string phone2)
+        {
+            if (string.IsNullOrWhiteSpace(phone1) || string.IsNullOrWhiteSpace(phone2))
+                return false;
+
+            // Si los números son exactamente iguales
+            if (phone1 == phone2)
+                return true;
+
+            // Comparar los últimos 9 dígitos (para manejar códigos de país)
+            var minLength = Math.Min(phone1.Length, phone2.Length);
+            if (minLength >= 9)
+            {
+                var suffix1 = phone1.Substring(phone1.Length - 9);
+                var suffix2 = phone2.Substring(phone2.Length - 9);
+                return suffix1 == suffix2;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Detecta si un mensaje parece ser un reenvío de SMSForwarder
+        /// </summary>
+        private bool IsForwardedMessage(string messageBody)
+        {
+            if (string.IsNullOrWhiteSpace(messageBody))
+                return false;
+
+            // Buscar nuestro identificador específico primero
+            if (messageBody.StartsWith("[SMSForwarder]", StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+
+            // Buscar otros patrones típicos de mensajes reenviados
+            var forwardPatterns = new[]
+            {
+                "De:",           // Nuestro formato anterior: "De: +34123456789"
+                "From:",         // Formato en inglés
+                "Reenviado:",    // Posible formato en español
+                "Forwarded:",    // Formato en inglés
+                "SMS de:",       // Otro posible formato
+            };
+
+            var messageStart = messageBody.Substring(0, Math.Min(30, messageBody.Length)).ToLower();
+            
+            return forwardPatterns.Any(pattern => 
+                messageStart.Contains(pattern.ToLower()));
         }
     }
 }
