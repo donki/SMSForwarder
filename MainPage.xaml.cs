@@ -11,12 +11,15 @@ namespace SMSForwarder
     public partial class MainPage : ContentPage
     {
         private readonly ILoggingService _loggingService;
+        private readonly IContactService _contactService;
         private ObservableCollection<string> phones = new();
 
-        public MainPage(ILoggingService loggingService)
+        public MainPage(ILoggingService loggingService, IContactService contactService)
         {
             InitializeComponent();
             _loggingService = loggingService;
+            _contactService = contactService;
+            
             var json = Preferences.Default.Get("phones", "[]");
             var list = JsonSerializer.Deserialize<List<string>>(json);
             if (list != null)
@@ -25,6 +28,9 @@ namespace SMSForwarder
                     phones.Add(phone);
             }
             PhoneList.ItemsSource = phones;
+            
+            // Suscribirse al mensaje de contacto seleccionado
+            MessagingCenter.Subscribe<ContactsPage, string>(this, "ContactSelected", OnContactSelected);
         }
 
 
@@ -122,7 +128,110 @@ namespace SMSForwarder
             return phoneRegex.IsMatch(cleanNumber) && cleanNumber.Length >= 7 && cleanNumber.Length <= 15;
         }
 
+        private async void OnSelectFromContactsClicked(object sender, EventArgs e)
+        {
+            try
+            {
+                var contactsPage = new ContactsPage(_contactService);
+                
+                // Suscribirse al evento de contacto seleccionado
+                contactsPage.ContactSelected += (phoneNumber) =>
+                {
+                    // Llamar al método de procesamiento en el hilo principal
+                    MainThread.BeginInvokeOnMainThread(() =>
+                    {
+                        OnContactSelectedFromEvent(phoneNumber);
+                    });
+                };
+                
+                await Navigation.PushAsync(contactsPage);
+            }
+            catch (Exception ex)
+            {
+                _loggingService.LogError("Error al abrir contactos", ex);
+                await DisplayAlert("Error", "Error al abrir la lista de contactos", "OK");
+            }
+        }
 
+        private void OnContactSelectedFromEvent(string phoneNumber)
+        {
+            try
+            {
+                // Debug: Agregar log para verificar que se está recibiendo el mensaje
+                System.Diagnostics.Debug.WriteLine($"Recibido contacto seleccionado por evento: {phoneNumber}");
+                _loggingService.LogInfo($"Recibido contacto seleccionado por evento: {phoneNumber}");
+                
+                if (!string.IsNullOrWhiteSpace(phoneNumber))
+                {
+                    var cleanNumber = phoneNumber.Replace(" ", "").Trim();
+                    
+                    if (IsValidPhoneNumber(cleanNumber))
+                    {
+                        if (!phones.Contains(cleanNumber))
+                        {
+                            phones.Add(cleanNumber);
+                            SavePhones();
+                            _loggingService.LogInfo($"Número agregado desde contactos: {cleanNumber}");
+                            
+                            // Mostrar confirmación
+                            MainThread.BeginInvokeOnMainThread(async () =>
+                            {
+                                await DisplayAlert("Número agregado", 
+                                    $"El número {cleanNumber} ha sido agregado exitosamente", 
+                                    "OK");
+                            });
+                        }
+                        else
+                        {
+                            MainThread.BeginInvokeOnMainThread(async () =>
+                            {
+                                await DisplayAlert("Número duplicado", 
+                                    "Este número ya está en la lista.", 
+                                    "OK");
+                            });
+                        }
+                    }
+                    else
+                    {
+                        _loggingService.LogWarning($"Número inválido desde contactos: {cleanNumber}");
+                        MainThread.BeginInvokeOnMainThread(async () =>
+                        {
+                            await DisplayAlert("Número no válido", 
+                                "El número seleccionado no es válido.", 
+                                "OK");
+                        });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _loggingService.LogError("Error al procesar contacto seleccionado", ex);
+            }
+        }
+
+        private void OnContactSelected(ContactsPage sender, string phoneNumber)
+        {
+            try
+            {
+                // Debug: Agregar log para verificar que se está recibiendo el mensaje
+                System.Diagnostics.Debug.WriteLine($"Recibido contacto seleccionado por MessagingCenter: {phoneNumber}");
+                _loggingService.LogInfo($"Recibido contacto seleccionado por MessagingCenter: {phoneNumber}");
+                
+                // Llamar al mismo método que maneja el evento
+                OnContactSelectedFromEvent(phoneNumber);
+            }
+            catch (Exception ex)
+            {
+                _loggingService.LogError("Error al procesar contacto seleccionado", ex);
+            }
+        }
+
+        protected override void OnDisappearing()
+        {
+            base.OnDisappearing();
+            // Desuscribirse del mensaje para evitar memory leaks
+            MessagingCenter.Unsubscribe<ContactsPage, string>(this, "ContactSelected");
+        }
     }
 
 }

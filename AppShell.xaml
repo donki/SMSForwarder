@@ -52,7 +52,7 @@
     <!-- Footer del menú -->
     <Shell.FlyoutFooter>
         <Grid BackgroundColor="#F8F9FA" HeightRequest="60" Padding="20">
-            <Label Text="v1.9.0 - sOCratic" 
+            <Label Text="v1.10.0 - sOCratic" 
                    FontSize="10" 
                    TextColor="#ADB5BD"
                    VerticalOptions="Center"
