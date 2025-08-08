@@ -40,7 +40,7 @@
                            VerticalOptions="Center" />
                 </Border>
                 
-                <Label Text="SMS Forwarder v1.9.0" 
+                <Label Text="SMS Forwarder v1.10.0" 
                        FontSize="16" 
                        FontAttributes="Bold"
                        TextColor="#2196F3"

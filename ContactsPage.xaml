@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SMSForwarder.ContactsPage"
+             Title="Seleccionar Contacto"
+             BackgroundColor="#F8F9FA">
+
+    <Grid RowDefinitions="Auto,*,Auto">
+        
+        <!-- Header -->
+        <VerticalStackLayout Grid.Row="0" Padding="24,24,24,16" Spacing="8">
+            <Label Text="Seleccionar Contacto"
+                   FontSize="24"
+                   FontAttributes="Bold"
+                   TextColor="#212529"
+                   HorizontalOptions="Center" />
+            <Label Text="Elige un contacto para añadir su número"
+                   FontSize="14"
+                   TextColor="#6C757D"
+                   HorizontalOptions="Center" />
+        </VerticalStackLayout>
+
+        <!-- Barra de búsqueda -->
+        <Border Grid.Row="0" 
+                Margin="24,0,24,16"
+                VerticalOptions="End"
+                BackgroundColor="White" 
+                Stroke="#E9ECEF" 
+                StrokeThickness="1" 
+                StrokeShape="RoundRectangle 8" 
+                Padding="4">
+            <Border.Shadow>
+                <Shadow Brush="Black" Opacity="0.05" Radius="4" Offset="0,2" />
+            </Border.Shadow>
+            <Entry x:Name="SearchEntry" 
+                   Placeholder="🔍 Buscar contacto..." 
+                   BackgroundColor="Transparent" 
+                   TextColor="#212529"
+                   PlaceholderColor="#ADB5BD"
+                   FontSize="16"
+                   TextChanged="OnSearchTextChanged" />
+        </Border>
+
+        <!-- Lista de contactos -->
+        <CollectionView Grid.Row="1" 
+                        x:Name="ContactsList" 
+                        SelectionMode="Single"
+                        SelectionChanged="OnContactSelected"
+                        Margin="24,8,24,8">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Border BackgroundColor="White" 
+                            Stroke="#E9ECEF" 
+                            StrokeThickness="1" 
+                            StrokeShape="RoundRectangle 8" 
+                            Margin="0,4">
+                        <Border.Shadow>
+                            <Shadow Brush="Black" Opacity="0.05" Radius="4" Offset="0,2" />
+                        </Border.Shadow>
+                        <Grid Padding="16,12" ColumnDefinitions="Auto,*,Auto">
+                            <Border Grid.Column="0" 
+                                    BackgroundColor="#E8F5E8" 
+                                    StrokeShape="RoundRectangle 20" 
+                                    WidthRequest="40" 
+                                    HeightRequest="40"
+                                    VerticalOptions="Center">
+                                <Label Text="👤" 
+                                       FontSize="18" 
+                                       HorizontalOptions="Center" 
+                                       VerticalOptions="Center" />
+                            </Border>
+                            <VerticalStackLayout Grid.Column="1" 
+                                               VerticalOptions="Center" 
+                                               Margin="12,0,0,0"
+                                               Spacing="2">
+                                <Label Text="{Binding Name}" 
+                                       FontSize="16" 
+                                       FontAttributes="Bold"
+                                       TextColor="#212529" />
+                                <Label Text="{Binding PhoneNumber}" 
+                                       FontSize="14" 
+                                       TextColor="#6C757D" />
+                            </VerticalStackLayout>
+                            <Label Grid.Column="2" 
+                                   Text="→" 
+                                   FontSize="18" 
+                                   TextColor="#4CAF50"
+                                   VerticalOptions="Center" />
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+            <CollectionView.EmptyView>
+                <VerticalStackLayout HorizontalOptions="Center" 
+                                   VerticalOptions="Center" 
+                                   Spacing="16">
+                    <Label Text="📱" 
+                           FontSize="48" 
+                           HorizontalOptions="Center" />
+                    <Label Text="No se encontraron contactos" 
+                           FontSize="18" 
+                           FontAttributes="Bold"
+                           TextColor="#6C757D"
+                           HorizontalOptions="Center" />
+                    <Label Text="Verifica que tienes contactos guardados y que has concedido los permisos necesarios" 
+                           FontSize="14" 
+                           TextColor="#ADB5BD"
+                           HorizontalTextAlignment="Center"
+                           LineBreakMode="WordWrap"
+                           Margin="32,0" />
+                </VerticalStackLayout>
+            </CollectionView.EmptyView>
+        </CollectionView>
+
+        <!-- Loading indicator -->
+        <ActivityIndicator Grid.Row="1"
+                          x:Name="LoadingIndicator"
+                          IsVisible="True"
+                          IsRunning="True"
+                          Color="#2196F3"
+                          VerticalOptions="Center"
+                          HorizontalOptions="Center" />
+
+        <!-- Botones de acción -->
+        <Grid Grid.Row="2" 
+              ColumnDefinitions="*,*" 
+              ColumnSpacing="12"
+              Padding="24,16,24,24">
+            <Button Grid.Column="0"
+                    Text="❌ Cancelar" 
+                    Clicked="OnCancelClicked" 
+                    BackgroundColor="#6C757D" 
+                    TextColor="White"
+                    FontSize="14"
+                    CornerRadius="8"
+                    HeightRequest="44" />
+            
+            <Button Grid.Column="1"
+                    Text="🔄 Actualizar" 
+                    Clicked="OnRefreshClicked" 
+                    BackgroundColor="#17A2B8" 
+                    TextColor="White"
+                    FontSize="14"
+                    CornerRadius="8"
+                    HeightRequest="44" />
+        </Grid>
+
+    </Grid>
+
+</ContentPage>

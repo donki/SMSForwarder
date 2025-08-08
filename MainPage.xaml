@@ -39,14 +39,28 @@
                            FontSize="16" />
                 </Border>
                 
-                <Button Text="Agregar número" 
-                        Clicked="OnAddClicked" 
-                        BackgroundColor="#2196F3" 
-                        TextColor="White"
-                        FontSize="16"
-                        FontAttributes="Bold"
-                        CornerRadius="8"
-                        HeightRequest="48" />
+                <!-- Botones de acción -->
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="8">
+                    <Button Grid.Column="0"
+                            Text="📝 Agregar Número" 
+                            Clicked="OnAddClicked" 
+                            BackgroundColor="#2196F3" 
+                            TextColor="White"
+                            FontSize="14"
+                            FontAttributes="Bold"
+                            CornerRadius="8"
+                            HeightRequest="48" />
+                    
+                    <Button Grid.Column="1"
+                            Text="👥 Desde Contactos" 
+                            Clicked="OnSelectFromContactsClicked" 
+                            BackgroundColor="#4CAF50" 
+                            TextColor="White"
+                            FontSize="14"
+                            FontAttributes="Bold"
+                            CornerRadius="8"
+                            HeightRequest="48" />
+                </Grid>
             </VerticalStackLayout>
             
             <!-- Lista de números -->
@@ -121,7 +135,7 @@
                            FontSize="14"
                            FontAttributes="Bold"
                            TextColor="#1976D2" />
-                    <Label Text="• Los SMS recibidos se reenviarán automáticamente a estos números&#x0a;• Para configurar permisos avanzados, ve a la sección Diagnósticos&#x0a;• Desliza hacia la izquierda en un número para eliminarlo"
+                    <Label Text="• Los SMS recibidos se reenviarán automáticamente a estos números&#x0a;• Puedes escribir números manualmente o seleccionarlos desde tus contactos&#x0a;• Para configurar permisos avanzados, ve a la sección Diagnósticos&#x0a;• Desliza hacia la izquierda en un número para eliminarlo"
                            FontSize="12"
                            TextColor="#1565C0"
                            LineBreakMode="WordWrap" />

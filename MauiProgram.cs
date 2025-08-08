@@ -17,8 +17,10 @@ namespace SMSForwarder
                 });
 
             builder.Services.AddSingleton<ILoggingService, LoggingService>();
+            builder.Services.AddSingleton<IContactService, ContactService>();
             builder.Services.AddSingleton<MainPage>();
             builder.Services.AddTransient<DiagnosticsPage>();
+            builder.Services.AddTransient<ContactsPage>();
 
             // Habilitar todos los niveles de registro en modo debug
 #if DEBUG
