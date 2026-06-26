@@ -12,14 +12,17 @@ namespace SMSForwarder
     {
         private readonly ILoggingService _loggingService;
         private readonly IContactService _contactService;
+        private readonly ILocalizationService _localizationService;
+        private bool _isApplyingLanguageSelection;
         private ObservableCollection<string> phones = new();
 
-        public MainPage(ILoggingService loggingService, IContactService contactService)
+        public MainPage(ILoggingService loggingService, IContactService contactService, ILocalizationService localizationService)
         {
             InitializeComponent();
             _loggingService = loggingService;
             _contactService = contactService;
-            
+            _localizationService = localizationService;
+
             var json = Preferences.Default.Get("phones", "[]");
             var list = JsonSerializer.Deserialize<List<string>>(json);
             if (list != null)
@@ -28,11 +31,66 @@ namespace SMSForwarder
                     phones.Add(phone);
             }
             PhoneList.ItemsSource = phones;
-            
+
+            // Actualizar strings localizados
+            UpdateLocalizedStrings();
+            _localizationService.LanguageChanged += OnLanguageChanged;
+            UpdateLanguagePickerSelection();
+
             // Suscribirse al mensaje de contacto seleccionado
             MessagingCenter.Subscribe<ContactsPage, string>(this, "ContactSelected", OnContactSelected);
         }
 
+        private void UpdateLocalizedStrings()
+        {
+            TitleLabel.Text = _localizationService.GetString("main.title");
+            SubtitleLabel.Text = _localizationService.GetString("main.subtitle");
+            LanguageLabel.Text = _localizationService.GetString("main.language");
+            LanguagePicker.Title = _localizationService.GetString("main.language_hint");
+            PhoneEntry.Placeholder = _localizationService.GetString("main.placeholder");
+            AddButton.Text = _localizationService.GetString("main.add_number");
+            ContactsButton.Text = _localizationService.GetString("main.from_contacts");
+            NumbersListLabel.Text = _localizationService.GetString("main.numbers_list");
+            InfoTitle.Text = "💡 " + _localizationService.GetString("menu.settings");
+
+            // Actualizar información de ayuda según idioma
+            if (_localizationService.CurrentLanguage == "es-ES")
+            {
+                InfoText.Text = "• Los SMS recibidos se reenviarán automáticamente a estos números\n• Puedes escribir números manualmente o seleccionarlos desde tus contactos\n• Para configurar permisos avanzados, ve a la sección Diagnósticos\n• Desliza hacia la izquierda en un número para eliminarlo";
+            }
+            else
+            {
+                InfoText.Text = "• Received SMS will be automatically forwarded to these numbers\n• You can enter numbers manually or select them from your contacts\n• For advanced permission settings, go to the Diagnostics section\n• Swipe left on a number to delete it";
+            }
+        }
+
+        private void OnLanguagePickerChanged(object? sender, EventArgs e)
+        {
+            if (_isApplyingLanguageSelection)
+            {
+                return;
+            }
+
+            var selectedLanguage = LanguagePicker.SelectedIndex == 0 ? "es-ES" : "en-US";
+            _localizationService.SetLanguage(selectedLanguage);
+            UpdateLocalizedStrings();
+        }
+
+        private void UpdateLanguagePickerSelection()
+        {
+            _isApplyingLanguageSelection = true;
+            LanguagePicker.SelectedIndex = _localizationService.CurrentLanguage == "es-ES" ? 0 : 1;
+            _isApplyingLanguageSelection = false;
+        }
+
+        private void OnLanguageChanged(object? sender, EventArgs e)
+        {
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                UpdateLanguagePickerSelection();
+                UpdateLocalizedStrings();
+            });
+        }
 
         private void OnAddClicked(object sender, EventArgs e)
         {
@@ -53,12 +111,18 @@ namespace SMSForwarder
                         }
                         else
                         {
-                            DisplayAlert("Número duplicado", "Este número ya está en la lista.", "OK");
+                            if (_localizationService.CurrentLanguage == "es-ES")
+                                DisplayAlert("Número duplicado", "Este número ya está en la lista.", "OK");
+                            else
+                                DisplayAlert("Duplicate number", "This number is already in the list.", "OK");
                         }
                     }
                     else
                     {
-                        DisplayAlert("Número no válido", "Por favor, introduce un número de teléfono válido (7-15 dígitos).", "OK");
+                        if (_localizationService.CurrentLanguage == "es-ES")
+                            DisplayAlert("Número no válido", "Por favor, introduce un número de teléfono válido (7-15 dígitos).", "OK");
+                        else
+                            DisplayAlert("Invalid number", "Please enter a valid phone number (7-15 digits).", "OK");
                         _loggingService.LogWarning($"Intento de agregar número inválido: {cleanNumber}");
                     }
                 }
@@ -66,7 +130,10 @@ namespace SMSForwarder
             catch (Exception ex)
             {
                 _loggingService.LogError("Error al agregar número", ex);
-                DisplayAlert("Error", "Error al agregar el número", "OK");
+                if (_localizationService.CurrentLanguage == "es-ES")
+                    DisplayAlert("Error", "Error al agregar el número", "OK");
+                else
+                    DisplayAlert("Error", "Error adding the number", "OK");
             }
         }
 
@@ -84,7 +151,10 @@ namespace SMSForwarder
             catch (Exception ex)
             {
                 _loggingService.LogError("Error al eliminar número", ex);
-                DisplayAlert("Error", "Error al eliminar el número", "OK");
+                if (_localizationService.CurrentLanguage == "es-ES")
+                    DisplayAlert("Error", "Error al eliminar el número", "OK");
+                else
+                    DisplayAlert("Error", "Error deleting the number", "OK");
             }
         }
 
@@ -133,7 +203,7 @@ namespace SMSForwarder
             try
             {
                 var contactsPage = new ContactsPage(_contactService);
-                
+
                 // Suscribirse al evento de contacto seleccionado
                 contactsPage.ContactSelected += (phoneNumber) =>
                 {
@@ -143,13 +213,16 @@ namespace SMSForwarder
                         OnContactSelectedFromEvent(phoneNumber);
                     });
                 };
-                
+
                 await Navigation.PushAsync(contactsPage);
             }
             catch (Exception ex)
             {
                 _loggingService.LogError("Error al abrir contactos", ex);
-                await DisplayAlert("Error", "Error al abrir la lista de contactos", "OK");
+                if (_localizationService.CurrentLanguage == "es-ES")
+                    await DisplayAlert("Error", "Error al abrir la lista de contactos", "OK");
+                else
+                    await DisplayAlert("Error", "Error opening contacts list", "OK");
             }
         }
 
@@ -160,11 +233,11 @@ namespace SMSForwarder
                 // Debug: Agregar log para verificar que se está recibiendo el mensaje
                 System.Diagnostics.Debug.WriteLine($"Recibido contacto seleccionado por evento: {phoneNumber}");
                 _loggingService.LogInfo($"Recibido contacto seleccionado por evento: {phoneNumber}");
-                
+
                 if (!string.IsNullOrWhiteSpace(phoneNumber))
                 {
                     var cleanNumber = phoneNumber.Replace(" ", "").Trim();
-                    
+
                     if (IsValidPhoneNumber(cleanNumber))
                     {
                         if (!phones.Contains(cleanNumber))
@@ -172,22 +245,32 @@ namespace SMSForwarder
                             phones.Add(cleanNumber);
                             SavePhones();
                             _loggingService.LogInfo($"Número agregado desde contactos: {cleanNumber}");
-                            
+
                             // Mostrar confirmación
                             MainThread.BeginInvokeOnMainThread(async () =>
                             {
-                                await DisplayAlert("Número agregado", 
-                                    $"El número {cleanNumber} ha sido agregado exitosamente", 
-                                    "OK");
+                                if (_localizationService.CurrentLanguage == "es-ES")
+                                    await DisplayAlert("Número agregado",
+                                        $"El número {cleanNumber} ha sido agregado exitosamente",
+                                        "OK");
+                                else
+                                    await DisplayAlert("Number added",
+                                        $"The number {cleanNumber} has been successfully added",
+                                        "OK");
                             });
                         }
                         else
                         {
                             MainThread.BeginInvokeOnMainThread(async () =>
                             {
-                                await DisplayAlert("Número duplicado", 
-                                    "Este número ya está en la lista.", 
-                                    "OK");
+                                if (_localizationService.CurrentLanguage == "es-ES")
+                                    await DisplayAlert("Número duplicado",
+                                        "Este número ya está en la lista.",
+                                        "OK");
+                                else
+                                    await DisplayAlert("Duplicate number",
+                                        "This number is already in the list.",
+                                        "OK");
                             });
                         }
                     }
@@ -196,9 +279,14 @@ namespace SMSForwarder
                         _loggingService.LogWarning($"Número inválido desde contactos: {cleanNumber}");
                         MainThread.BeginInvokeOnMainThread(async () =>
                         {
-                            await DisplayAlert("Número no válido", 
-                                "El número seleccionado no es válido.", 
-                                "OK");
+                            if (_localizationService.CurrentLanguage == "es-ES")
+                                await DisplayAlert("Número no válido",
+                                    "El número seleccionado no es válido.",
+                                    "OK");
+                            else
+                                await DisplayAlert("Invalid number",
+                                    "The selected number is invalid.",
+                                    "OK");
                         });
                     }
                 }
@@ -216,7 +304,7 @@ namespace SMSForwarder
                 // Debug: Agregar log para verificar que se está recibiendo el mensaje
                 System.Diagnostics.Debug.WriteLine($"Recibido contacto seleccionado por MessagingCenter: {phoneNumber}");
                 _loggingService.LogInfo($"Recibido contacto seleccionado por MessagingCenter: {phoneNumber}");
-                
+
                 // Llamar al mismo método que maneja el evento
                 OnContactSelectedFromEvent(phoneNumber);
             }

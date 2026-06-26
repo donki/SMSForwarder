@@ -1,146 +1,186 @@
-# SMS Forwarder v1.5.0
+# 📱 SMSForwarder
 
-Una aplicación Android desarrollada con .NET MAUI que permite reenviar automáticamente mensajes SMS a números configurados.
+Una aplicación Android desarrollada en .NET MAUI que reenvía automáticamente los SMS recibidos a números de teléfono configurados.
 
-## 🚀 Características
+## ✨ Características
 
-- **Reenvío automático de SMS**: Reenvía todos los SMS recibidos a números preconfigurados
-- **Gestión completa de permisos**: Sistema inteligente para configurar permisos de batería y autostart
-- **Soporte multi-fabricante**: Configuración específica para Xiaomi, Huawei, OPPO, Vivo, Samsung, OnePlus
-- **Interfaz moderna**: Diseño limpio y fácil de usar
-- **Diagnósticos integrados**: Herramientas para verificar el funcionamiento
-- **Funcionamiento en segundo plano**: Optimizado para trabajar sin interrupciones
+### 🔄 Reenvío Automático
+- **Reenvío instantáneo** de todos los SMS recibidos
+- **Múltiples destinatarios** configurables
+- **Formato identificable** con prefijo `[SMSForwarder]`
 
-## 📱 Requisitos
+### 📝 Gestión de Números
+- **Entrada manual** de números de teléfono
+- **Selección desde contactos** con interfaz de búsqueda
+- **Validación automática** de formato de números
+- **Eliminación fácil** por deslizamiento
 
-- Android 5.0 (API 21) o superior
-- Permisos SMS (se solicitan automáticamente)
-- Recomendado: Desactivar optimización de batería
-- Recomendado: Activar autostart (según fabricante)
+### 🛡️ Prevención de Bucles Infinitos
+- **Detección inteligente** de mensajes reenviados
+- **Verificación de remitente** contra lista de destinatarios
+- **Prevención de duplicados** en períodos cortos
+- **Logs detallados** para depuración
 
-## 🔧 Instalación
+### 🎨 Interfaz Moderna
+- **Diseño Material Design** con iconos intuitivos
+- **Tema claro/oscuro** automático
+- **Navegación fluida** entre secciones
+- **Feedback visual** para todas las acciones
 
-1. Descarga el APK desde la carpeta `Release/`
-2. Instala la aplicación
-3. Concede los permisos SMS cuando se soliciten
-4. Configura los permisos de batería y autostart desde la aplicación
+## 🚀 Instalación
 
-## 📋 Uso
+### Requisitos
+- Android 7.0 (API 24) o superior
+- Permisos de SMS y Contactos
 
-### Configuración básica
-1. Abre la aplicación
-2. Añade los números de teléfono donde quieres reenviar los SMS
-3. Los mensajes se reenviarán automáticamente
+### Desde Código Fuente
+1. Clona el repositorio:
+   ```bash
+   git clone https://github.com/tu-usuario/SMSForwarder.git
+   cd SMSForwarder
+   ```
 
-### Configuración de permisos
-1. Ve a "Permisos y Configuración"
-2. Usa "Verificar Estado de Permisos" para ver el estado actual
-3. Usa "Configurar Todos los Permisos" para setup automático
-4. O configura individualmente "Batería" y "Autostart"
+2. Restaura las dependencias:
+   ```bash
+   dotnet restore
+   ```
 
-## 🏗️ Desarrollo
+3. Compila y ejecuta:
+   ```bash
+   dotnet build -t:Run -f net9.0-android
+   ```
 
-### Tecnologías utilizadas
-- **.NET MAUI**: Framework multiplataforma
-- **C#**: Lenguaje de programación
-- **XAML**: Interfaz de usuario
-- **Android SDK**: APIs específicas de Android
+## 📖 Uso
 
-### Estructura del proyecto
+### Configuración Inicial
+1. **Abre la aplicación** y ve a la sección "Configuración"
+2. **Concede permisos** de SMS y Contactos cuando se soliciten
+3. **Agrega números** de destino usando una de estas opciones:
+   - Escribir manualmente en el campo de texto
+   - Seleccionar desde contactos con el botón "👥 Desde Contactos"
+
+### Gestión de Números
+- **Agregar**: Usa el botón "📝 Agregar Número" o "👥 Desde Contactos"
+- **Eliminar**: Desliza hacia la izquierda en cualquier número de la lista
+- **Validación**: Los números se validan automáticamente al agregarlos
+
+### Diagnósticos
+- Ve a la sección **"Diagnósticos"** para:
+  - Verificar permisos del sistema
+  - Probar envío de SMS
+  - Ver logs de actividad
+  - Configurar inicio automático
+
+## 🔧 Configuración Avanzada
+
+### Permisos Requeridos
+- `RECEIVE_SMS` - Para recibir mensajes entrantes
+- `SEND_SMS` - Para reenviar mensajes
+- `READ_CONTACTS` - Para seleccionar desde contactos
+
+### Optimización de Batería
+La aplicación puede requerir **exclusión de optimización de batería** para funcionar correctamente en segundo plano. Esto se configura automáticamente desde la sección de Diagnósticos.
+
+## 🛠️ Desarrollo
+
+### Tecnologías Utilizadas
+- **.NET 9.0** - Framework principal
+- **.NET MAUI** - UI multiplataforma
+- **C#** - Lenguaje de programación
+- **Android SDK** - APIs nativas de Android
+
+### Estructura del Proyecto
 ```
 SMSForwarder/
-├── Services/               # Servicios (PermissionService, LoggingService)
-├── Platforms/Android/      # Código específico de Android
-├── Resources/              # Recursos (iconos, imágenes)
-├── *.xaml                  # Páginas de interfaz de usuario
-├── *.cs                    # Código C#
-└── Release/                # APKs compilados
+├── Models/                 # Modelos de datos
+├── Services/              # Servicios de negocio
+├── Platforms/Android/     # Código específico de Android
+├── Resources/             # Recursos (iconos, estilos, etc.)
+├── Pages/                 # Páginas de la aplicación
+└── App.xaml              # Configuración de la aplicación
 ```
 
-### Compilar el proyecto
-```bash
-# Compilar en modo Release
-dotnet build -c Release
+### Características Técnicas
+- **Arquitectura MVVM** con inyección de dependencias
+- **Servicios asíncronos** para operaciones de red
+- **Logging integrado** para depuración
+- **Manejo robusto de errores** y excepciones
 
-# Generar APK
-dotnet publish -f net9.0-android -c Release
-```
+## 🔒 Seguridad y Privacidad
 
-## 📝 Historial de versiones
+### Datos Locales
+- Los números de teléfono se almacenan **localmente** en el dispositivo
+- **No se envían datos** a servidores externos
+- **Cifrado automático** por el sistema Android
 
-### v1.5.0 (Actual)
-- ✅ Sistema completo de gestión de permisos
-- ✅ Configuración de optimización de batería
-- ✅ Soporte para autostart por fabricante
-- ✅ Interfaz mejorada con controles de permisos
-- ✅ Solicitud automática de permisos al inicio
+### Permisos Mínimos
+- Solo solicita permisos **estrictamente necesarios**
+- **Transparencia total** sobre el uso de permisos
+- **Control completo** del usuario sobre los datos
 
-### v1.4.0
-- ✅ Cambio de marca a "sOCratic"
-- ✅ Corrección del receptor SMS
-- ✅ Solución de problemas de instalación
-- ✅ Mejoras en el AndroidManifest
+## 🐛 Solución de Problemas
 
-### v1.0.0
-- ✅ Funcionalidad básica de reenvío SMS
-- ✅ Interfaz de configuración
-- ✅ Diagnósticos básicos
+### Los SMS no se reenvían
+1. Verifica que la aplicación tenga todos los permisos necesarios
+2. Asegúrate de que esté excluida de la optimización de batería
+3. Revisa que los números estén correctamente configurados
 
-## 🔒 Permisos
+### Bucles infinitos
+La aplicación incluye **protección automática** contra bucles:
+- Detecta mensajes que provienen de números en la lista de reenvío
+- Identifica mensajes ya reenviados por el formato `[SMSForwarder]`
+- Previene duplicados en períodos cortos
 
-La aplicación requiere los siguientes permisos:
+### Problemas de contactos
+1. Verifica el permiso de lectura de contactos
+2. Asegúrate de tener contactos con números de teléfono
+3. Reinicia la aplicación si es necesario
 
-### Permisos SMS (Obligatorios)
-- `RECEIVE_SMS`: Para recibir mensajes SMS
-- `SEND_SMS`: Para reenviar mensajes SMS
-- `READ_SMS`: Para leer el contenido de los mensajes
+## 📋 Roadmap
 
-### Permisos del sistema (Recomendados)
-- `REQUEST_IGNORE_BATTERY_OPTIMIZATIONS`: Para funcionar en segundo plano
-- `RECEIVE_BOOT_COMPLETED`: Para iniciarse después del reinicio
-- `WAKE_LOCK`: Para mantener el dispositivo activo cuando sea necesario
+### Próximas Características
+- [ ] **Filtros de mensajes** por remitente o contenido
+- [ ] **Programación de horarios** para reenvío
+- [ ] **Estadísticas de uso** y reportes
+- [ ] **Backup y restauración** de configuración
+- [ ] **Soporte para MMS** (mensajes multimedia)
 
-## 🛠️ Configuración por fabricante
+### Mejoras Técnicas
+- [ ] **Migración a CommunityToolkit.Mvvm** para messaging
+- [ ] **Optimización de rendimiento** en listas grandes
+- [ ] **Soporte para temas personalizados**
+- [ ] **Localización** a múltiples idiomas
 
-### Xiaomi (MIUI)
-- Configuración > Aplicaciones > Administrar aplicaciones > SMS Forwarder > Inicio automático
+## 🤝 Contribuir
 
-### Huawei (EMUI)
-- Configuración > Aplicaciones > SMS Forwarder > Inicio automático
+¡Las contribuciones son bienvenidas! Por favor:
 
-### OPPO (ColorOS)
-- Configuración > Aplicaciones > SMS Forwarder > Permisos > Inicio automático
+1. **Fork** el proyecto
+2. Crea una **rama para tu feature** (`git checkout -b feature/AmazingFeature`)
+3. **Commit** tus cambios (`git commit -m 'Add some AmazingFeature'`)
+4. **Push** a la rama (`git push origin feature/AmazingFeature`)
+5. Abre un **Pull Request**
 
-### Vivo (FuntouchOS)
-- Configuración > Aplicaciones > SMS Forwarder > Permisos > Inicio automático
-
-### Samsung (One UI)
-- Configuración > Aplicaciones > SMS Forwarder > Batería > Optimizar uso de batería
-
-### OnePlus (OxygenOS)
-- Configuración > Aplicaciones > SMS Forwarder > Permisos > Inicio automático
-
-## 🐛 Solución de problemas
-
-### La aplicación no reenvía mensajes
-1. Verifica que los permisos SMS estén concedidos
-2. Desactiva la optimización de batería
-3. Activa el autostart según tu fabricante
-4. Reinicia la aplicación
-
-### La aplicación se cierra en segundo plano
-1. Desactiva la optimización de batería
-2. Añade la aplicación a la lista blanca de autostart
-3. Verifica que no esté en modo de ahorro de batería extremo
-
-## 📞 Soporte
-
-Para reportar problemas o sugerir mejoras, contacta al desarrollador.
+### Guías de Contribución
+- Sigue las convenciones de código existentes
+- Incluye tests para nuevas funcionalidades
+- Actualiza la documentación según sea necesario
+- Asegúrate de que todos los tests pasen
 
 ## 📄 Licencia
 
-© 2025 sOCratic - Todos los derechos reservados
+Este proyecto está licenciado bajo la Licencia MIT - ver el archivo [LICENSE](LICENSE) para más detalles.
+
+## 👨‍💻 Autor
+
+Desarrollado con ❤️ para la comunidad Android.
+
+## 🙏 Agradecimientos
+
+- **Microsoft** por .NET MAUI
+- **Comunidad .NET** por las librerías y herramientas
+- **Contribuidores** que hacen posible este proyecto
 
 ---
 
-**Desarrollado con ❤️ por sOCratic**
+⭐ **¡Si te gusta este proyecto, dale una estrella en GitHub!** ⭐

@@ -39,11 +39,9 @@ public partial class SplashPage : ContentPage
             // Solo solicitar permisos SMS automáticamente, los otros se configuran manualmente
             var smsReceiveStatus = await new SmsPermissions.ReceiveSms().CheckStatusAsync();
             var smsSendStatus = await new SmsPermissions.SendSms().CheckStatusAsync();
-            var smsReadStatus = await new SmsPermissions.ReadSms().CheckStatusAsync();
 
             if (smsReceiveStatus != PermissionStatus.Granted ||
-                smsSendStatus != PermissionStatus.Granted ||
-                smsReadStatus != PermissionStatus.Granted)
+                smsSendStatus != PermissionStatus.Granted)
             {
                 var result = await DisplayAlert(
                     "Permisos Requeridos",
@@ -54,7 +52,6 @@ public partial class SplashPage : ContentPage
                 {
                     await new SmsPermissions.ReceiveSms().RequestAsync();
                     await new SmsPermissions.SendSms().RequestAsync();
-                    await new SmsPermissions.ReadSms().RequestAsync();
                 }
             }
         }

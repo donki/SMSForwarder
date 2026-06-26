@@ -6,115 +6,156 @@
              BackgroundColor="#F8F9FA">
 
     <ScrollView>
-        <VerticalStackLayout Padding="24" Spacing="20">
-            
+        <VerticalStackLayout Padding="24"
+                             Spacing="20">
+
             <!-- Header unificado -->
             <VerticalStackLayout Spacing="8">
-                <Label Text="Configuración"
+                <Label x:Name="TitleLabel"
+                       Text="Configuración"
                        FontSize="24"
                        FontAttributes="Bold"
                        TextColor="#212529"
-                       HorizontalOptions="Center" />
-                <Label Text="Configura los números donde reenviar SMS"
+                       HorizontalOptions="Center"/>
+                <Label x:Name="SubtitleLabel"
+                       Text="Configura los números donde reenviar SMS"
                        FontSize="14"
                        TextColor="#6C757D"
-                       HorizontalOptions="Center" />
+                       HorizontalOptions="Center"/>
             </VerticalStackLayout>
-            
+
+            <!-- Selector de idioma -->
+            <VerticalStackLayout Spacing="8">
+                <Label x:Name="LanguageLabel"
+                       Text="Idioma"
+                       FontSize="14"
+                       FontAttributes="Bold"
+                       TextColor="#212529"/>
+                <Border BackgroundColor="White"
+                        Stroke="#E9ECEF"
+                        StrokeThickness="1"
+                        StrokeShape="RoundRectangle 8"
+                        Padding="8,2">
+                    <Picker x:Name="LanguagePicker"
+                            Title="Elige el idioma de la aplicación"
+                            FontSize="14"
+                            TextColor="#212529"
+                            SelectedIndexChanged="OnLanguagePickerChanged">
+                        <Picker.Items>
+                            <x:String>Español</x:String>
+                            <x:String>English</x:String>
+                        </Picker.Items>
+                    </Picker>
+                </Border>
+            </VerticalStackLayout>
+
             <!-- Input section -->
             <VerticalStackLayout Spacing="12">
-                <Border BackgroundColor="White" 
-                        Stroke="#E9ECEF" 
-                        StrokeThickness="1" 
-                        StrokeShape="RoundRectangle 8" 
+                <Border BackgroundColor="White"
+                        Stroke="#E9ECEF"
+                        StrokeThickness="1"
+                        StrokeShape="RoundRectangle 8"
                         Padding="4">
                     <Border.Shadow>
-                        <Shadow Brush="Black" Opacity="0.05" Radius="4" Offset="0,2" />
+                        <Shadow Brush="Black"
+                                Opacity="0.05"
+                                Radius="4"
+                                Offset="0,2"/>
                     </Border.Shadow>
-                    <Entry x:Name="PhoneEntry" 
-                           Placeholder="Ej: +34 600 123 456" 
-                           BackgroundColor="Transparent" 
+                    <Entry x:Name="PhoneEntry"
+                           Placeholder="Ej: +34 600 123 456"
+                           BackgroundColor="Transparent"
                            TextColor="#212529"
                            PlaceholderColor="#ADB5BD"
-                           FontSize="16" />
+                           FontSize="16"/>
                 </Border>
-                
+
                 <!-- Botones de acción -->
-                <Grid ColumnDefinitions="*,*" ColumnSpacing="8">
-                    <Button Grid.Column="0"
-                            Text="📝 Agregar Número" 
-                            Clicked="OnAddClicked" 
-                            BackgroundColor="#2196F3" 
+                <Grid ColumnDefinitions="*,*"
+                      ColumnSpacing="8">
+                    <Button x:Name="AddButton"
+                            Grid.Column="0"
+                            Text="📝 Agregar Número"
+                            Clicked="OnAddClicked"
+                            BackgroundColor="#2196F3"
                             TextColor="White"
                             FontSize="14"
                             FontAttributes="Bold"
                             CornerRadius="8"
-                            HeightRequest="48" />
-                    
-                    <Button Grid.Column="1"
-                            Text="👥 Desde Contactos" 
-                            Clicked="OnSelectFromContactsClicked" 
-                            BackgroundColor="#4CAF50" 
+                            HeightRequest="48"/>
+
+                    <Button x:Name="ContactsButton"
+                            Grid.Column="1"
+                            Text="👥 Desde Contactos"
+                            Clicked="OnSelectFromContactsClicked"
+                            BackgroundColor="#4CAF50"
                             TextColor="White"
                             FontSize="14"
                             FontAttributes="Bold"
                             CornerRadius="8"
-                            HeightRequest="48" />
+                            HeightRequest="48"/>
                 </Grid>
             </VerticalStackLayout>
-            
+
             <!-- Lista de números -->
             <VerticalStackLayout Spacing="12">
-                <Label Text="Números configurados"
+                <Label x:Name="NumbersListLabel"
+                       Text="Números configurados"
                        FontSize="18"
                        FontAttributes="Bold"
                        TextColor="#212529"
                        HorizontalOptions="Center"
-                       Margin="0,8,0,0" />
-                
-                <CollectionView x:Name="PhoneList" SelectionMode="None">
+                       Margin="0,8,0,0"/>
+
+                <CollectionView x:Name="PhoneList"
+                                SelectionMode="None">
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
-                            <Border BackgroundColor="White" 
-                                    Stroke="#E9ECEF" 
-                                    StrokeThickness="1" 
-                                    StrokeShape="RoundRectangle 8" 
+                            <Border BackgroundColor="White"
+                                    Stroke="#E9ECEF"
+                                    StrokeThickness="1"
+                                    StrokeShape="RoundRectangle 8"
                                     Margin="0,4">
                                 <Border.Shadow>
-                                    <Shadow Brush="Black" Opacity="0.05" Radius="4" Offset="0,2" />
+                                    <Shadow Brush="Black"
+                                            Opacity="0.05"
+                                            Radius="4"
+                                            Offset="0,2"/>
                                 </Border.Shadow>
                                 <SwipeView>
                                     <SwipeView.RightItems>
                                         <SwipeItems>
-                                            <SwipeItem Text="Eliminar" 
-                                                     BackgroundColor="#DC3545" 
-                                                     Invoked="OnDeleteClicked" 
-                                                     CommandParameter="{Binding .}" />
+                                            <SwipeItem x:Name="DeleteSwipeItem"
+                                                       Text="Eliminar"
+                                                       BackgroundColor="#DC3545"
+                                                       Invoked="OnDeleteClicked"
+                                                       CommandParameter="{Binding .}"/>
                                         </SwipeItems>
                                     </SwipeView.RightItems>
-                                    <Grid Padding="16,12" ColumnDefinitions="Auto,*,Auto">
-                                        <Border Grid.Column="0" 
-                                                BackgroundColor="#E3F2FD" 
-                                                StrokeShape="RoundRectangle 16" 
-                                                WidthRequest="32" 
+                                    <Grid Padding="16,12"
+                                          ColumnDefinitions="Auto,*,Auto">
+                                        <Border Grid.Column="0"
+                                                BackgroundColor="#E3F2FD"
+                                                StrokeShape="RoundRectangle 16"
+                                                WidthRequest="32"
                                                 HeightRequest="32"
                                                 VerticalOptions="Center">
-                                            <Label Text="📱" 
-                                                   FontSize="16" 
-                                                   HorizontalOptions="Center" 
-                                                   VerticalOptions="Center" />
+                                            <Label Text="📱"
+                                                   FontSize="16"
+                                                   HorizontalOptions="Center"
+                                                   VerticalOptions="Center"/>
                                         </Border>
-                                        <Label Grid.Column="1" 
-                                               Text="{Binding .}" 
-                                               FontSize="16" 
+                                        <Label Grid.Column="1"
+                                               Text="{Binding .}"
+                                               FontSize="16"
                                                TextColor="#212529"
-                                               VerticalOptions="Center" 
-                                               Margin="12,0,0,0" />
-                                        <Label Grid.Column="2" 
-                                               Text="→" 
-                                               FontSize="16" 
+                                               VerticalOptions="Center"
+                                               Margin="12,0,0,0"/>
+                                        <Label Grid.Column="2"
+                                               Text="→"
+                                               FontSize="16"
                                                TextColor="#ADB5BD"
-                                               VerticalOptions="Center" />
+                                               VerticalOptions="Center"/>
                                     </Grid>
                                 </SwipeView>
                             </Border>
@@ -122,26 +163,28 @@
                     </CollectionView.ItemTemplate>
                 </CollectionView>
             </VerticalStackLayout>
-            
+
             <!-- Información de ayuda -->
-            <Border BackgroundColor="#E3F2FD" 
-                    Stroke="#BBDEFB" 
-                    StrokeThickness="1" 
-                    StrokeShape="RoundRectangle 8" 
+            <Border BackgroundColor="#E3F2FD"
+                    Stroke="#BBDEFB"
+                    StrokeThickness="1"
+                    StrokeShape="RoundRectangle 8"
                     Padding="16"
                     Margin="0,8,0,0">
                 <VerticalStackLayout Spacing="8">
-                    <Label Text="💡 Información"
+                    <Label x:Name="InfoTitle"
+                           Text="💡 Información"
                            FontSize="14"
                            FontAttributes="Bold"
-                           TextColor="#1976D2" />
-                    <Label Text="• Los SMS recibidos se reenviarán automáticamente a estos números&#x0a;• Puedes escribir números manualmente o seleccionarlos desde tus contactos&#x0a;• Para configurar permisos avanzados, ve a la sección Diagnósticos&#x0a;• Desliza hacia la izquierda en un número para eliminarlo"
+                           TextColor="#1976D2"/>
+                    <Label x:Name="InfoText"
+                           Text="• Los SMS recibidos se reenviarán automáticamente a estos números&#x0a;• Puedes escribir números manualmente o seleccionarlos desde tus contactos&#x0a;• Para configurar permisos avanzados, ve a la sección Diagnósticos&#x0a;• Desliza hacia la izquierda en un número para eliminarlo"
                            FontSize="12"
                            TextColor="#1565C0"
-                           LineBreakMode="WordWrap" />
+                           LineBreakMode="WordWrap"/>
                 </VerticalStackLayout>
             </Border>
-            
+
         </VerticalStackLayout>
     </ScrollView>
 

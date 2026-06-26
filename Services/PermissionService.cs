@@ -26,11 +26,9 @@ namespace SMSForwarder.Services
             {
                 var receiveSmsStatus = await new SmsPermissions.ReceiveSms().CheckStatusAsync();
                 var sendSmsStatus = await new SmsPermissions.SendSms().CheckStatusAsync();
-                var readSmsStatus = await new SmsPermissions.ReadSms().CheckStatusAsync();
 
                 if (receiveSmsStatus != PermissionStatus.Granted ||
-                    sendSmsStatus != PermissionStatus.Granted ||
-                    readSmsStatus != PermissionStatus.Granted)
+                    sendSmsStatus != PermissionStatus.Granted)
                 {
                     var result = await Application.Current.MainPage.DisplayAlert(
                         "Permisos SMS Requeridos",
@@ -41,16 +39,13 @@ namespace SMSForwarder.Services
                     {
                         await new SmsPermissions.ReceiveSms().RequestAsync();
                         await new SmsPermissions.SendSms().RequestAsync();
-                        await new SmsPermissions.ReadSms().RequestAsync();
 
                         // Verificar nuevamente
                         receiveSmsStatus = await new SmsPermissions.ReceiveSms().CheckStatusAsync();
                         sendSmsStatus = await new SmsPermissions.SendSms().CheckStatusAsync();
-                        readSmsStatus = await new SmsPermissions.ReadSms().CheckStatusAsync();
 
                         return receiveSmsStatus == PermissionStatus.Granted &&
-                               sendSmsStatus == PermissionStatus.Granted &&
-                               readSmsStatus == PermissionStatus.Granted;
+                               sendSmsStatus == PermissionStatus.Granted;
                     }
                     return false;
                 }

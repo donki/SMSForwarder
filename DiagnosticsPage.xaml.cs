@@ -26,11 +26,9 @@ namespace SMSForwarder
                 // Verificar permisos
                 var receiveSmsStatus = await Permissions.CheckStatusAsync<SmsPermissions.ReceiveSms>();
                 var sendSmsStatus = await Permissions.CheckStatusAsync<SmsPermissions.SendSms>();
-                var readSmsStatus = await Permissions.CheckStatusAsync<SmsPermissions.ReadSms>();
 
                 PermissionsStatus.Text = $"Recibir SMS: {receiveSmsStatus}\n" +
-                                       $"Enviar SMS: {sendSmsStatus}\n" +
-                                       $"Leer SMS: {readSmsStatus}";
+                                       $"Enviar SMS: {sendSmsStatus}";
 
                 // Contar números configurados
                 var phonesJson = Preferences.Default.Get("phones", "[]");

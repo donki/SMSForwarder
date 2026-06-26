@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <!-- App splash theme mostrando logo en versiones < Android 12 -->
+  <style name="App.SplashTheme" parent="@style/Maui.SplashTheme">
+    <item name="android:windowBackground">#FFFFFF</item>
+    <item name="android:colorBackground">#FFFFFF</item>
+    <item name="android:windowSplashScreenBackground">#FFFFFF</item>
+    <item name="android:statusBarColor">#FFFFFF</item>
+  </style>
+</resources>

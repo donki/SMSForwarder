@@ -152,9 +152,6 @@ AutoTest.Net/
 DocProject/buildhelp/
 DocProject/Help/*.HxT
 DocProject/Help/*.HxC
-DocProject/Help/*.hhc
-DocProject/Help/*.hhk
-DocProject/Help/*.hhp
 DocProject/Help/Html2
 DocProject/Help/html
 
@@ -171,7 +168,7 @@ publish/
 
 # Microsoft Azure Web App publish settings. Comment the next line if you want to
 # checkin your Azure Web App publish settings, but sensitive information contained
-# in these files may be disclosed
+# in these files may be visible to others.
 *.azurePubxml
 
 # Microsoft Azure Build Output
@@ -226,7 +223,7 @@ _UpgradeReport_Files/
 Backup*/
 UpgradeLog*.XML
 UpgradeLog*.htm
-CordovaApp.projitems*
+CConvertReport.xml
 
 # SQL Server files
 *.mdf
@@ -364,19 +361,20 @@ FodyWeavers.xsd
 # JetBrains Rider
 *.sln.iml
 
-# Mac files
-.DS_Store
+# Secretos - NUNCA subir a git (claves de firma y credenciales)
+*.keystore
+hiker-*.json
+*-service-account*.json
+keystore.password.txt
 
-# Thumbnails
-Thumbs.db
+# Android
+*.apk
+*.aab
+*.dex
+*.ap_
+*.aab
+*.lscache
 
-# MAUI specific
-**/platforms/android/bin/
-**/platforms/android/obj/
-**/platforms/ios/bin/
-**/platforms/ios/obj/
-**/platforms/windows/bin/
-**/platforms/windows/obj/
-
-# Keep Release APKs (we want to track these)
-!Release/*.apk
+# MAUI Specific
+**/Platforms/**/bin/
+**/Platforms/**/obj/

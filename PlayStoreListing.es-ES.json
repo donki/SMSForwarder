@@ -1,0 +1,6 @@
+{
+  "language": "es-ES",
+  "title": "SMS Forwarder",
+  "shortDescription": "Reenvia automaticamente los SMS recibidos a numeros elegidos.",
+  "fullDescription": "SMS Forwarder permite reenviar automaticamente los SMS recibidos a uno o varios numeros configurados por el usuario.\n\nFunciones principales:\n- Reenvio automatico de SMS entrantes.\n- Gestion manual de numeros de destino.\n- Seleccion de contactos del dispositivo.\n- Diagnosticos y registro de actividad para revisar el funcionamiento.\n- Deteccion de mensajes ya reenviados para evitar bucles.\n\nLa aplicacion necesita permisos de SMS para recibir y enviar mensajes, y permiso de contactos solo si deseas seleccionar numeros desde tu agenda. El usuario controla los numeros de destino y puede modificarlos o eliminarlos en cualquier momento.\n\nUsa esta aplicacion solo con lineas telefonicas y mensajes sobre los que tengas autorizacion."
+}

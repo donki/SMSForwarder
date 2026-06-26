@@ -8,7 +8,6 @@ using Application = Android.App.Application;
 
 [assembly: UsesPermission(Android.Manifest.Permission.ReceiveSms)]
 [assembly: UsesPermission(Android.Manifest.Permission.SendSms)]
-[assembly: UsesPermission(Android.Manifest.Permission.ReadSms)]
 namespace SMSForwarder.Platforms.Android
 {
     [Register("com.socratic.smsforwarder.SMSReceiver")]

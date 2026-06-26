@@ -7,7 +7,8 @@ using SMSForwarder.Platforms.Android;
 namespace SMSForwarder
 {
 
-    [Activity(Theme = "@style/Maui.SplashTheme", MainLauncher = true, LaunchMode = LaunchMode.SingleTop, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation | ConfigChanges.UiMode | ConfigChanges.ScreenLayout | ConfigChanges.SmallestScreenSize | ConfigChanges.Density, ScreenOrientation = ScreenOrientation.Portrait)]
+    [Activity(Theme = "@style/Maui.SplashTheme", MainLauncher = true, LaunchMode = LaunchMode.SingleTop,
+          ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation | ConfigChanges.UiMode | ConfigChanges.ScreenLayout | ConfigChanges.SmallestScreenSize | ConfigChanges.Density, ScreenOrientation = ScreenOrientation.Portrait)]
     public class MainActivity : MauiAppCompatActivity
     {
         private SmsReceiver smsReceiver;
@@ -36,23 +37,6 @@ namespace SMSForwarder
                 if (statusSendSms != PermissionStatus.Granted)
                 {
                     Console.WriteLine("Permiso SEND_SMS no otorgado.");
-                    return false;
-                }
-
-                // Solicitar permiso para leer SMS
-                var statusReadSms = await Permissions.RequestAsync<SmsPermissions.ReadSms>();
-                if (statusReadSms != PermissionStatus.Granted)
-                {
-                    Console.WriteLine("Permiso READ_SMS no otorgado.");
-                    return false;
-                }
-
-                // Solicitar permiso para SMS premium
-                var statusPremiumSms = await Permissions.RequestAsync<SmsPremiumPermission>();
-                if (statusPremiumSms != PermissionStatus.Granted)
-                {
-                    Console.WriteLine("Permiso SEND_SMS_NO_CONFIRMATION no otorgado.");
-                    // Puedes mostrar un diálogo explicativo aquí si lo deseas
                     return false;
                 }
 
