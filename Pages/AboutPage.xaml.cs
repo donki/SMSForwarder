@@ -6,7 +6,7 @@ namespace SMSForwarder.Pages
     {
         // CONFIGURACIÓN
         private const string ContactEmail = "jsoladelarosa@gmail.com";
-        private const string DonationUrl = "https://ko-fi.com/smsforwarder";
+        private const string DonationUrl = "https://ko-fi.com/josepsola";
         private const string EmailSubject = "Contacto desde SMS Forwarder";
 
         public AboutPage()
