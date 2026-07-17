@@ -2,188 +2,131 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="SMSForwarder.DiagnosticsPage"
-             Title="Diagnósticos"
-             BackgroundColor="#F8F9FA">
+             Title="Diagnósticos">
 
     <ScrollView>
         <VerticalStackLayout Padding="24" Spacing="20">
-            
-            <!-- Header unificado -->
+
+            <!-- Cabecera -->
             <VerticalStackLayout Spacing="8">
                 <Label Text="Diagnósticos"
                        FontSize="24"
                        FontAttributes="Bold"
-                       TextColor="#212529"
+                       TextColor="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}"
                        HorizontalOptions="Center" />
                 <Label Text="Monitoreo y estado del sistema"
+                       Style="{StaticResource HintText}"
                        FontSize="14"
-                       TextColor="#6C757D"
                        HorizontalOptions="Center" />
             </VerticalStackLayout>
 
-            <!-- Status Cards -->
+            <!-- Tarjetas de estado -->
             <Grid ColumnDefinitions="*,*" ColumnSpacing="12" RowSpacing="12">
-                
-                <!-- Permisos Card -->
-                <Border Grid.Column="0" 
-                        BackgroundColor="White" 
-                        Stroke="#E9ECEF" 
-                        StrokeThickness="1" 
-                        StrokeShape="RoundRectangle 12" 
-                        Padding="16">
-                    <Border.Shadow>
-                        <Shadow Brush="Black" Opacity="0.05" Radius="6" Offset="0,2" />
-                    </Border.Shadow>
+                <Border Grid.Column="0" Style="{StaticResource Card}" Padding="16">
                     <VerticalStackLayout Spacing="8">
                         <Label Text="🔒" FontSize="24" HorizontalOptions="Center" />
-                        <Label Text="Permisos" FontSize="14" FontAttributes="Bold" TextColor="#212529" HorizontalTextAlignment="Center" />
-                        <Label x:Name="PermissionsStatus" Text="Verificando..." FontSize="12" TextColor="#6C757D" HorizontalTextAlignment="Center" />
+                        <Label Text="Permisos" Style="{StaticResource BodyText}" FontAttributes="Bold" HorizontalTextAlignment="Center" />
+                        <Label x:Name="PermissionsStatus" Text="Verificando..." Style="{StaticResource HintText}" HorizontalTextAlignment="Center" />
                     </VerticalStackLayout>
                 </Border>
 
-                <!-- Números Card -->
-                <Border Grid.Column="1" 
-                        BackgroundColor="White" 
-                        Stroke="#E9ECEF" 
-                        StrokeThickness="1" 
-                        StrokeShape="RoundRectangle 12" 
-                        Padding="16">
-                    <Border.Shadow>
-                        <Shadow Brush="Black" Opacity="0.05" Radius="6" Offset="0,2" />
-                    </Border.Shadow>
+                <Border Grid.Column="1" Style="{StaticResource Card}" Padding="16">
                     <VerticalStackLayout Spacing="8">
                         <Label Text="📱" FontSize="24" HorizontalOptions="Center" />
-                        <Label Text="Números" FontSize="14" FontAttributes="Bold" TextColor="#212529" HorizontalTextAlignment="Center" />
-                        <Label x:Name="PhonesCount" Text="0" FontSize="12" TextColor="#6C757D" HorizontalTextAlignment="Center" />
+                        <Label Text="Números" Style="{StaticResource BodyText}" FontAttributes="Bold" HorizontalTextAlignment="Center" />
+                        <Label x:Name="PhonesCount" Text="0" Style="{StaticResource HintText}" HorizontalTextAlignment="Center" />
                     </VerticalStackLayout>
                 </Border>
-                
             </Grid>
 
-            <!-- Sección de Permisos Avanzados -->
+            <!-- Permisos -->
             <VerticalStackLayout Spacing="12">
                 <Label Text="Configuración de Permisos"
-                       FontSize="18"
-                       FontAttributes="Bold"
-                       TextColor="#212529"
+                       Style="{StaticResource CardTitle}"
+                       TextColor="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}"
                        HorizontalOptions="Center"
                        Margin="0,8,0,0" />
-                
-                <!-- Botón verificar permisos -->
-                <Button Text="🔍 Verificar Estado de Permisos" 
-                        Clicked="OnCheckPermissionsClicked" 
-                        BackgroundColor="#17A2B8" 
-                        TextColor="White"
+
+                <Button Text="🔍 Verificar Estado de Permisos"
+                        Clicked="OnCheckPermissionsClicked"
+                        Style="{StaticResource PrimaryButton}"
                         FontSize="14"
-                        CornerRadius="8"
                         HeightRequest="44" />
-                
-                <!-- Botón configurar todos los permisos -->
-                <Button Text="⚙️ Configurar Todos los Permisos" 
-                        Clicked="OnConfigureAllPermissionsClicked" 
-                        BackgroundColor="#28A745" 
-                        TextColor="White"
-                        FontSize="14"
-                        CornerRadius="8"
+
+                <Button Text="⚙️ Configurar Todos los Permisos"
+                        Clicked="OnConfigureAllPermissionsClicked"
+                        Style="{StaticResource SuccessButton}"
                         HeightRequest="44" />
-                
-                <!-- Botones individuales -->
+
                 <Grid ColumnDefinitions="*,*" ColumnSpacing="8">
                     <Button Grid.Column="0"
-                            Text="🔋 Batería" 
-                            Clicked="OnBatteryOptimizationClicked" 
-                            BackgroundColor="#FFC107" 
-                            TextColor="#212529"
+                            Text="🔋 Batería"
+                            Clicked="OnBatteryOptimizationClicked"
+                            Style="{StaticResource AccentButton}"
                             FontSize="12"
-                            CornerRadius="8"
                             HeightRequest="40" />
-                    
+
                     <Button Grid.Column="1"
-                            Text="🚀 Autostart" 
-                            Clicked="OnAutostartClicked" 
-                            BackgroundColor="#6F42C1" 
-                            TextColor="White"
+                            Text="🚀 Autostart"
+                            Clicked="OnAutostartClicked"
+                            Style="{StaticResource OutlineButton}"
                             FontSize="12"
-                            CornerRadius="8"
                             HeightRequest="40" />
                 </Grid>
-                
-                <!-- Información adicional -->
-                <Border BackgroundColor="#FFF3CD" 
-                        Stroke="#FFEAA7" 
-                        StrokeThickness="1" 
-                        StrokeShape="RoundRectangle 8" 
+
+                <Border Style="{StaticResource Card}"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource PageBackgroundLight}, Dark={StaticResource PageBackgroundDark}}"
                         Padding="12">
                     <Label Text="💡 Para un funcionamiento óptimo, configure todos los permisos. Esto asegura que la aplicación pueda recibir y reenviar SMS incluso cuando esté en segundo plano."
-                           FontSize="12"
-                           TextColor="#856404"
+                           Style="{StaticResource HintText}"
                            LineBreakMode="WordWrap" />
                 </Border>
             </VerticalStackLayout>
 
-            <!-- Actions de Diagnóstico -->
+            <!-- Herramientas -->
             <VerticalStackLayout Spacing="12">
                 <Label Text="Herramientas de Diagnóstico"
-                       FontSize="18"
-                       FontAttributes="Bold"
-                       TextColor="#212529"
+                       Style="{StaticResource CardTitle}"
+                       TextColor="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}"
                        HorizontalOptions="Center"
                        Margin="0,16,0,0" />
-                
-                <Button Text="🔄 Actualizar Estado" 
-                        Clicked="OnRefreshClicked" 
-                        BackgroundColor="#2196F3" 
-                        TextColor="White"
+
+                <Button Text="🔄 Actualizar Estado"
+                        Clicked="OnRefreshClicked"
+                        Style="{StaticResource PrimaryButton}"
                         FontSize="14"
-                        CornerRadius="8"
                         HeightRequest="44" />
-                
-                <Button Text="📤 Enviar SMS de Prueba" 
-                        Clicked="OnTestSmsClicked" 
-                        BackgroundColor="White" 
-                        TextColor="#2196F3"
-                        BorderColor="#2196F3"
-                        BorderWidth="1"
-                        FontSize="14"
-                        CornerRadius="8"
+
+                <Button Text="📤 Enviar SMS de Prueba"
+                        Clicked="OnTestSmsClicked"
+                        Style="{StaticResource OutlineButton}"
                         HeightRequest="44" />
             </VerticalStackLayout>
 
-            <!-- Logs Section -->
+            <!-- Registro -->
             <VerticalStackLayout Spacing="12">
                 <Label Text="Registro de actividad"
-                       FontSize="18"
-                       FontAttributes="Bold"
-                       TextColor="#212529"
+                       Style="{StaticResource CardTitle}"
+                       TextColor="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}"
                        HorizontalOptions="Center" />
-                
-                <Border BackgroundColor="White" 
-                        Stroke="#E9ECEF" 
-                        StrokeThickness="1" 
-                        StrokeShape="RoundRectangle 8" 
-                        Padding="12">
-                    <Border.Shadow>
-                        <Shadow Brush="Black" Opacity="0.05" Radius="4" Offset="0,2" />
-                    </Border.Shadow>
+
+                <Border Style="{StaticResource Card}" Padding="12">
                     <ScrollView HeightRequest="180">
-                        <Label x:Name="LogsLabel" 
-                               Text="Sin actividad reciente..." 
-                               FontSize="12" 
-                               FontFamily="Courier" 
-                               TextColor="#495057"
+                        <Label x:Name="LogsLabel"
+                               Text="Sin actividad reciente..."
+                               FontSize="12"
+                               FontFamily="Monospace"
+                               Style="{StaticResource BodyText}"
                                LineBreakMode="WordWrap" />
                     </ScrollView>
                 </Border>
-                
-                <Button Text="Limpiar registro" 
-                        Clicked="OnClearLogsClicked" 
-                        BackgroundColor="#6C757D" 
-                        TextColor="White"
-                        FontSize="14"
-                        CornerRadius="6"
+
+                <Button Text="Limpiar registro"
+                        Clicked="OnClearLogsClicked"
+                        Style="{StaticResource OutlineButton}"
                         HeightRequest="40" />
             </VerticalStackLayout>
-            
+
         </VerticalStackLayout>
     </ScrollView>
 

@@ -7,11 +7,11 @@
     xmlns:pages="clr-namespace:SMSForwarder.Pages"
     Shell.FlyoutBehavior="Flyout"
     Title="SMS Forwarder"
-    Shell.ForegroundColor="#1F2937"
-    Shell.TitleColor="#111827"
-    Shell.UnselectedColor="#1F2937"
-    Shell.DisabledColor="#9CA3AF"
-    FlyoutBackgroundColor="White"
+    Shell.ForegroundColor="{StaticResource Primary}"
+    Shell.TitleColor="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}"
+    Shell.UnselectedColor="{AppThemeBinding Light={StaticResource TextSecondaryLight}, Dark={StaticResource TextSecondaryDark}}"
+    Shell.DisabledColor="{StaticResource SeparatorLight}"
+    FlyoutBackgroundColor="{AppThemeBinding Light={StaticResource CardBackgroundLight}, Dark={StaticResource CardBackgroundDark}}"
     FlyoutWidth="260">
 
     <!-- Icono y título en la barra superior -->
@@ -82,13 +82,13 @@
 
     <!-- Footer del menú -->
     <Shell.FlyoutFooter>
-        <Grid BackgroundColor="#F8F9FA"
+        <Grid BackgroundColor="{AppThemeBinding Light={StaticResource CardBackgroundLight}, Dark={StaticResource CardBackgroundDark}}"
               HeightRequest="60"
               Padding="20">
             <Label x:Name="FooterVersion"
-                   Text="v2026.06.26.0 - sOCratic"
+                   Text="v2026.07.17.0 - sOCratic"
                    FontSize="10"
-                   TextColor="#ADB5BD"
+                   Style="{StaticResource HintText}"
                    VerticalOptions="Center"
                    HorizontalOptions="Center"/>
         </Grid>

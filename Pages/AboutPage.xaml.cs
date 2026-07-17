@@ -43,53 +43,29 @@ namespace SMSForwarder.Pages
 
         private void SetEnglishTexts()
         {
+            // Los textos se resuelven por x:Name, no navegando el arbol visual por indices: al
+            // migrar el diseno (Frame -> Border) esos casts posicionales se rompian con
+            // InvalidCastException (constitucion, seccion 8 y anexo A.9).
             Title = "About";
 
-            // Actualizar textos principales
-            var headerCard = (Frame)((StackLayout)((ScrollView)Content).Content).Children[0];
-            var headerStack = (StackLayout)headerCard.Content;
+            VersionLabel.Text = "Version 2026.07.17.0";
+            DescriptionLabel.Text = "Automatically forward your SMS to other phone numbers";
 
-            ((Label)headerStack.Children[2]).Text = "Version 2026.06.13.2";
-            ((Label)headerStack.Children[3]).Text = "Automatically forward your SMS to other phone numbers";
+            ContactTitleLabel.Text = "📧 Contact";
+            ContactInstructionLabel.Text = "Tap to send an email";
 
-            // Actualizar card de contacto
-            var contactCard = (Frame)((StackLayout)((ScrollView)Content).Content).Children[1];
-            var contactStack = (StackLayout)contactCard.Content;
+            SupportTitleLabel.Text = "☕ Support Development";
+            DonationButton.Text = "Ko-fi.com - Buy me a coffee";
+            SupportDescLabel.Text = "Your support helps maintain and improve the app";
 
-            ((Label)contactStack.Children[0]).Text = "📧 Contact";
-            ((Label)contactStack.Children[2]).Text = "Tap to send an email";
+            LegalTitleLabel.Text = "⚖️ Legal Notice";
+            LegalText1Label.Text = "This software is provided 'as is', without warranties of any kind. The user is responsible for proper use of the application and compliance with local laws.";
+            LegalText2Label.Text = "In no event shall the authors be liable for direct, indirect, incidental or consequential damages resulting from the use of this software.";
+            WarningLabel.Text = "⚠️ Use at your own risk";
 
-            // Actualizar card de soporte
-            var supportCard = (Frame)((StackLayout)((ScrollView)Content).Content).Children[2];
-            var supportStack = (StackLayout)supportCard.Content;
+            LanguageDescLabel.Text = "Select your preferred language";
 
-            ((Label)supportStack.Children[0]).Text = "☕ Support Development";
-            ((Button)supportStack.Children[1]).Text = "Ko-fi.com - Buy me a coffee";
-            ((Label)supportStack.Children[2]).Text = "Your support helps maintain and improve the app";
-
-            // Actualizar card legal
-            var legalCard = (Frame)((StackLayout)((ScrollView)Content).Content).Children[3];
-            var legalStack = (StackLayout)legalCard.Content;
-
-            ((Label)legalStack.Children[0]).Text = "⚖️ Legal Notice";
-            var legalFrame = (Frame)legalStack.Children[1];
-            var legalContent = (StackLayout)legalFrame.Content;
-
-            ((Label)legalContent.Children[0]).Text = "This software is provided 'as is', without warranties of any kind. The user is responsible for proper use of the application and compliance with local laws.";
-            ((Label)legalContent.Children[1]).Text = "In no event shall the authors be liable for direct, indirect, incidental or consequential damages resulting from the use of this software.";
-
-            var warningFrame = (Frame)legalContent.Children[2];
-            ((Label)warningFrame.Content).Text = "⚠️ Use at your own risk";
-
-            // Actualizar card de idioma
-            var languageCard = (Frame)((StackLayout)((ScrollView)Content).Content).Children[4];
-            var languageStack = (StackLayout)languageCard.Content;
-
-            ((Label)languageStack.Children[2]).Text = "Select your preferred language";
-
-            // Actualizar botón volver
-            var backButton = (Button)((StackLayout)((ScrollView)Content).Content).Children[5];
-            backButton.Text = "← Back";
+            BackButton.Text = "← Back";
         }
 
         private async void OnBackClicked(object? sender, EventArgs e)

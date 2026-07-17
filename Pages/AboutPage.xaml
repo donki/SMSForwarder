@@ -2,247 +2,167 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="SMSForwarder.Pages.AboutPage"
-             Title="Acerca de"
-             BackgroundColor="#F8F9FA">
+             Title="Acerca de">
 
     <ScrollView>
-        <StackLayout Padding="16"
-                     Spacing="16">
+        <VerticalStackLayout Padding="16" Spacing="16">
 
-            <!-- Header Card -->
-            <Frame BackgroundColor="White"
-                   CornerRadius="12"
-                   HasShadow="True"
-                   Padding="0">
-                <StackLayout Padding="24,20"
-                             Spacing="12">
-                    <Label
-                        Text="📱"
-                        FontSize="60"
-                        HorizontalOptions="Center"/>
+            <!-- Cabecera -->
+            <Border Style="{StaticResource Card}">
+                <VerticalStackLayout Padding="24,20" Spacing="12">
+                    <Label Text="📱" FontSize="60" HorizontalOptions="Center"/>
 
-                    <Label
-                        Text="SMS Forwarder"
-                        FontSize="28"
-                        FontAttributes="Bold"
-                        TextColor="#2C3E50"
-                        HorizontalOptions="Center"/>
+                    <Label Text="SMS Forwarder"
+                           FontSize="28"
+                           FontAttributes="Bold"
+                           TextColor="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}"
+                           HorizontalOptions="Center"/>
 
-                    <Label
-                        Text="Versión 2026.06.13.2"
-                        FontSize="16"
-                        TextColor="#7F8C8D"
-                        HorizontalOptions="Center"/>
+                    <Label x:Name="VersionLabel"
+                           Text="Versión 2026.07.17.0"
+                           Style="{StaticResource HintText}"
+                           FontSize="16"
+                           HorizontalOptions="Center"/>
 
-                    <Label
-                        Text="Reenvía automáticamente tus SMS a otros números de teléfono"
-                        FontSize="14"
-                        TextColor="#95A5A6"
-                        HorizontalOptions="Center"
-                        HorizontalTextAlignment="Center"/>
+                    <Label x:Name="DescriptionLabel"
+                           Text="Reenvía automáticamente tus SMS a otros números de teléfono"
+                           Style="{StaticResource HintText}"
+                           HorizontalOptions="Center"
+                           HorizontalTextAlignment="Center"/>
+                </VerticalStackLayout>
+            </Border>
 
-                </StackLayout>
-            </Frame>
+            <!-- Contacto -->
+            <Border Style="{StaticResource Card}">
+                <VerticalStackLayout Padding="25,20" Spacing="15">
+                    <Label x:Name="ContactTitleLabel"
+                           Text="📧 Contacto"
+                           Style="{StaticResource CardTitle}"/>
 
-            <!-- Contact Card -->
-            <Frame BackgroundColor="White"
-                   CornerRadius="12"
-                   HasShadow="True"
-                   Padding="0">
-                <StackLayout Padding="25,20"
-                             Spacing="15">
-                    <Label
-                        Text="📧 Contacto"
-                        FontSize="18"
-                        FontAttributes="Bold"
-                        TextColor="#3498DB"/>
+                    <Button Text="jsoladelarosa@gmail.com"
+                            Style="{StaticResource OutlineButton}"
+                            LineBreakMode="WordWrap"
+                            Padding="12,10"
+                            Clicked="OnContactEmailClicked"
+                            HorizontalOptions="Fill"/>
 
-                    <Button
-                        Text="jsoladelarosa@gmail.com"
-                        FontSize="14"
-                        BackgroundColor="Transparent"
-                        TextColor="#3498DB"
-                        BorderColor="#3498DB"
-                        BorderWidth="1"
-                        CornerRadius="8"
-                        MinimumHeightRequest="48"
-                        LineBreakMode="WordWrap"
-                        Padding="12,10"
-                        Clicked="OnContactEmailClicked"
-                        HorizontalOptions="Fill">
-                        <Button.Shadow>
-                            <Shadow Brush="#3498DB"
-                                    Opacity="0.2"
-                                    Radius="4"
-                                    Offset="0,2"/>
-                        </Button.Shadow>
-                    </Button>
+                    <Label x:Name="ContactInstructionLabel"
+                           Text="Toca para enviar un correo electrónico"
+                           Style="{StaticResource HintText}"
+                           HorizontalOptions="Center"/>
+                </VerticalStackLayout>
+            </Border>
 
-                    <Label
-                        Text="Toca para enviar un correo electrónico"
-                        FontSize="12"
-                        TextColor="#7F8C8D"
-                        HorizontalOptions="Center"/>
-                </StackLayout>
-            </Frame>
+            <!-- Apoyo -->
+            <Border Style="{StaticResource Card}">
+                <VerticalStackLayout Padding="25,20" Spacing="15">
+                    <Label x:Name="SupportTitleLabel"
+                           Text="☕ Apoya el Desarrollo"
+                           Style="{StaticResource CardTitle}"
+                           TextColor="{StaticResource Accent}"/>
 
-            <!-- Support Card -->
-            <Frame BackgroundColor="White"
-                   CornerRadius="12"
-                   HasShadow="True"
-                   Padding="0">
-                <StackLayout Padding="25,20"
-                             Spacing="15">
-                    <Label
-                        Text="☕ Apoya el Desarrollo"
-                        FontSize="18"
-                        FontAttributes="Bold"
-                        TextColor="#E67E22"/>
+                    <Button x:Name="DonationButton"
+                            Text="Ko-fi.com - Invítame un café"
+                            Style="{StaticResource AccentButton}"
+                            LineBreakMode="WordWrap"
+                            Padding="12,10"
+                            Clicked="OnDonationClicked"
+                            HorizontalOptions="Fill"/>
 
-                    <Button
-                        Text="Ko-fi.com - Invítame un café"
-                        FontSize="14"
-                        BackgroundColor="#E67E22"
-                        TextColor="White"
-                        CornerRadius="8"
-                        MinimumHeightRequest="48"
-                        LineBreakMode="WordWrap"
-                        Padding="12,10"
-                        Clicked="OnDonationClicked"
-                        HorizontalOptions="Fill">
-                        <Button.Shadow>
-                            <Shadow Brush="#E67E22"
-                                    Opacity="0.3"
-                                    Radius="8"
-                                    Offset="0,4"/>
-                        </Button.Shadow>
-                    </Button>
+                    <Label x:Name="SupportDescLabel"
+                           Text="Tu apoyo ayuda a mantener y mejorar la aplicación"
+                           Style="{StaticResource HintText}"
+                           HorizontalOptions="Center"
+                           HorizontalTextAlignment="Center"/>
+                </VerticalStackLayout>
+            </Border>
 
-                    <Label
-                        Text="Tu apoyo ayuda a mantener y mejorar la aplicación"
-                        FontSize="12"
-                        TextColor="#7F8C8D"
-                        HorizontalOptions="Center"
-                        HorizontalTextAlignment="Center"/>
-                </StackLayout>
-            </Frame>
+            <!-- Aviso legal -->
+            <Border Style="{StaticResource Card}">
+                <VerticalStackLayout Padding="25,20" Spacing="15">
+                    <Label x:Name="LegalTitleLabel"
+                           Text="⚖️ Aviso Legal"
+                           Style="{StaticResource CardTitle}"
+                           TextColor="{StaticResource Danger}"/>
 
-            <!-- Legal Disclaimer Card -->
-            <Frame BackgroundColor="White"
-                   CornerRadius="12"
-                   HasShadow="True"
-                   Padding="0">
-                <StackLayout Padding="25,20"
-                             Spacing="15">
-                    <Label
-                        Text="⚖️ Aviso Legal"
-                        FontSize="18"
-                        FontAttributes="Bold"
-                        TextColor="#E74C3C"/>
+                    <Border StrokeThickness="0"
+                            Padding="15"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource PageBackgroundLight}, Dark={StaticResource PageBackgroundDark}}">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="8" />
+                        </Border.StrokeShape>
+                        <VerticalStackLayout Spacing="10">
+                            <Label x:Name="LegalText1Label"
+                                   Text="Este software se proporciona 'tal como está', sin garantías de ningún tipo. El usuario es responsable del uso adecuado de la aplicación y del cumplimiento de las leyes locales."
+                                   Style="{StaticResource BodyText}"
+                                   FontSize="13"
+                                   LineHeight="1.4"/>
 
-                    <Frame BackgroundColor="#FDF2F2"
-                           CornerRadius="8"
-                           Padding="15"
-                           HasShadow="False">
-                        <StackLayout Spacing="10">
-                            <Label
-                                Text="Este software se proporciona 'tal como está', sin garantías de ningún tipo. El usuario es responsable del uso adecuado de la aplicación y del cumplimiento de las leyes locales."
-                                FontSize="13"
-                                LineHeight="1.4"
-                                TextColor="#2C3E50"/>
+                            <Label x:Name="LegalText2Label"
+                                   Text="En ningún caso los autores serán responsables de daños directos, indirectos, incidentales o consecuentes que resulten del uso de este software."
+                                   Style="{StaticResource BodyText}"
+                                   FontSize="13"
+                                   LineHeight="1.4"/>
 
-                            <Label
-                                Text="En ningún caso los autores serán responsables de daños directos, indirectos, incidentales o consecuentes que resulten del uso de este software."
-                                FontSize="13"
-                                LineHeight="1.4"
-                                TextColor="#2C3E50"/>
+                            <Border StrokeThickness="0"
+                                    Padding="12"
+                                    BackgroundColor="{StaticResource Danger}">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="6" />
+                                </Border.StrokeShape>
+                                <Label x:Name="WarningLabel"
+                                       Text="⚠️ Uso bajo su propio riesgo"
+                                       FontSize="13"
+                                       FontAttributes="Bold"
+                                       LineHeight="1.4"
+                                       TextColor="{StaticResource White}"
+                                       HorizontalOptions="Center"/>
+                            </Border>
+                        </VerticalStackLayout>
+                    </Border>
+                </VerticalStackLayout>
+            </Border>
 
-                            <Frame BackgroundColor="#E74C3C"
-                                   CornerRadius="6"
-                                   Padding="12"
-                                   HasShadow="False">
-                                <Label
-                                    Text="⚠️ Uso bajo su propio riesgo"
-                                    FontSize="13"
-                                    FontAttributes="Bold"
-                                    LineHeight="1.4"
-                                    TextColor="White"
-                                    HorizontalOptions="Center"/>
-                            </Frame>
-                        </StackLayout>
-                    </Frame>
-                </StackLayout>
-            </Frame>
+            <!-- Idioma -->
+            <Border Style="{StaticResource Card}">
+                <VerticalStackLayout Padding="25,20" Spacing="15">
+                    <Label Text="🌐 Idioma / Language" Style="{StaticResource CardTitle}"/>
 
-            <!-- Language Selection Card -->
-            <Frame BackgroundColor="White"
-                   CornerRadius="12"
-                   HasShadow="True"
-                   Padding="0">
-                <StackLayout Padding="25,20"
-                             Spacing="15">
-                    <Label
-                        Text="🌐 Idioma / Language"
-                        FontSize="18"
-                        FontAttributes="Bold"
-                        TextColor="#9B59B6"/>
-
-                    <Grid ColumnDefinitions="*,*"
-                          ColumnSpacing="10">
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
                         <Button Grid.Column="0"
                                 Text="🇪🇸 Español"
+                                Style="{StaticResource PrimaryButton}"
                                 FontSize="14"
-                                BackgroundColor="#9B59B6"
-                                TextColor="White"
-                                CornerRadius="8"
-                                MinimumHeightRequest="48"
                                 LineBreakMode="WordWrap"
                                 Padding="10,10"
                                 Clicked="OnSpanishClicked"/>
 
                         <Button Grid.Column="1"
                                 Text="🇺🇸 English"
+                                Style="{StaticResource OutlineButton}"
                                 FontSize="14"
-                                BackgroundColor="Transparent"
-                                TextColor="#9B59B6"
-                                BorderColor="#9B59B6"
-                                BorderWidth="1"
-                                CornerRadius="8"
-                                MinimumHeightRequest="48"
                                 LineBreakMode="WordWrap"
                                 Padding="10,10"
                                 Clicked="OnEnglishClicked"/>
                     </Grid>
 
-                    <Label
-                        Text="Selecciona tu idioma preferido"
-                        FontSize="12"
-                        TextColor="#7F8C8D"
-                        HorizontalOptions="Center"/>
-                </StackLayout>
-            </Frame>
+                    <Label x:Name="LanguageDescLabel"
+                           Text="Selecciona tu idioma preferido"
+                           Style="{StaticResource HintText}"
+                           HorizontalOptions="Center"/>
+                </VerticalStackLayout>
+            </Border>
 
-            <!-- Back Button -->
-            <Button
-                Text="← Volver"
-                FontSize="16"
-                FontAttributes="Bold"
-                BackgroundColor="#3498DB"
-                TextColor="White"
-                CornerRadius="10"
-                MinimumHeightRequest="50"
-                Clicked="OnBackClicked"
-                HorizontalOptions="Fill"
-                Margin="0,10,0,20">
-                <Button.Shadow>
-                    <Shadow Brush="#3498DB"
-                            Opacity="0.3"
-                            Radius="8"
-                            Offset="0,4"/>
-                </Button.Shadow>
-            </Button>
+            <!-- Volver -->
+            <Button x:Name="BackButton"
+                    Text="← Volver"
+                    Style="{StaticResource PrimaryButton}"
+                    HeightRequest="50"
+                    Clicked="OnBackClicked"
+                    HorizontalOptions="Fill"
+                    Margin="0,10,0,20"/>
 
-        </StackLayout>
+        </VerticalStackLayout>
     </ScrollView>
 
 </ContentPage>

@@ -1,26 +1,24 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="SMSForwarder.MainPage"
-             Title="Configuración"
-             BackgroundColor="#F8F9FA">
+             Title="Configuración">
 
     <ScrollView>
-        <VerticalStackLayout Padding="24"
-                             Spacing="20">
+        <VerticalStackLayout Padding="24" Spacing="20">
 
-            <!-- Header unificado -->
+            <!-- Cabecera -->
             <VerticalStackLayout Spacing="8">
                 <Label x:Name="TitleLabel"
                        Text="Configuración"
                        FontSize="24"
                        FontAttributes="Bold"
-                       TextColor="#212529"
+                       TextColor="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}"
                        HorizontalOptions="Center"/>
                 <Label x:Name="SubtitleLabel"
                        Text="Configura los números donde reenviar SMS"
+                       Style="{StaticResource HintText}"
                        FontSize="14"
-                       TextColor="#6C757D"
                        HorizontalOptions="Center"/>
             </VerticalStackLayout>
 
@@ -28,18 +26,13 @@
             <VerticalStackLayout Spacing="8">
                 <Label x:Name="LanguageLabel"
                        Text="Idioma"
-                       FontSize="14"
-                       FontAttributes="Bold"
-                       TextColor="#212529"/>
-                <Border BackgroundColor="White"
-                        Stroke="#E9ECEF"
-                        StrokeThickness="1"
-                        StrokeShape="RoundRectangle 8"
-                        Padding="8,2">
+                       Style="{StaticResource BodyText}"
+                       FontAttributes="Bold"/>
+                <Border Style="{StaticResource Card}" Padding="8,2">
                     <Picker x:Name="LanguagePicker"
                             Title="Elige el idioma de la aplicación"
                             FontSize="14"
-                            TextColor="#212529"
+                            TextColor="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}"
                             SelectedIndexChanged="OnLanguagePickerChanged">
                         <Picker.Items>
                             <x:String>Español</x:String>
@@ -49,93 +42,61 @@
                 </Border>
             </VerticalStackLayout>
 
-            <!-- Input section -->
+            <!-- Entrada de numero -->
             <VerticalStackLayout Spacing="12">
-                <Border BackgroundColor="White"
-                        Stroke="#E9ECEF"
-                        StrokeThickness="1"
-                        StrokeShape="RoundRectangle 8"
-                        Padding="4">
-                    <Border.Shadow>
-                        <Shadow Brush="Black"
-                                Opacity="0.05"
-                                Radius="4"
-                                Offset="0,2"/>
-                    </Border.Shadow>
+                <Border Style="{StaticResource Card}" Padding="4">
                     <Entry x:Name="PhoneEntry"
                            Placeholder="Ej: +34 600 123 456"
                            BackgroundColor="Transparent"
-                           TextColor="#212529"
-                           PlaceholderColor="#ADB5BD"
+                           TextColor="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}"
+                           PlaceholderColor="{AppThemeBinding Light={StaticResource TextSecondaryLight}, Dark={StaticResource TextSecondaryDark}}"
                            FontSize="16"/>
                 </Border>
 
-                <!-- Botones de acción -->
-                <Grid ColumnDefinitions="*,*"
-                      ColumnSpacing="8">
+                <!-- Botones de accion -->
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="8">
                     <Button x:Name="AddButton"
                             Grid.Column="0"
                             Text="📝 Agregar Número"
                             Clicked="OnAddClicked"
-                            BackgroundColor="#2196F3"
-                            TextColor="White"
-                            FontSize="14"
-                            FontAttributes="Bold"
-                            CornerRadius="8"
-                            HeightRequest="48"/>
+                            Style="{StaticResource PrimaryButton}"
+                            FontSize="14"/>
 
                     <Button x:Name="ContactsButton"
                             Grid.Column="1"
                             Text="👥 Desde Contactos"
                             Clicked="OnSelectFromContactsClicked"
-                            BackgroundColor="#4CAF50"
-                            TextColor="White"
-                            FontSize="14"
-                            FontAttributes="Bold"
-                            CornerRadius="8"
-                            HeightRequest="48"/>
+                            Style="{StaticResource SuccessButton}"/>
                 </Grid>
             </VerticalStackLayout>
 
-            <!-- Lista de números -->
+            <!-- Lista de numeros -->
             <VerticalStackLayout Spacing="12">
                 <Label x:Name="NumbersListLabel"
                        Text="Números configurados"
-                       FontSize="18"
-                       FontAttributes="Bold"
-                       TextColor="#212529"
+                       Style="{StaticResource CardTitle}"
+                       TextColor="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}"
                        HorizontalOptions="Center"
                        Margin="0,8,0,0"/>
 
-                <CollectionView x:Name="PhoneList"
-                                SelectionMode="None">
+                <CollectionView x:Name="PhoneList" SelectionMode="None">
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
-                            <Border BackgroundColor="White"
-                                    Stroke="#E9ECEF"
-                                    StrokeThickness="1"
-                                    StrokeShape="RoundRectangle 8"
-                                    Margin="0,4">
-                                <Border.Shadow>
-                                    <Shadow Brush="Black"
-                                            Opacity="0.05"
-                                            Radius="4"
-                                            Offset="0,2"/>
-                                </Border.Shadow>
+                            <Border Style="{StaticResource Card}" Margin="0,4">
                                 <SwipeView>
                                     <SwipeView.RightItems>
                                         <SwipeItems>
                                             <SwipeItem x:Name="DeleteSwipeItem"
                                                        Text="Eliminar"
-                                                       BackgroundColor="#DC3545"
+                                                       BackgroundColor="{StaticResource Danger}"
                                                        Invoked="OnDeleteClicked"
                                                        CommandParameter="{Binding .}"/>
                                         </SwipeItems>
                                     </SwipeView.RightItems>
-                                    <Grid Padding="16,12"
-                                          ColumnDefinitions="Auto,*,Auto">
+                                    <Grid Padding="16,12" ColumnDefinitions="Auto,*,Auto">
                                         <Border Grid.Column="0"
-                                                BackgroundColor="#E3F2FD"
+                                                BackgroundColor="{StaticResource PrimaryLight}"
+                                                StrokeThickness="0"
                                                 StrokeShape="RoundRectangle 16"
                                                 WidthRequest="32"
                                                 HeightRequest="32"
@@ -147,14 +108,14 @@
                                         </Border>
                                         <Label Grid.Column="1"
                                                Text="{Binding .}"
+                                               Style="{StaticResource BodyText}"
                                                FontSize="16"
-                                               TextColor="#212529"
                                                VerticalOptions="Center"
                                                Margin="12,0,0,0"/>
                                         <Label Grid.Column="2"
-                                               Text="→"
-                                               FontSize="16"
-                                               TextColor="#ADB5BD"
+                                               Text="›"
+                                               FontSize="22"
+                                               Style="{StaticResource HintText}"
                                                VerticalOptions="Center"/>
                                     </Grid>
                                 </SwipeView>
@@ -164,23 +125,19 @@
                 </CollectionView>
             </VerticalStackLayout>
 
-            <!-- Información de ayuda -->
-            <Border BackgroundColor="#E3F2FD"
-                    Stroke="#BBDEFB"
-                    StrokeThickness="1"
-                    StrokeShape="RoundRectangle 8"
+            <!-- Informacion de ayuda -->
+            <Border Style="{StaticResource Card}"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource PageBackgroundLight}, Dark={StaticResource PageBackgroundDark}}"
                     Padding="16"
                     Margin="0,8,0,0">
                 <VerticalStackLayout Spacing="8">
                     <Label x:Name="InfoTitle"
                            Text="💡 Información"
-                           FontSize="14"
-                           FontAttributes="Bold"
-                           TextColor="#1976D2"/>
+                           Style="{StaticResource CardTitle}"
+                           FontSize="14"/>
                     <Label x:Name="InfoText"
                            Text="• Los SMS recibidos se reenviarán automáticamente a estos números&#x0a;• Puedes escribir números manualmente o seleccionarlos desde tus contactos&#x0a;• Para configurar permisos avanzados, ve a la sección Diagnósticos&#x0a;• Desliza hacia la izquierda en un número para eliminarlo"
-                           FontSize="12"
-                           TextColor="#1565C0"
+                           Style="{StaticResource HintText}"
                            LineBreakMode="WordWrap"/>
                 </VerticalStackLayout>
             </Border>

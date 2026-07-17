@@ -16,8 +16,8 @@
     <ApplicationId>com.socratic.smsforwarder</ApplicationId>
 
     <!-- Versions -->
-    <ApplicationDisplayVersion>2026.06.26.0</ApplicationDisplayVersion>
-    <ApplicationVersion>202606260</ApplicationVersion>
+    <ApplicationDisplayVersion>2026.07.17.0</ApplicationDisplayVersion>
+    <ApplicationVersion>202607170</ApplicationVersion>
     
     <!-- Accept Android SDK Licenses -->
     <AcceptAndroidSDKLicenses>true</AcceptAndroidSDKLicenses>
@@ -48,8 +48,8 @@
     <UseInterpreter>false</UseInterpreter>
     <AndroidSdkDirectory>C:\Program Files (x86)\Android\android-sdk</AndroidSdkDirectory>
 
-    <AssemblyVersion>2026.06.26.0</AssemblyVersion>
-    <FileVersion>2026.06.26.0</FileVersion>
+    <AssemblyVersion>2026.07.17.0</AssemblyVersion>
+    <FileVersion>2026.07.17.0</FileVersion>
   </PropertyGroup>
 
   <!-- Release configuration for Android -->
