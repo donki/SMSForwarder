@@ -58,6 +58,12 @@ namespace SMSForwarder.Pages
             DonationButton.Text = "Ko-fi.com - Buy me a coffee";
             SupportDescLabel.Text = "Your support helps maintain and improve the app";
 
+            PrivacyTitleLabel.Text = "Privacy";
+            PrivacyTextLabel.Text = "SMS Forwarder processes your messages only on your device to forward them to the numbers you configure. No personal data is collected or shared with third parties.";
+
+            LicenseTitleLabel.Text = "License";
+            LicenseTextLabel.Text = "SMS Forwarder is free software distributed under the MIT license.";
+
             LegalTitleLabel.Text = "⚖️ Legal Notice";
             LegalText1Label.Text = "This software is provided 'as is', without warranties of any kind. The user is responsible for proper use of the application and compliance with local laws.";
             LegalText2Label.Text = "In no event shall the authors be liable for direct, indirect, incidental or consequential damages resulting from the use of this software.";
@@ -212,7 +218,7 @@ namespace SMSForwarder.Pages
             SetSpanishTexts();
 
             // Actualizar botones de idioma
-            var languageCard = (Frame)((StackLayout)((ScrollView)Content).Content).Children[4];
+            var languageCard = (Frame)((StackLayout)((ScrollView)Content).Content).Children[6];
             var languageStack = (StackLayout)languageCard.Content;
             var buttonGrid = (Grid)languageStack.Children[1];
 
@@ -237,7 +243,7 @@ namespace SMSForwarder.Pages
             SetEnglishTexts();
 
             // Actualizar botones de idioma
-            var languageCard = (Frame)((StackLayout)((ScrollView)Content).Content).Children[4];
+            var languageCard = (Frame)((StackLayout)((ScrollView)Content).Content).Children[6];
             var languageStack = (StackLayout)languageCard.Content;
             var buttonGrid = (Grid)languageStack.Children[1];
 
