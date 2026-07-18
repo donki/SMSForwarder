@@ -155,7 +155,7 @@ if ([string]::IsNullOrWhiteSpace($StorePass)) {
         (Get-Content -LiteralPath (Join-Path $ProjectRoot 'keystore.password.txt') -Raw).Trim()
     }
     else {
-        '07052012'
+        throw "No hay contrasena del keystore. Define la variable de entorno ANDROID_KEYSTORE_PASSWORD o crea el fichero keystore.password.txt (no versionado)."
     }
 }
 if ([string]::IsNullOrWhiteSpace($KeyPass)) {

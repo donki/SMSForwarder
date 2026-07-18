@@ -378,3 +378,6 @@ keystore.password.txt
 # MAUI Specific
 **/Platforms/**/bin/
 **/Platforms/**/obj/
+# Material de firma / herramientas (no versionar)
+firmaparaGPC.zip
+pepk*.jar
