@@ -10,7 +10,10 @@
             <!-- Cabecera -->
             <Border Style="{StaticResource Card}">
                 <VerticalStackLayout Padding="24,20" Spacing="12">
-                    <Label Text="📱" FontSize="60" HorizontalOptions="Center"/>
+                    <Image Source="smsforwadericon.png"
+                           WidthRequest="72"
+                           HeightRequest="72"
+                           HorizontalOptions="Center"/>
 
                     <Label Text="SMS Forwarder"
                            FontSize="28"
@@ -19,7 +22,7 @@
                            HorizontalOptions="Center"/>
 
                     <Label x:Name="VersionLabel"
-                           Text="Versión 2026.07.17.0"
+                           Text="Versión"
                            Style="{StaticResource HintText}"
                            FontSize="16"
                            HorizontalOptions="Center"/>
@@ -36,7 +39,7 @@
             <Border Style="{StaticResource Card}">
                 <VerticalStackLayout Padding="25,20" Spacing="15">
                     <Label x:Name="ContactTitleLabel"
-                           Text="📧 Contacto"
+                           Text="Contacto"
                            Style="{StaticResource CardTitle}"/>
 
                     <Button Text="jsoladelarosa@gmail.com"
@@ -57,7 +60,7 @@
             <Border Style="{StaticResource Card}">
                 <VerticalStackLayout Padding="25,20" Spacing="15">
                     <Label x:Name="SupportTitleLabel"
-                           Text="☕ Apoya el Desarrollo"
+                           Text="Apoya el Desarrollo"
                            Style="{StaticResource CardTitle}"
                            TextColor="{StaticResource Accent}"/>
 
@@ -77,6 +80,40 @@
                 </VerticalStackLayout>
             </Border>
 
+            <!-- Idioma -->
+            <Border Style="{StaticResource Card}">
+                <VerticalStackLayout Padding="25,20" Spacing="15">
+                    <Label x:Name="LanguageTitleLabel"
+                           Text="Idioma"
+                           Style="{StaticResource CardTitle}"/>
+
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                        <Button x:Name="SpanishButton"
+                                Grid.Column="0"
+                                Text="🇪🇸 Español"
+                                Style="{StaticResource PrimaryButton}"
+                                FontSize="14"
+                                LineBreakMode="WordWrap"
+                                Padding="10,10"
+                                Clicked="OnSpanishClicked"/>
+
+                        <Button x:Name="EnglishButton"
+                                Grid.Column="1"
+                                Text="🇺🇸 English"
+                                Style="{StaticResource OutlineButton}"
+                                FontSize="14"
+                                LineBreakMode="WordWrap"
+                                Padding="10,10"
+                                Clicked="OnEnglishClicked"/>
+                    </Grid>
+
+                    <Label x:Name="LanguageDescLabel"
+                           Text="Selecciona tu idioma preferido"
+                           Style="{StaticResource HintText}"
+                           HorizontalOptions="Center"/>
+                </VerticalStackLayout>
+            </Border>
+
             <!-- Privacidad -->
             <Border Style="{StaticResource Card}">
                 <VerticalStackLayout Padding="25,20" Spacing="10">
@@ -85,7 +122,7 @@
                            Style="{StaticResource CardTitle}"/>
 
                     <Label x:Name="PrivacyTextLabel"
-                           Text="SMS Forwarder procesa tus mensajes únicamente en tu dispositivo para reenviarlos a los números que configures. No se recopilan ni comparten datos personales con terceros."
+                           Text="Esta aplicación no recopila tus datos personales ni los envía a los desarrolladores. La información se procesa en tu dispositivo para la función propia de la app."
                            Style="{StaticResource BodyText}"
                            FontSize="13"
                            LineHeight="1.4"/>
@@ -100,7 +137,7 @@
                            Style="{StaticResource CardTitle}"/>
 
                     <Label x:Name="LicenseTextLabel"
-                           Text="SMS Forwarder es software libre distribuido bajo licencia MIT."
+                           Text="Esta aplicación es software libre distribuido bajo licencia MIT."
                            Style="{StaticResource BodyText}"
                            FontSize="13"
                            LineHeight="1.4"/>
@@ -115,7 +152,7 @@
             <Border Style="{StaticResource Card}">
                 <VerticalStackLayout Padding="25,20" Spacing="15">
                     <Label x:Name="LegalTitleLabel"
-                           Text="⚖️ Aviso Legal"
+                           Text="Aviso Legal"
                            Style="{StaticResource CardTitle}"
                            TextColor="{StaticResource Danger}"/>
 
@@ -127,7 +164,7 @@
                         </Border.StrokeShape>
                         <VerticalStackLayout Spacing="10">
                             <Label x:Name="LegalText1Label"
-                                   Text="Este software se proporciona 'tal como está', sin garantías de ningún tipo. El usuario es responsable del uso adecuado de la aplicación y del cumplimiento de las leyes locales."
+                                   Text="Este software se proporciona «tal cual», sin garantías de ningún tipo. El usuario es responsable del uso adecuado de la aplicación y del cumplimiento de las leyes locales."
                                    Style="{StaticResource BodyText}"
                                    FontSize="13"
                                    LineHeight="1.4"/>
@@ -154,36 +191,6 @@
                             </Border>
                         </VerticalStackLayout>
                     </Border>
-                </VerticalStackLayout>
-            </Border>
-
-            <!-- Idioma -->
-            <Border Style="{StaticResource Card}">
-                <VerticalStackLayout Padding="25,20" Spacing="15">
-                    <Label Text="🌐 Idioma / Language" Style="{StaticResource CardTitle}"/>
-
-                    <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
-                        <Button Grid.Column="0"
-                                Text="🇪🇸 Español"
-                                Style="{StaticResource PrimaryButton}"
-                                FontSize="14"
-                                LineBreakMode="WordWrap"
-                                Padding="10,10"
-                                Clicked="OnSpanishClicked"/>
-
-                        <Button Grid.Column="1"
-                                Text="🇺🇸 English"
-                                Style="{StaticResource OutlineButton}"
-                                FontSize="14"
-                                LineBreakMode="WordWrap"
-                                Padding="10,10"
-                                Clicked="OnEnglishClicked"/>
-                    </Grid>
-
-                    <Label x:Name="LanguageDescLabel"
-                           Text="Selecciona tu idioma preferido"
-                           Style="{StaticResource HintText}"
-                           HorizontalOptions="Center"/>
                 </VerticalStackLayout>
             </Border>
 

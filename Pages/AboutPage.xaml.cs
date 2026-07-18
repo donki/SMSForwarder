@@ -1,4 +1,6 @@
 using System.Globalization;
+using Microsoft.Maui.ApplicationModel;
+using Microsoft.Maui.Storage;
 
 namespace SMSForwarder.Pages
 {
@@ -9,69 +11,130 @@ namespace SMSForwarder.Pages
         private const string DonationUrl = "https://ko-fi.com/josepsola";
         private const string EmailSubject = "Contacto desde SMS Forwarder";
 
+        // Versión leída de AppInfo (= ApplicationDisplayVersion del csproj), nunca hardcodeada.
+        private static string AppVersion => AppInfo.Current.VersionString;
+
         public AboutPage()
         {
             InitializeComponent();
-            UpdateLanguage();
+            ApplyLanguage(GetCurrentLanguage());
         }
 
-        private void UpdateLanguage()
-        {
-            var currentLanguage = Microsoft.Maui.Storage.Preferences.Get("AppLanguage", GetSystemLanguage());
+        private static string GetCurrentLanguage()
+            => Preferences.Get("AppLanguage", GetSystemLanguage());
 
-            if (currentLanguage == "es")
-            {
-                SetSpanishTexts();
-            }
-            else
-            {
-                SetEnglishTexts();
-            }
-        }
-
-        private string GetSystemLanguage()
+        private static string GetSystemLanguage()
         {
             var culture = CultureInfo.CurrentCulture.TwoLetterISOLanguageName;
             return culture == "es" ? "es" : "en";
         }
 
+        private void ApplyLanguage(string language)
+        {
+            bool spanish = language == "es";
+
+            if (spanish)
+                SetSpanishTexts();
+            else
+                SetEnglishTexts();
+
+            UpdateLanguageButtons(spanish);
+        }
+
         private void SetSpanishTexts()
         {
             Title = "Acerca de";
-            // Los textos ya están en español en el XAML
+
+            VersionLabel.Text = $"Versión {AppVersion}";
+            DescriptionLabel.Text = "Reenvía automáticamente tus SMS a otros números de teléfono";
+
+            ContactTitleLabel.Text = "Contacto";
+            ContactInstructionLabel.Text = "Toca para enviar un correo electrónico";
+
+            SupportTitleLabel.Text = "Apoya el Desarrollo";
+            DonationButton.Text = "Ko-fi.com - Invítame un café";
+            SupportDescLabel.Text = "Tu apoyo ayuda a mantener y mejorar la aplicación";
+
+            LanguageTitleLabel.Text = "Idioma";
+            LanguageDescLabel.Text = "Selecciona tu idioma preferido";
+
+            PrivacyTitleLabel.Text = "Privacidad";
+            PrivacyTextLabel.Text = "Esta aplicación no recopila tus datos personales ni los envía a los desarrolladores. La información se procesa en tu dispositivo para la función propia de la app.";
+
+            LicenseTitleLabel.Text = "Licencia";
+            LicenseTextLabel.Text = "Esta aplicación es software libre distribuido bajo licencia MIT.";
+
+            LegalTitleLabel.Text = "Aviso Legal";
+            LegalText1Label.Text = "Este software se proporciona «tal cual», sin garantías de ningún tipo. El usuario es responsable del uso adecuado de la aplicación y del cumplimiento de las leyes locales.";
+            LegalText2Label.Text = "En ningún caso los autores serán responsables de daños directos, indirectos, incidentales o consecuentes que resulten del uso de este software.";
+            WarningLabel.Text = "⚠️ Uso bajo su propio riesgo";
+
+            BackButton.Text = "← Volver";
         }
 
         private void SetEnglishTexts()
         {
-            // Los textos se resuelven por x:Name, no navegando el arbol visual por indices: al
-            // migrar el diseno (Frame -> Border) esos casts posicionales se rompian con
-            // InvalidCastException (constitucion, seccion 8 y anexo A.9).
             Title = "About";
 
-            VersionLabel.Text = "Version 2026.07.17.0";
+            VersionLabel.Text = $"Version {AppVersion}";
             DescriptionLabel.Text = "Automatically forward your SMS to other phone numbers";
 
-            ContactTitleLabel.Text = "📧 Contact";
+            ContactTitleLabel.Text = "Contact";
             ContactInstructionLabel.Text = "Tap to send an email";
 
-            SupportTitleLabel.Text = "☕ Support Development";
+            SupportTitleLabel.Text = "Support Development";
             DonationButton.Text = "Ko-fi.com - Buy me a coffee";
             SupportDescLabel.Text = "Your support helps maintain and improve the app";
 
-            PrivacyTitleLabel.Text = "Privacy";
-            PrivacyTextLabel.Text = "SMS Forwarder processes your messages only on your device to forward them to the numbers you configure. No personal data is collected or shared with third parties.";
-
-            LicenseTitleLabel.Text = "License";
-            LicenseTextLabel.Text = "SMS Forwarder is free software distributed under the MIT license.";
-
-            LegalTitleLabel.Text = "⚖️ Legal Notice";
-            LegalText1Label.Text = "This software is provided 'as is', without warranties of any kind. The user is responsible for proper use of the application and compliance with local laws.";
-            LegalText2Label.Text = "In no event shall the authors be liable for direct, indirect, incidental or consequential damages resulting from the use of this software.";
-            WarningLabel.Text = "⚠️ Use at your own risk";
-
+            LanguageTitleLabel.Text = "Language";
             LanguageDescLabel.Text = "Select your preferred language";
 
+            PrivacyTitleLabel.Text = "Privacy";
+            PrivacyTextLabel.Text = "This app does not collect your personal data or send it to the developers. Information is processed on your device for the app's own purpose.";
+
+            LicenseTitleLabel.Text = "License";
+            LicenseTextLabel.Text = "This app is free software distributed under the MIT license.";
+
+            LegalTitleLabel.Text = "Legal Notice";
+            LegalText1Label.Text = "This software is provided 'as is', without warranty of any kind. The user is responsible for proper use of the app and compliance with local laws.";
+            LegalText2Label.Text = "In no event shall the authors be liable for any direct, indirect, incidental or consequential damages arising from the use of this software.";
+            WarningLabel.Text = "⚠️ Use at your own risk";
+
             BackButton.Text = "← Back";
+        }
+
+        // Resalta el botón de idioma activo con el estilo primario y el inactivo con el
+        // estilo outline, usando referencias directas por x:Name. NUNCA se navega el árbol
+        // visual por índices ni se castea a Frame/Border (eso lanzaba InvalidCastException).
+        private void UpdateLanguageButtons(bool spanishActive)
+        {
+            var primaryStyle = GetResourceStyle("PrimaryButton");
+            var outlineStyle = GetResourceStyle("OutlineButton");
+
+            if (primaryStyle is null || outlineStyle is null)
+                return;
+
+            SpanishButton.Style = spanishActive ? primaryStyle : outlineStyle;
+            EnglishButton.Style = spanishActive ? outlineStyle : primaryStyle;
+        }
+
+        private static Style? GetResourceStyle(string key)
+        {
+            if (Application.Current?.Resources.TryGetValue(key, out var value) == true && value is Style style)
+                return style;
+            return null;
+        }
+
+        private void OnSpanishClicked(object? sender, EventArgs e)
+        {
+            Preferences.Set("AppLanguage", "es");
+            ApplyLanguage("es");
+        }
+
+        private void OnEnglishClicked(object? sender, EventArgs e)
+        {
+            Preferences.Set("AppLanguage", "en");
+            ApplyLanguage("en");
         }
 
         private async void OnBackClicked(object? sender, EventArgs e)
@@ -83,11 +146,11 @@ namespace SMSForwarder.Pages
         {
             try
             {
-                var currentLanguage = Microsoft.Maui.Storage.Preferences.Get("AppLanguage", GetSystemLanguage());
+                var currentLanguage = GetCurrentLanguage();
 
                 // Crear el cuerpo del email con información de la aplicación
                 var appName = "SMS Forwarder";
-                var appVersion = "2026.06.13.2";
+                var appVersion = AppVersion;
                 var emailBody = currentLanguage == "es"
                     ? $"Hola,\n\nMe pongo en contacto desde la aplicación {appName} (versión {appVersion}).\n\n[Escribe tu mensaje aquí]\n\nSaludos."
                     : $"Hello,\n\nI'm contacting you from the {appName} app (version {appVersion}).\n\n[Write your message here]\n\nBest regards.";
@@ -127,7 +190,7 @@ namespace SMSForwarder.Pages
             }
             catch (FeatureNotSupportedException)
             {
-                var currentLanguage = Microsoft.Maui.Storage.Preferences.Get("AppLanguage", GetSystemLanguage());
+                var currentLanguage = GetCurrentLanguage();
                 var errorTitle = currentLanguage == "es" ? "Error" : "Error";
                 var errorMessage = currentLanguage == "es"
                     ? "Cliente de correo no disponible en este dispositivo"
@@ -137,7 +200,7 @@ namespace SMSForwarder.Pages
             }
             catch (Exception ex)
             {
-                var currentLanguage = Microsoft.Maui.Storage.Preferences.Get("AppLanguage", GetSystemLanguage());
+                var currentLanguage = GetCurrentLanguage();
                 var errorTitle = currentLanguage == "es" ? "Error" : "Error";
                 var errorMessage = currentLanguage == "es"
                     ? $"No se pudo abrir el cliente de correo: {ex.Message}"
@@ -167,7 +230,7 @@ namespace SMSForwarder.Pages
                 try
                 {
                     await Microsoft.Maui.ApplicationModel.DataTransfer.Clipboard.SetTextAsync(DonationUrl);
-                    var currentLanguage = Microsoft.Maui.Storage.Preferences.Get("AppLanguage", GetSystemLanguage());
+                    var currentLanguage = GetCurrentLanguage();
                     var title = currentLanguage == "es" ? "Navegador no disponible" : "Browser not available";
                     var message = currentLanguage == "es"
                         ? $"Enlace copiado al portapapeles:\n{DonationUrl}"
@@ -177,7 +240,7 @@ namespace SMSForwarder.Pages
                 }
                 catch
                 {
-                    var currentLanguage = Microsoft.Maui.Storage.Preferences.Get("AppLanguage", GetSystemLanguage());
+                    var currentLanguage = GetCurrentLanguage();
                     var errorTitle = currentLanguage == "es" ? "Error" : "Error";
                     var errorMessage = currentLanguage == "es"
                         ? $"No se pudo abrir el navegador: {DonationUrl}"
@@ -191,7 +254,7 @@ namespace SMSForwarder.Pages
                 try
                 {
                     await Microsoft.Maui.ApplicationModel.DataTransfer.Clipboard.SetTextAsync(DonationUrl);
-                    var currentLanguage = Microsoft.Maui.Storage.Preferences.Get("AppLanguage", GetSystemLanguage());
+                    var currentLanguage = GetCurrentLanguage();
                     var title = currentLanguage == "es" ? "Error al abrir enlace" : "Error opening link";
                     var message = currentLanguage == "es"
                         ? $"No se pudo abrir el navegador ({ex.Message}), enlace copiado al portapapeles."
@@ -201,7 +264,7 @@ namespace SMSForwarder.Pages
                 }
                 catch
                 {
-                    var currentLanguage = Microsoft.Maui.Storage.Preferences.Get("AppLanguage", GetSystemLanguage());
+                    var currentLanguage = GetCurrentLanguage();
                     var errorTitle = currentLanguage == "es" ? "Error" : "Error";
                     var errorMessage = currentLanguage == "es"
                         ? $"No se pudo abrir el enlace: {DonationUrl}"
@@ -210,56 +273,6 @@ namespace SMSForwarder.Pages
                     await DisplayAlert(errorTitle, errorMessage, "OK");
                 }
             }
-        }
-
-        private void OnSpanishClicked(object? sender, EventArgs e)
-        {
-            Microsoft.Maui.Storage.Preferences.Set("AppLanguage", "es");
-            SetSpanishTexts();
-
-            // Actualizar botones de idioma
-            var languageCard = (Frame)((StackLayout)((ScrollView)Content).Content).Children[6];
-            var languageStack = (StackLayout)languageCard.Content;
-            var buttonGrid = (Grid)languageStack.Children[1];
-
-            var spanishButton = (Button)buttonGrid.Children[0];
-            var englishButton = (Button)buttonGrid.Children[1];
-
-            // Español activo
-            spanishButton.BackgroundColor = Color.FromArgb("#9B59B6");
-            spanishButton.TextColor = Colors.White;
-            spanishButton.BorderWidth = 0;
-
-            // Inglés inactivo
-            englishButton.BackgroundColor = Colors.Transparent;
-            englishButton.TextColor = Color.FromArgb("#9B59B6");
-            englishButton.BorderColor = Color.FromArgb("#9B59B6");
-            englishButton.BorderWidth = 1;
-        }
-
-        private void OnEnglishClicked(object? sender, EventArgs e)
-        {
-            Microsoft.Maui.Storage.Preferences.Set("AppLanguage", "en");
-            SetEnglishTexts();
-
-            // Actualizar botones de idioma
-            var languageCard = (Frame)((StackLayout)((ScrollView)Content).Content).Children[6];
-            var languageStack = (StackLayout)languageCard.Content;
-            var buttonGrid = (Grid)languageStack.Children[1];
-
-            var spanishButton = (Button)buttonGrid.Children[0];
-            var englishButton = (Button)buttonGrid.Children[1];
-
-            // Inglés activo
-            englishButton.BackgroundColor = Color.FromArgb("#9B59B6");
-            englishButton.TextColor = Colors.White;
-            englishButton.BorderWidth = 0;
-
-            // Español inactivo
-            spanishButton.BackgroundColor = Colors.Transparent;
-            spanishButton.TextColor = Color.FromArgb("#9B59B6");
-            spanishButton.BorderColor = Color.FromArgb("#9B59B6");
-            spanishButton.BorderWidth = 1;
         }
     }
 }
