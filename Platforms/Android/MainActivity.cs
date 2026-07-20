@@ -83,6 +83,14 @@ namespace SMSForwarder
         }
 
 
+        protected override void OnActivityResult(int requestCode, Result resultCode, Intent? data)
+        {
+            base.OnActivityResult(requestCode, resultCode, data);
+
+            // Resultado del selector de contactos del sistema (ver ContactPicker).
+            ContactPicker.HandleActivityResult(requestCode, resultCode, data);
+        }
+
         protected override void OnDestroy()
         {
             base.OnDestroy();

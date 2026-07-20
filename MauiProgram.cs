@@ -19,10 +19,11 @@ namespace SMSForwarder
             // Registrar servicios
             builder.Services.AddSingleton<ILocalizationService, LocalizationService>();
             builder.Services.AddSingleton<ILoggingService, LoggingService>();
-            builder.Services.AddSingleton<IContactService, ContactService>();
+#if ANDROID
+            builder.Services.AddSingleton<IContactPicker, Platforms.Android.ContactPicker>();
+#endif
             builder.Services.AddSingleton<MainPage>();
             builder.Services.AddTransient<DiagnosticsPage>();
-            builder.Services.AddTransient<ContactsPage>();
 
             // Habilitar todos los niveles de registro en modo debug
 #if DEBUG
