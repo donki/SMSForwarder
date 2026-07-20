@@ -126,12 +126,6 @@ namespace SMSForwarder.Services
                 { "about.license", "Licencia MIT" },
                 { "about.repository", "Repositorio" },
 
-                // ContactsPage
-                { "contacts.title", "Seleccionar Contacto" },
-                { "contacts.search_placeholder", "Buscar contacto..." },
-                { "contacts.no_contacts", "No hay contactos disponibles" },
-                { "contacts.error", "Error al cargar contactos" },
-
                 // SplashPage
                 { "splash.loading", "Cargando..." },
 
@@ -203,12 +197,6 @@ namespace SMSForwarder.Services
                 { "about.feature_3", "No registration or tracking" },
                 { "about.license", "MIT License" },
                 { "about.repository", "Repository" },
-
-                // ContactsPage
-                { "contacts.title", "Select Contact" },
-                { "contacts.search_placeholder", "Search contact..." },
-                { "contacts.no_contacts", "No contacts available" },
-                { "contacts.error", "Error loading contacts" },
 
                 // SplashPage
                 { "splash.loading", "Loading..." },

@@ -11,16 +11,16 @@ namespace SMSForwarder
     public partial class MainPage : ContentPage
     {
         private readonly ILoggingService _loggingService;
-        private readonly IContactService _contactService;
+        private readonly IContactPicker _contactPicker;
         private readonly ILocalizationService _localizationService;
         private bool _isApplyingLanguageSelection;
         private ObservableCollection<string> phones = new();
 
-        public MainPage(ILoggingService loggingService, IContactService contactService, ILocalizationService localizationService)
+        public MainPage(ILoggingService loggingService, IContactPicker contactPicker, ILocalizationService localizationService)
         {
             InitializeComponent();
             _loggingService = loggingService;
-            _contactService = contactService;
+            _contactPicker = contactPicker;
             _localizationService = localizationService;
 
             var json = Preferences.Default.Get("phones", "[]");
@@ -36,9 +36,6 @@ namespace SMSForwarder
             UpdateLocalizedStrings();
             _localizationService.LanguageChanged += OnLanguageChanged;
             UpdateLanguagePickerSelection();
-
-            // Suscribirse al mensaje de contacto seleccionado
-            MessagingCenter.Subscribe<ContactsPage, string>(this, "ContactSelected", OnContactSelected);
         }
 
         private void UpdateLocalizedStrings()
@@ -202,19 +199,13 @@ namespace SMSForwarder
         {
             try
             {
-                var contactsPage = new ContactsPage(_contactService);
+                // Selector del sistema: devuelve solo el numero elegido, sin leer la agenda.
+                var phoneNumber = await _contactPicker.PickPhoneNumberAsync();
 
-                // Suscribirse al evento de contacto seleccionado
-                contactsPage.ContactSelected += (phoneNumber) =>
-                {
-                    // Llamar al método de procesamiento en el hilo principal
-                    MainThread.BeginInvokeOnMainThread(() =>
-                    {
-                        OnContactSelectedFromEvent(phoneNumber);
-                    });
-                };
+                if (string.IsNullOrWhiteSpace(phoneNumber))
+                    return;
 
-                await Navigation.PushAsync(contactsPage);
+                AddPhoneNumberFromContact(phoneNumber);
             }
             catch (Exception ex)
             {
@@ -226,13 +217,11 @@ namespace SMSForwarder
             }
         }
 
-        private void OnContactSelectedFromEvent(string phoneNumber)
+        private void AddPhoneNumberFromContact(string phoneNumber)
         {
             try
             {
-                // Debug: Agregar log para verificar que se está recibiendo el mensaje
-                System.Diagnostics.Debug.WriteLine($"Recibido contacto seleccionado por evento: {phoneNumber}");
-                _loggingService.LogInfo($"Recibido contacto seleccionado por evento: {phoneNumber}");
+                _loggingService.LogInfo("Numero recibido desde el selector de contactos");
 
                 if (!string.IsNullOrWhiteSpace(phoneNumber))
                 {
@@ -297,28 +286,9 @@ namespace SMSForwarder
             }
         }
 
-        private void OnContactSelected(ContactsPage sender, string phoneNumber)
-        {
-            try
-            {
-                // Debug: Agregar log para verificar que se está recibiendo el mensaje
-                System.Diagnostics.Debug.WriteLine($"Recibido contacto seleccionado por MessagingCenter: {phoneNumber}");
-                _loggingService.LogInfo($"Recibido contacto seleccionado por MessagingCenter: {phoneNumber}");
-
-                // Llamar al mismo método que maneja el evento
-                OnContactSelectedFromEvent(phoneNumber);
-            }
-            catch (Exception ex)
-            {
-                _loggingService.LogError("Error al procesar contacto seleccionado", ex);
-            }
-        }
-
         protected override void OnDisappearing()
         {
             base.OnDisappearing();
-            // Desuscribirse del mensaje para evitar memory leaks
-            MessagingCenter.Unsubscribe<ContactsPage, string>(this, "ContactSelected");
         }
     }
 
