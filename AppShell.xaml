@@ -32,7 +32,7 @@
 
     <!-- Header del menú con safe area -->
     <Shell.FlyoutHeader>
-        <Grid BackgroundColor="#2196F3"
+        <Grid BackgroundColor="{StaticResource Primary}"
               HeightRequest="140"
               Padding="20,40,20,20">
             <VerticalStackLayout VerticalOptions="Center"
@@ -41,12 +41,12 @@
                        Text="SMS Forwarder"
                        FontSize="20"
                        FontAttributes="Bold"
-                       TextColor="White"
+                       TextColor="{StaticResource OnPrimary}"
                        HorizontalOptions="Start"/>
                 <Label x:Name="HeaderSubtitle"
                        Text="Control de mensajes"
                        FontSize="12"
-                       TextColor="White"
+                       TextColor="{StaticResource OnPrimary}"
                        Opacity="0.9"
                        HorizontalOptions="Start"/>
             </VerticalStackLayout>

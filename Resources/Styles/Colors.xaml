@@ -27,4 +27,7 @@
     <Color x:Key="White">#FFFFFF</Color>
     <Color x:Key="Black">#000000</Color>
 
+    <!-- Color de contenido sobre superficie de marca (constitucion 24 / A.9). -->
+    <Color x:Key="OnPrimary">#FFFFFF</Color>
+
 </ResourceDictionary>

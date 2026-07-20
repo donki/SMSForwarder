@@ -27,14 +27,14 @@
     <Title>SMS Forwarder</Title>
     <Product>SMS Forwarder</Product>
     <Description>Aplicación Android que reenvía automáticamente SMS recibidos a números configurados</Description>
-    <Copyright>Copyright © 2024 SMSForwarder</Copyright>
+    <Copyright>Copyright © 2026 Socratic</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/tu-usuario/SMSForwarder</PackageProjectUrl>
     <RepositoryUrl>https://github.com/tu-usuario/SMSForwarder</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>sms;forwarder;android;maui;dotnet</PackageTags>
-    <Authors>SMSForwarder Team</Authors>
-    <Company>SMSForwarder</Company>
+    <Authors>Socratic</Authors>
+    <Company>Socratic</Company>
 
     <!-- Platform versions -->
     <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
@@ -90,7 +90,6 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
-    <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
   </ItemGroup>
 
