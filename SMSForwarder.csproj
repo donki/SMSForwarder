@@ -16,8 +16,8 @@
     <ApplicationId>com.socratic.smsforwarder</ApplicationId>
 
     <!-- Versions -->
-    <ApplicationDisplayVersion>2026.07.20.0</ApplicationDisplayVersion>
-    <ApplicationVersion>202607200</ApplicationVersion>
+    <ApplicationDisplayVersion>2026.07.21.0</ApplicationDisplayVersion>
+    <ApplicationVersion>202607210</ApplicationVersion>
     
     <!-- Accept Android SDK Licenses -->
     <AcceptAndroidSDKLicenses>true</AcceptAndroidSDKLicenses>
@@ -73,6 +73,8 @@
     </MauiIcon>
     <!-- Habilitar uso del mismo archivo como imagen en XAML -->
     <MauiImage Include="Resources\Splash\smsforwadericonsplash.png" />
+    <!-- Icono de la app usable como imagen en XAML (cabecera del menú, TitleView, Acerca de) -->
+    <MauiImage Include="Resources\AppIcon\smsforwadericon.png" />
 
     <!-- Splash Screen eliminado para quitar logo nativo -->
     <!-- (Se muestra el logo en SplashPage.xaml) -->

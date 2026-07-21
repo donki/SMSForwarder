@@ -5,6 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:SMSForwarder"
     xmlns:pages="clr-namespace:SMSForwarder.Pages"
+    xmlns:mauiControls="clr-namespace:Microsoft.Maui.Controls;assembly=Microsoft.Maui.Controls"
     Shell.FlyoutBehavior="Flyout"
     Title="SMS Forwarder"
     Shell.ForegroundColor="{StaticResource Primary}"
@@ -30,16 +31,44 @@
         </Grid>
     </Shell.TitleView>
 
-    <!-- Header del menú con safe area -->
+    <!-- Formato de menú canónico (constitución A.9): cada fila lleva el icono del FlyoutIcon
+         a la izquierda del texto, con color por tokens de tema para que no quede invisible en
+         modo oscuro. -->
+    <Shell.ItemTemplate>
+        <DataTemplate x:DataType="mauiControls:BaseShellItem">
+            <Grid HeightRequest="52"
+                  Padding="20,0"
+                  ColumnDefinitions="24,*"
+                  ColumnSpacing="16">
+                <Image Grid.Column="0"
+                       Source="{Binding FlyoutIcon}"
+                       HeightRequest="22"
+                       WidthRequest="22"
+                       Aspect="AspectFit"
+                       VerticalOptions="Center" />
+                <Label Grid.Column="1"
+                       Text="{Binding Title}"
+                       VerticalOptions="Center"
+                       FontSize="16"
+                       TextColor="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}" />
+            </Grid>
+        </DataTemplate>
+    </Shell.ItemTemplate>
+
+    <!-- Header del menú con safe area (cabecera canónica: logo + nombre + tagline) -->
     <Shell.FlyoutHeader>
         <Grid BackgroundColor="{StaticResource Primary}"
-              HeightRequest="140"
+              HeightRequest="150"
               Padding="20,40,20,20">
             <VerticalStackLayout VerticalOptions="Center"
-                                 Spacing="8">
+                                 Spacing="6">
+                <Image Source="smsforwadericon.png"
+                       HeightRequest="52"
+                       WidthRequest="52"
+                       HorizontalOptions="Start"/>
                 <Label x:Name="HeaderTitle"
                        Text="SMS Forwarder"
-                       FontSize="20"
+                       FontSize="22"
                        FontAttributes="Bold"
                        TextColor="{StaticResource OnPrimary}"
                        HorizontalOptions="Start"/>
@@ -55,7 +84,7 @@
 
     <FlyoutItem x:Name="SettingsItem"
                 Title="Configuración"
-                Icon="settings.svg">
+                FlyoutIcon="settings.svg">
         <ShellContent
             Title="Configuración"
             ContentTemplate="{DataTemplate local:MainPage}"
@@ -64,7 +93,7 @@
 
     <FlyoutItem x:Name="DiagnosticsItem"
                 Title="Diagnósticos"
-                Icon="diagnostics.svg">
+                FlyoutIcon="diagnostics.svg">
         <ShellContent
             Title="Diagnósticos"
             ContentTemplate="{DataTemplate local:DiagnosticsPage}"
@@ -73,7 +102,7 @@
 
     <FlyoutItem x:Name="AboutItem"
                 Title="Acerca de"
-                Icon="about.svg">
+                FlyoutIcon="about.svg">
         <ShellContent
             Title="Acerca de"
             ContentTemplate="{DataTemplate pages:AboutPage}"
