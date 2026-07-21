@@ -64,7 +64,7 @@
 
                     <Button x:Name="ContactsButton"
                             Grid.Column="1"
-                            Text="👥 Desde Contactos"
+                            Text="👥 Contactos"
                             Clicked="OnSelectFromContactsClicked"
                             Style="{StaticResource SuccessButton}"/>
                 </Grid>
