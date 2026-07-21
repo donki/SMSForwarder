@@ -32,6 +32,11 @@
                            Style="{StaticResource HintText}"
                            HorizontalOptions="Center"
                            HorizontalTextAlignment="Center"/>
+
+                    <Label Text="Socratic"
+                           FontAttributes="Bold"
+                           TextColor="{StaticResource Primary}"
+                           HorizontalOptions="Center"/>
                 </VerticalStackLayout>
             </Border>
 
