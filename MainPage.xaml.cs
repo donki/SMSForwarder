@@ -35,7 +35,7 @@ namespace SMSForwarder
             // Actualizar strings localizados
             UpdateLocalizedStrings();
             _localizationService.LanguageChanged += OnLanguageChanged;
-            UpdateLanguagePickerSelection();
+            UpdateLanguageButtons();
         }
 
         private void UpdateLocalizedStrings()
@@ -43,7 +43,6 @@ namespace SMSForwarder
             TitleLabel.Text = _localizationService.GetString("main.title");
             SubtitleLabel.Text = _localizationService.GetString("main.subtitle");
             LanguageLabel.Text = _localizationService.GetString("main.language");
-            LanguagePicker.Title = _localizationService.GetString("main.language_hint");
             PhoneEntry.Placeholder = _localizationService.GetString("main.placeholder");
             AddButton.Text = _localizationService.GetString("main.add_number");
             ContactsButton.Text = _localizationService.GetString("main.from_contacts");
@@ -61,30 +60,43 @@ namespace SMSForwarder
             }
         }
 
-        private void OnLanguagePickerChanged(object? sender, EventArgs e)
+        private void OnSpanishClicked(object? sender, EventArgs e) => ApplyLanguage("es-ES");
+
+        private void OnEnglishClicked(object? sender, EventArgs e) => ApplyLanguage("en-US");
+
+        private void ApplyLanguage(string languageCode)
         {
-            if (_isApplyingLanguageSelection)
+            if (_isApplyingLanguageSelection || languageCode == _localizationService.CurrentLanguage)
             {
                 return;
             }
 
-            var selectedLanguage = LanguagePicker.SelectedIndex == 0 ? "es-ES" : "en-US";
-            _localizationService.SetLanguage(selectedLanguage);
+            // El servicio persiste el idioma y dispara LanguageChanged.
+            _localizationService.SetLanguage(languageCode);
             UpdateLocalizedStrings();
         }
 
-        private void UpdateLanguagePickerSelection()
+        // Resalta el idioma activo con PrimaryButton (indigo relleno) y el otro con OutlineButton
+        // (contorno indigo). Mismo patron visual que FileManager.
+        private void UpdateLanguageButtons()
         {
             _isApplyingLanguageSelection = true;
-            LanguagePicker.SelectedIndex = _localizationService.CurrentLanguage == "es-ES" ? 0 : 1;
+
+            var isSpanish = _localizationService.CurrentLanguage == "es-ES";
+            SpanishButton.Style = LookupStyle(isSpanish ? "PrimaryButton" : "OutlineButton");
+            EnglishButton.Style = LookupStyle(isSpanish ? "OutlineButton" : "PrimaryButton");
+
             _isApplyingLanguageSelection = false;
         }
+
+        private static Style? LookupStyle(string key)
+            => Application.Current?.Resources.TryGetValue(key, out var s) == true ? s as Style : null;
 
         private void OnLanguageChanged(object? sender, EventArgs e)
         {
             MainThread.BeginInvokeOnMainThread(() =>
             {
-                UpdateLanguagePickerSelection();
+                UpdateLanguageButtons();
                 UpdateLocalizedStrings();
             });
         }
@@ -109,17 +121,17 @@ namespace SMSForwarder
                         else
                         {
                             if (_localizationService.CurrentLanguage == "es-ES")
-                                DisplayAlert("Número duplicado", "Este número ya está en la lista.", "OK");
+                                SocShared.ModernDialog.AlertAsync(this,"Número duplicado", "Este número ya está en la lista.", "OK");
                             else
-                                DisplayAlert("Duplicate number", "This number is already in the list.", "OK");
+                                SocShared.ModernDialog.AlertAsync(this,"Duplicate number", "This number is already in the list.", "OK");
                         }
                     }
                     else
                     {
                         if (_localizationService.CurrentLanguage == "es-ES")
-                            DisplayAlert("Número no válido", "Por favor, introduce un número de teléfono válido (7-15 dígitos).", "OK");
+                            SocShared.ModernDialog.AlertAsync(this,"Número no válido", "Por favor, introduce un número de teléfono válido (7-15 dígitos).", "OK");
                         else
-                            DisplayAlert("Invalid number", "Please enter a valid phone number (7-15 digits).", "OK");
+                            SocShared.ModernDialog.AlertAsync(this,"Invalid number", "Please enter a valid phone number (7-15 digits).", "OK");
                         _loggingService.LogWarning($"Intento de agregar número inválido: {cleanNumber}");
                     }
                 }
@@ -128,9 +140,9 @@ namespace SMSForwarder
             {
                 _loggingService.LogError("Error al agregar número", ex);
                 if (_localizationService.CurrentLanguage == "es-ES")
-                    DisplayAlert("Error", "Error al agregar el número", "OK");
+                    SocShared.ModernDialog.AlertAsync(this,"Error", "Error al agregar el número", "OK");
                 else
-                    DisplayAlert("Error", "Error adding the number", "OK");
+                    SocShared.ModernDialog.AlertAsync(this,"Error", "Error adding the number", "OK");
             }
         }
 
@@ -149,9 +161,9 @@ namespace SMSForwarder
             {
                 _loggingService.LogError("Error al eliminar número", ex);
                 if (_localizationService.CurrentLanguage == "es-ES")
-                    DisplayAlert("Error", "Error al eliminar el número", "OK");
+                    SocShared.ModernDialog.AlertAsync(this,"Error", "Error al eliminar el número", "OK");
                 else
-                    DisplayAlert("Error", "Error deleting the number", "OK");
+                    SocShared.ModernDialog.AlertAsync(this,"Error", "Error deleting the number", "OK");
             }
         }
 
@@ -211,9 +223,9 @@ namespace SMSForwarder
             {
                 _loggingService.LogError("Error al abrir contactos", ex);
                 if (_localizationService.CurrentLanguage == "es-ES")
-                    await DisplayAlert("Error", "Error al abrir la lista de contactos", "OK");
+                    await SocShared.ModernDialog.AlertAsync(this,"Error", "Error al abrir la lista de contactos", "OK");
                 else
-                    await DisplayAlert("Error", "Error opening contacts list", "OK");
+                    await SocShared.ModernDialog.AlertAsync(this,"Error", "Error opening contacts list", "OK");
             }
         }
 
@@ -239,11 +251,11 @@ namespace SMSForwarder
                             MainThread.BeginInvokeOnMainThread(async () =>
                             {
                                 if (_localizationService.CurrentLanguage == "es-ES")
-                                    await DisplayAlert("Número agregado",
+                                    await SocShared.ModernDialog.AlertAsync(this,"Número agregado",
                                         $"El número {cleanNumber} ha sido agregado exitosamente",
                                         "OK");
                                 else
-                                    await DisplayAlert("Number added",
+                                    await SocShared.ModernDialog.AlertAsync(this,"Number added",
                                         $"The number {cleanNumber} has been successfully added",
                                         "OK");
                             });
@@ -253,11 +265,11 @@ namespace SMSForwarder
                             MainThread.BeginInvokeOnMainThread(async () =>
                             {
                                 if (_localizationService.CurrentLanguage == "es-ES")
-                                    await DisplayAlert("Número duplicado",
+                                    await SocShared.ModernDialog.AlertAsync(this,"Número duplicado",
                                         "Este número ya está en la lista.",
                                         "OK");
                                 else
-                                    await DisplayAlert("Duplicate number",
+                                    await SocShared.ModernDialog.AlertAsync(this,"Duplicate number",
                                         "This number is already in the list.",
                                         "OK");
                             });
@@ -269,11 +281,11 @@ namespace SMSForwarder
                         MainThread.BeginInvokeOnMainThread(async () =>
                         {
                             if (_localizationService.CurrentLanguage == "es-ES")
-                                await DisplayAlert("Número no válido",
+                                await SocShared.ModernDialog.AlertAsync(this,"Número no válido",
                                     "El número seleccionado no es válido.",
                                     "OK");
                             else
-                                await DisplayAlert("Invalid number",
+                                await SocShared.ModernDialog.AlertAsync(this,"Invalid number",
                                     "The selected number is invalid.",
                                     "OK");
                         });

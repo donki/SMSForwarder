@@ -1,4 +1,4 @@
-﻿namespace SMSForwarder
+namespace SMSForwarder
 {
     public partial class App : Application
     {
@@ -9,7 +9,11 @@
 
         protected override Window CreateWindow(IActivationState? activationState)
         {
-            return new Window(new NavigationPage(new SplashPage()));
+            var window = new Window(new AppShell());
+#if DEBUG
+            SocShared.AuthorNotes.Attach(window);   // notas de autor: SOLO Debug, desactivado en Release/produccion
+#endif
+            return window;
         }
 
         public static void NavigateToMainApp()

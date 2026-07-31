@@ -43,7 +43,7 @@ namespace SMSForwarder
             catch (Exception ex)
             {
                 _loggingService.LogError("Error al actualizar diagnósticos", ex);
-                await DisplayAlert("Error", "Error al actualizar el estado", "OK");
+                await SocShared.ModernDialog.AlertAsync(this,"Error", "Error al actualizar el estado", "OK");
             }
         }
 
@@ -61,7 +61,7 @@ namespace SMSForwarder
             }
             catch (Exception ex)
             {
-                await DisplayAlert("Error", $"Error al limpiar logs: {ex.Message}", "OK");
+                await SocShared.ModernDialog.AlertAsync(this,"Error", $"Error al limpiar logs: {ex.Message}", "OK");
             }
         }
 
@@ -74,7 +74,7 @@ namespace SMSForwarder
 
                 if (phones == null || phones.Count == 0)
                 {
-                    await DisplayAlert("Sin números", "No hay números configurados para enviar SMS de prueba", "OK");
+                    await SocShared.ModernDialog.AlertAsync(this,"Sin números", "No hay números configurados para enviar SMS de prueba", "OK");
                     return;
                 }
 
@@ -95,13 +95,13 @@ namespace SMSForwarder
                     }
                 }
 #endif
-                await DisplayAlert("SMS de prueba", $"SMS de prueba enviado a {phones.Count} números", "OK");
+                await SocShared.ModernDialog.AlertAsync(this,"SMS de prueba", $"SMS de prueba enviado a {phones.Count} números", "OK");
                 await RefreshStatus();
             }
             catch (Exception ex)
             {
                 _loggingService.LogError("Error en SMS de prueba", ex);
-                await DisplayAlert("Error", $"Error al enviar SMS de prueba: {ex.Message}", "OK");
+                await SocShared.ModernDialog.AlertAsync(this,"Error", $"Error al enviar SMS de prueba: {ex.Message}", "OK");
             }
         }
 
@@ -117,7 +117,7 @@ namespace SMSForwarder
             catch (Exception ex)
             {
                 _loggingService.LogError("Error al verificar permisos", ex);
-                await DisplayAlert("Error", "Error al verificar el estado de los permisos", "OK");
+                await SocShared.ModernDialog.AlertAsync(this,"Error", "Error al verificar el estado de los permisos", "OK");
             }
         }
 
@@ -130,11 +130,11 @@ namespace SMSForwarder
                 
                 if (result)
                 {
-                    await DisplayAlert("Éxito", "Todos los permisos han sido configurados correctamente", "OK");
+                    await SocShared.ModernDialog.AlertAsync(this,"Éxito", "Todos los permisos han sido configurados correctamente", "OK");
                 }
                 else
                 {
-                    await DisplayAlert("Atención", "Algunos permisos no pudieron ser configurados. Revise la configuración manualmente.", "OK");
+                    await SocShared.ModernDialog.AlertAsync(this,"Atención", "Algunos permisos no pudieron ser configurados. Revise la configuración manualmente.", "OK");
                 }
                 
                 await RefreshStatus(); // Actualizar estado después de configurar
@@ -142,7 +142,7 @@ namespace SMSForwarder
             catch (Exception ex)
             {
                 _loggingService.LogError("Error al configurar permisos", ex);
-                await DisplayAlert("Error", "Error al configurar los permisos", "OK");
+                await SocShared.ModernDialog.AlertAsync(this,"Error", "Error al configurar los permisos", "OK");
             }
         }
 
@@ -155,11 +155,11 @@ namespace SMSForwarder
 
                 if (status == PermissionStatus.Granted)
                 {
-                    await DisplayAlert("Estado de Batería", "✅ La optimización de batería está desactivada correctamente", "OK");
+                    await SocShared.ModernDialog.AlertAsync(this,"Estado de Batería", "✅ La optimización de batería está desactivada correctamente", "OK");
                 }
                 else
                 {
-                    var result = await DisplayAlert(
+                    var result = await SocShared.ModernDialog.AlertAsync(this,
                         "Optimización de Batería",
                         "La optimización de batería está activada. Esto puede impedir que la aplicación funcione en segundo plano.\n\n¿Desea abrir la configuración?",
                         "Sí", "No");
@@ -175,7 +175,7 @@ namespace SMSForwarder
             catch (Exception ex)
             {
                 _loggingService.LogError("Error al gestionar optimización de batería", ex);
-                await DisplayAlert("Error", "Error al acceder a la configuración de batería", "OK");
+                await SocShared.ModernDialog.AlertAsync(this,"Error", "Error al acceder a la configuración de batería", "OK");
             }
         }
 
@@ -185,7 +185,7 @@ namespace SMSForwarder
             {
                 var autostartPermission = new SmsPermissions.AutoStartPermission();
                 
-                await DisplayAlert(
+                await SocShared.ModernDialog.AlertAsync(this,
                     "Configuración de Autostart",
                     "Se abrirá la configuración de autostart. Busque 'SMS Forwarder' en la lista y active el inicio automático para asegurar que la aplicación funcione después de reiniciar el dispositivo.",
                     "Entendido");
@@ -196,7 +196,7 @@ namespace SMSForwarder
             catch (Exception ex)
             {
                 _loggingService.LogError("Error al gestionar autostart", ex);
-                await DisplayAlert("Error", "Error al acceder a la configuración de autostart", "OK");
+                await SocShared.ModernDialog.AlertAsync(this,"Error", "Error al acceder a la configuración de autostart", "OK");
             }
         }
     }

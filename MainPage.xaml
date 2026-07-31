@@ -28,18 +28,21 @@
                        Text="Idioma"
                        Style="{StaticResource BodyText}"
                        FontAttributes="Bold"/>
-                <Border Style="{StaticResource Card}" Padding="8,2">
-                    <Picker x:Name="LanguagePicker"
-                            Title="Elige el idioma de la aplicación"
+                <!-- Botones de idioma con bandera: el idioma activo usa PrimaryButton (indigo relleno)
+                     y el otro OutlineButton (contorno indigo). Mismo patron que FileManager. -->
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                    <Button x:Name="SpanishButton"
+                            Grid.Column="0"
+                            Text="🇪🇸 Español"
                             FontSize="14"
-                            TextColor="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}"
-                            SelectedIndexChanged="OnLanguagePickerChanged">
-                        <Picker.Items>
-                            <x:String>Español</x:String>
-                            <x:String>English</x:String>
-                        </Picker.Items>
-                    </Picker>
-                </Border>
+                            Clicked="OnSpanishClicked"/>
+
+                    <Button x:Name="EnglishButton"
+                            Grid.Column="1"
+                            Text="🇬🇧 English"
+                            FontSize="14"
+                            Clicked="OnEnglishClicked"/>
+                </Grid>
             </VerticalStackLayout>
 
             <!-- Entrada de numero -->
@@ -66,7 +69,8 @@
                             Grid.Column="1"
                             Text="👥 Contactos"
                             Clicked="OnSelectFromContactsClicked"
-                            Style="{StaticResource SuccessButton}"/>
+                            Style="{StaticResource PrimaryButton}"
+                            BackgroundColor="{StaticResource Accent}"/>
                 </Grid>
             </VerticalStackLayout>
 

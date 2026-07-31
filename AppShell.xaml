@@ -12,14 +12,14 @@
     Shell.TitleColor="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}"
     Shell.UnselectedColor="{AppThemeBinding Light={StaticResource TextSecondaryLight}, Dark={StaticResource TextSecondaryDark}}"
     Shell.DisabledColor="{StaticResource SeparatorLight}"
-    FlyoutBackgroundColor="{AppThemeBinding Light={StaticResource CardBackgroundLight}, Dark={StaticResource CardBackgroundDark}}"
+    FlyoutBackgroundColor="{AppThemeBinding Light={StaticResource PageBackgroundLight}, Dark={StaticResource PageBackgroundDark}}"
     FlyoutWidth="260">
 
     <!-- Icono y título en la barra superior -->
     <Shell.TitleView>
         <Grid ColumnDefinitions="Auto,*"
               Padding="0">
-            <Image Source="smsforwadericon.png"
+            <Image Source="app_logo.svg"
                    HeightRequest="24"
                    VerticalOptions="Center"/>
             <Label Grid.Column="1"
@@ -62,7 +62,7 @@
               Padding="20,40,20,20">
             <VerticalStackLayout VerticalOptions="Center"
                                  Spacing="6">
-                <Image Source="smsforwadericon.png"
+                <Image Source="app_logo.svg"
                        HeightRequest="52"
                        WidthRequest="52"
                        HorizontalOptions="Start"/>
@@ -71,12 +71,6 @@
                        FontSize="22"
                        FontAttributes="Bold"
                        TextColor="{StaticResource OnPrimary}"
-                       HorizontalOptions="Start"/>
-                <Label x:Name="HeaderSubtitle"
-                       Text="Control de mensajes"
-                       FontSize="12"
-                       TextColor="{StaticResource OnPrimary}"
-                       Opacity="0.9"
                        HorizontalOptions="Start"/>
             </VerticalStackLayout>
         </Grid>
@@ -111,12 +105,10 @@
 
     <!-- Footer del menú -->
     <Shell.FlyoutFooter>
-        <Grid BackgroundColor="{AppThemeBinding Light={StaticResource CardBackgroundLight}, Dark={StaticResource CardBackgroundDark}}"
-              HeightRequest="60"
-              Padding="20">
+        <Grid Padding="20,12">
             <Label x:Name="FooterVersion"
-                   Text="v2026.07.17.0 - sOCratic"
-                   FontSize="10"
+                   Text="v2026.07.28.0"
+                   FontSize="12"
                    Style="{StaticResource HintText}"
                    VerticalOptions="Center"
                    HorizontalOptions="Center"/>

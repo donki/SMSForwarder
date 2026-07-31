@@ -30,7 +30,7 @@ namespace SMSForwarder.Services
                 if (receiveSmsStatus != PermissionStatus.Granted ||
                     sendSmsStatus != PermissionStatus.Granted)
                 {
-                    var result = await Application.Current.MainPage.DisplayAlert(
+                    var result = await SocShared.ModernDialog.AlertAsync(Application.Current.MainPage,
                         "Permisos SMS Requeridos",
                         "Esta aplicación necesita permisos SMS para funcionar correctamente. ¿Desea conceder los permisos?",
                         "Sí", "No");
@@ -53,7 +53,7 @@ namespace SMSForwarder.Services
             }
             catch (Exception ex)
             {
-                await Application.Current.MainPage.DisplayAlert("Error", $"Error al verificar permisos SMS: {ex.Message}", "OK");
+                await SocShared.ModernDialog.AlertAsync(Application.Current.MainPage,"Error", $"Error al verificar permisos SMS: {ex.Message}", "OK");
                 return false;
             }
         }
@@ -67,7 +67,7 @@ namespace SMSForwarder.Services
 
                 if (status != PermissionStatus.Granted)
                 {
-                    var result = await Application.Current.MainPage.DisplayAlert(
+                    var result = await SocShared.ModernDialog.AlertAsync(Application.Current.MainPage,
                         "Optimización de Batería",
                         "Para que la aplicación funcione correctamente en segundo plano, es recomendable desactivar la optimización de batería.\n\n¿Desea abrir la configuración?",
                         "Sí", "Ahora no");
@@ -82,7 +82,7 @@ namespace SMSForwarder.Services
                         
                         if (status != PermissionStatus.Granted)
                         {
-                            await Application.Current.MainPage.DisplayAlert(
+                            await SocShared.ModernDialog.AlertAsync(Application.Current.MainPage,
                                 "Información",
                                 "Si no desactivó la optimización de batería, la aplicación podría no recibir mensajes cuando esté en segundo plano.",
                                 "Entendido");
@@ -93,7 +93,7 @@ namespace SMSForwarder.Services
             }
             catch (Exception ex)
             {
-                await Application.Current.MainPage.DisplayAlert("Error", $"Error al verificar optimización de batería: {ex.Message}", "OK");
+                await SocShared.ModernDialog.AlertAsync(Application.Current.MainPage,"Error", $"Error al verificar optimización de batería: {ex.Message}", "OK");
                 return false;
             }
         }
@@ -130,7 +130,7 @@ namespace SMSForwarder.Services
                         break;
                 }
 
-                var result = await Application.Current.MainPage.DisplayAlert(
+                var result = await SocShared.ModernDialog.AlertAsync(Application.Current.MainPage,
                     "Configuración de Autostart",
                     message + "\n\n¿Desea abrir la configuración ahora?",
                     "Sí", "Ahora no");
@@ -143,7 +143,7 @@ namespace SMSForwarder.Services
             }
             catch (Exception ex)
             {
-                await Application.Current.MainPage.DisplayAlert("Error", $"Error al mostrar información de autostart: {ex.Message}", "OK");
+                await SocShared.ModernDialog.AlertAsync(Application.Current.MainPage,"Error", $"Error al mostrar información de autostart: {ex.Message}", "OK");
             }
         }
 
@@ -184,11 +184,11 @@ namespace SMSForwarder.Services
                              $"🚀 Fabricante: {manufacturer}\n\n" +
                              $"Para un funcionamiento óptimo, todos los permisos deben estar concedidos.";
 
-                await Application.Current.MainPage.DisplayAlert("Estado de Permisos", message, "OK");
+                await SocShared.ModernDialog.AlertAsync(Application.Current.MainPage,"Estado de Permisos", message, "OK");
             }
             catch (Exception ex)
             {
-                await Application.Current.MainPage.DisplayAlert("Error", $"Error al verificar estado: {ex.Message}", "OK");
+                await SocShared.ModernDialog.AlertAsync(Application.Current.MainPage,"Error", $"Error al verificar estado: {ex.Message}", "OK");
             }
         }
     }

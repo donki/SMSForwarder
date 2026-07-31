@@ -1,17 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="456" height="456" viewBox="0 0 456 456">
-  <!-- SMS speech bubble with a forward arrow, centered in the adaptive safe zone -->
-  <!-- Speech bubble body with tail -->
+<!-- Logo de cabecera: burbuja SMS blanca con flecha de reenvío, recortada para llenar el marco -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="128 128 240 240" width="240" height="240">
   <path fill="#FFFFFF" d="M158 140
     h140 a36 36 0 0 1 36 36
     v84 a36 36 0 0 1 -36 36
     h-70 l-52 44 v-44 h-18 a36 36 0 0 1 -36 -36
     v-84 a36 36 0 0 1 36 -36 z"/>
-  <!-- Message lines -->
   <rect x="152" y="178" width="128" height="15" rx="7.5" fill="#C3C0FF"/>
   <rect x="152" y="212" width="128" height="15" rx="7.5" fill="#C3C0FF"/>
   <rect x="152" y="246" width="84" height="15" rx="7.5" fill="#C3C0FF"/>
-  <!-- Forward arrow -->
   <path fill="#FFFFFF" d="M296 292
     l56 36 -56 36 v-22
     h-42 a13 13 0 0 1 -13 -13 v-2
