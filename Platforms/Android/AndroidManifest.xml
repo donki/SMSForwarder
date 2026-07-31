@@ -24,7 +24,7 @@
 		android:allowBackup="true"
 		android:supportsRtl="true"
 		android:label="SMS Forwarder"
-		android:icon="@mipmap/play_store_icon"
+		android:icon="@mipmap/appicon"
 		android:theme="@style/Maui.SplashTheme">
 
     <!-- Receptor SMS -->

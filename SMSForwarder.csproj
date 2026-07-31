@@ -16,8 +16,8 @@
     <ApplicationId>com.socratic.smsforwarder</ApplicationId>
 
     <!-- Versions -->
-    <ApplicationDisplayVersion>2026.07.23.0</ApplicationDisplayVersion>
-    <ApplicationVersion>202607230</ApplicationVersion>
+    <ApplicationDisplayVersion>2026.07.28.0</ApplicationDisplayVersion>
+    <ApplicationVersion>202607280</ApplicationVersion>
     
     <!-- Accept Android SDK Licenses -->
     <AcceptAndroidSDKLicenses>true</AcceptAndroidSDKLicenses>
@@ -68,9 +68,8 @@
 
   <ItemGroup>
     <!-- App Icon -->
-    <MauiIcon Include="Resources\AppIcon\play_store_icon.png">
-      <IsAppIcon>true</IsAppIcon>
-    </MauiIcon>
+    <MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#3525CD" />
+    <MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#3525CD" BaseSize="200,200" />
     <!-- Habilitar uso del mismo archivo como imagen en XAML -->
     <MauiImage Include="Resources\Splash\smsforwadericonsplash.png" />
     <!-- Icono de la app usable como imagen en XAML (cabecera del menú, TitleView, Acerca de) -->
@@ -95,4 +94,11 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
   </ItemGroup>
 
+  <!-- Notas de autor compartidas (una sola fuente para todas las apps) -->
+  <ItemGroup>
+    <Compile Include="..\Shared\AuthorNotes.cs" Link="AuthorNotes.cs" />
+    <Compile Include="..\Shared\ModernDialog.cs" Link="ModernDialog.cs" />
+  </ItemGroup>
+
+  <Import Project="..\Shared\signing.props" />
 </Project>

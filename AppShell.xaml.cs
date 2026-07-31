@@ -1,4 +1,4 @@
-﻿using SMSForwarder.Pages;
+using SMSForwarder.Pages;
 using SMSForwarder.Services;
 
 namespace SMSForwarder
@@ -31,7 +31,6 @@ namespace SMSForwarder
         {
             // Actualizar header
             HeaderTitle.Text = "SMS Forwarder";
-            HeaderSubtitle.Text = _localizationService.GetString("menu.header.subtitle");
 
             // Actualizar items del menú
             SettingsItem.Title = _localizationService.GetString("menu.settings");
@@ -39,7 +38,7 @@ namespace SMSForwarder
             AboutItem.Title = _localizationService.GetString("menu.about");
 
             // Actualizar footer
-            FooterVersion.Text = $"v2026.06.26.0 - sOCratic";
+            FooterVersion.Text = $"v2026.07.28.0";
         }
     }
 }

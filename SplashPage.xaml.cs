@@ -43,7 +43,7 @@ public partial class SplashPage : ContentPage
             if (smsReceiveStatus != PermissionStatus.Granted ||
                 smsSendStatus != PermissionStatus.Granted)
             {
-                var result = await DisplayAlert(
+                var result = await SocShared.ModernDialog.AlertAsync(this,
                     "Permisos Requeridos",
                     "SMS Forwarder necesita permisos SMS para funcionar. ¿Desea concederlos ahora?",
                     "Sí", "Ahora no");

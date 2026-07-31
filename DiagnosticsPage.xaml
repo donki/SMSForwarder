@@ -55,7 +55,8 @@
 
                 <Button Text="⚙️ Configurar Todos los Permisos"
                         Clicked="OnConfigureAllPermissionsClicked"
-                        Style="{StaticResource SuccessButton}"
+                        Style="{StaticResource PrimaryButton}"
+                        BackgroundColor="{StaticResource Accent}"
                         HeightRequest="44" />
 
                 <Grid ColumnDefinitions="*,*" ColumnSpacing="8">

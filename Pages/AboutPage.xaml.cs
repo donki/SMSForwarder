@@ -196,7 +196,7 @@ namespace SMSForwarder.Pages
                     ? "Cliente de correo no disponible en este dispositivo"
                     : "Email client not available on this device";
 
-                await DisplayAlert(errorTitle, errorMessage, "OK");
+                await SocShared.ModernDialog.AlertAsync(this,errorTitle, errorMessage, "OK");
             }
             catch (Exception ex)
             {
@@ -206,7 +206,7 @@ namespace SMSForwarder.Pages
                     ? $"No se pudo abrir el cliente de correo: {ex.Message}"
                     : $"Could not open email client: {ex.Message}";
 
-                await DisplayAlert(errorTitle, errorMessage, "OK");
+                await SocShared.ModernDialog.AlertAsync(this,errorTitle, errorMessage, "OK");
             }
         }
 
@@ -236,7 +236,7 @@ namespace SMSForwarder.Pages
                         ? $"Enlace copiado al portapapeles:\n{DonationUrl}"
                         : $"Link copied to clipboard:\n{DonationUrl}";
 
-                    await DisplayAlert(title, message, "OK");
+                    await SocShared.ModernDialog.AlertAsync(this,title, message, "OK");
                 }
                 catch
                 {
@@ -246,7 +246,7 @@ namespace SMSForwarder.Pages
                         ? $"No se pudo abrir el navegador: {DonationUrl}"
                         : $"Could not open browser: {DonationUrl}";
 
-                    await DisplayAlert(errorTitle, errorMessage, "OK");
+                    await SocShared.ModernDialog.AlertAsync(this,errorTitle, errorMessage, "OK");
                 }
             }
             catch (Exception ex)
@@ -260,7 +260,7 @@ namespace SMSForwarder.Pages
                         ? $"No se pudo abrir el navegador ({ex.Message}), enlace copiado al portapapeles."
                         : $"Could not open browser ({ex.Message}), link copied to clipboard.";
 
-                    await DisplayAlert(title, message, "OK");
+                    await SocShared.ModernDialog.AlertAsync(this,title, message, "OK");
                 }
                 catch
                 {
@@ -270,7 +270,7 @@ namespace SMSForwarder.Pages
                         ? $"No se pudo abrir el enlace: {DonationUrl}"
                         : $"Could not open link: {DonationUrl}";
 
-                    await DisplayAlert(errorTitle, errorMessage, "OK");
+                    await SocShared.ModernDialog.AlertAsync(this,errorTitle, errorMessage, "OK");
                 }
             }
         }

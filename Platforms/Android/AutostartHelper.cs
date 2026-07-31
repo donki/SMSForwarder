@@ -50,8 +50,8 @@ namespace SMSForwarder.Platforms.Android
                     // Informar al usuario que debe buscar la configuración manualmente
                     MainThread.BeginInvokeOnMainThread(async () =>
                     {
-                        await Application.Current.MainPage.DisplayAlert("Información", "Por favor, configurar el inicio automático para SMSForwarder, para que se envien los SMS mientras está en segundo plano.", "Aceptar");
-                        await Application.Current.MainPage.DisplayAlert("Información", "Por favor, si está usando Google Message u otro gestor de SMS y no SMSForwarder no reenvia los mensajes, desinstale el gestor. Hay gestores de SMS que no permiten capturar los SMS y SMSForwarder no funcionará.", "Aceptar");
+                        await SocShared.ModernDialog.AlertAsync(Application.Current.MainPage,"Información", "Por favor, configurar el inicio automático para SMSForwarder, para que se envien los SMS mientras está en segundo plano.", "Aceptar");
+                        await SocShared.ModernDialog.AlertAsync(Application.Current.MainPage,"Información", "Por favor, si está usando Google Message u otro gestor de SMS y no SMSForwarder no reenvia los mensajes, desinstale el gestor. Hay gestores de SMS que no permiten capturar los SMS y SMSForwarder no funcionará.", "Aceptar");
                         //Intent appDetailsIntent = new Intent(Settings.settings);
                         //appDetailsIntent.SetFlags(ActivityFlags.NewTask);
                         //appDetailsIntent.AddCategory(Intent.CategoryDefault);
@@ -65,7 +65,7 @@ namespace SMSForwarder.Platforms.Android
                 Log.Error("AutostartHelper", "Activity not found: " + e.Message);
                 MainThread.BeginInvokeOnMainThread(() =>
                 {
-                    Application.Current.MainPage.DisplayAlert("Error", "No se pudo abrir la configuración de inicio automático. Por favor, busca la configuración manualmente en tu dispositivo.", "Aceptar");
+                    SocShared.ModernDialog.AlertAsync(Application.Current.MainPage,"Error", "No se pudo abrir la configuración de inicio automático. Por favor, busca la configuración manualmente en tu dispositivo.", "Aceptar");
                 });
             }
         }
