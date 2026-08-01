@@ -64,6 +64,17 @@ namespace SMSForwarder
             };
             smsReceiver = new SmsReceiver();
 
+            // Permiso de notificaciones (Android 13+) para avisar de SMS entrantes. No bloquea.
+            try
+            {
+                if ((int)Build.VERSION.SdkInt >= 33)
+                    await Permissions.RequestAsync<Permissions.PostNotifications>();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Permiso de notificaciones no concedido: {ex.Message}");
+            }
+
             // Solicitar permisos y registrar el receptor solo si se obtienen
             bool permisosOtorgados = await SolicitarPermisosAsync();
             if (permisosOtorgados)
@@ -93,6 +104,9 @@ namespace SMSForwarder
 
             // Resultado del selector de contactos del sistema (ver ContactPicker).
             ContactPicker.HandleActivityResult(requestCode, resultCode, data);
+
+            // Resultado de la peticion de "app de SMS por defecto" (ver MessageStore).
+            MessageStore.HandleActivityResult(requestCode, this);
         }
 
         protected override void OnDestroy()

@@ -46,7 +46,6 @@ namespace SMSForwarder.Pages
             Title = "Acerca de";
 
             VersionLabel.Text = $"Versión {AppVersion}";
-            DescriptionLabel.Text = "Reenvía automáticamente tus SMS a otros números de teléfono";
 
             ContactTitleLabel.Text = "Contacto";
             ContactInstructionLabel.Text = "Toca para enviar un correo electrónico";
@@ -68,8 +67,6 @@ namespace SMSForwarder.Pages
             LegalText1Label.Text = "Este software se proporciona «tal cual», sin garantías de ningún tipo. El usuario es responsable del uso adecuado de la aplicación y del cumplimiento de las leyes locales.";
             LegalText2Label.Text = "En ningún caso los autores serán responsables de daños directos, indirectos, incidentales o consecuentes que resulten del uso de este software.";
             WarningLabel.Text = "⚠️ Uso bajo su propio riesgo";
-
-            BackButton.Text = "← Volver";
         }
 
         private void SetEnglishTexts()
@@ -77,7 +74,6 @@ namespace SMSForwarder.Pages
             Title = "About";
 
             VersionLabel.Text = $"Version {AppVersion}";
-            DescriptionLabel.Text = "Automatically forward your SMS to other phone numbers";
 
             ContactTitleLabel.Text = "Contact";
             ContactInstructionLabel.Text = "Tap to send an email";
@@ -99,8 +95,6 @@ namespace SMSForwarder.Pages
             LegalText1Label.Text = "This software is provided 'as is', without warranty of any kind. The user is responsible for proper use of the app and compliance with local laws.";
             LegalText2Label.Text = "In no event shall the authors be liable for any direct, indirect, incidental or consequential damages arising from the use of this software.";
             WarningLabel.Text = "⚠️ Use at your own risk";
-
-            BackButton.Text = "← Back";
         }
 
         // Resalta el botón de idioma activo con el estilo primario y el inactivo con el
@@ -135,11 +129,6 @@ namespace SMSForwarder.Pages
         {
             Preferences.Set("AppLanguage", "en");
             ApplyLanguage("en");
-        }
-
-        private async void OnBackClicked(object? sender, EventArgs e)
-        {
-            await Navigation.PopAsync();
         }
 
         private async void OnContactEmailClicked(object? sender, EventArgs e)
