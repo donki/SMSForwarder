@@ -4,8 +4,16 @@
   <!-- Permisos esenciales para SMS forwarding y funcionamiento en background -->
   <uses-permission android:name="android.permission.RECEIVE_SMS" />
   <uses-permission android:name="android.permission.SEND_SMS" />
+  <!-- Rol de app de SMS por defecto: READ_SMS para listar el buzon del sistema (pantalla Mensajes).
+       Los 4 componentes obligatorios (SMS_DELIVER, WAP_PUSH_DELIVER, SENDTO, RESPOND_VIA_MESSAGE)
+       se generan por atributos C# en Platforms/Android (SmsDeliverReceiver, MmsDeliverReceiver,
+       ComposeSmsActivity, HeadlessSmsSendService). No se piden permisos de MMS: la app no gestiona
+       MMS (el receptor WAP_PUSH es no-op y califica por el componente, no por el permiso). -->
+  <uses-permission android:name="android.permission.READ_SMS" />
   <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
   <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+  <!-- Avisar con una notificacion cuando llega un SMS nuevo (Android 13+ requiere permiso en runtime). -->
+  <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
   <!--
     Sin READ_CONTACTS a proposito: elegir un numero se hace con el selector del sistema
     (ACTION_PICK), que delega la lectura del contacto elegido. Lo exige la politica de

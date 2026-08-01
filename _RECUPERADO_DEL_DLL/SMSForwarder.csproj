@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>SMSForwarder</AssemblyName>
+    <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
+    <TargetFramework>net9.0</TargetFramework>
+  </PropertyGroup>
+  <PropertyGroup>
+    <LangVersion>15.0</LangVersion>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
+  </PropertyGroup>
+  <PropertyGroup />
+  <ItemGroup />
+  <ItemGroup>
+    <Reference Include="Mono.Android" />
+    <Reference Include="Microsoft.Maui.Controls" />
+    <Reference Include="Microsoft.Maui.Essentials" />
+    <Reference Include="Microsoft.Maui.Controls.Xaml" />
+    <Reference Include="Microsoft.Maui.Graphics" />
+    <Reference Include="Microsoft.Maui" />
+    <Reference Include="Xamarin.AndroidX.Core" />
+    <Reference Include="Java.Interop" />
+    <Reference Include="_Microsoft.Android.Resource.Designer" />
+    <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions">
+      <HintPath>..\..\..\..\..\..\..\..\..\..\Program Files\dotnet\shared\Microsoft.AspNetCore.App\9.0.16\Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+</Project>
