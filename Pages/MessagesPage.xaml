@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models="clr-namespace:SMSForwarder.Models"
+             x:Class="SMSForwarder.Pages.MessagesPage"
+             Title="Mensajes">
+
+    <Grid RowDefinitions="Auto,*,Auto" Padding="16,16,16,12" RowSpacing="12">
+
+        <!-- Cabecera: aviso de app por defecto + selector de bandeja -->
+        <VerticalStackLayout Grid.Row="0" Spacing="12">
+
+            <!-- Solo visible mientras SMS Forwarder no sea la app de SMS del sistema.
+                 Sin el rol no se puede borrar ni marcar leido en el proveedor. -->
+            <Border x:Name="DefaultAppBanner"
+                    Style="{StaticResource Card}"
+                    IsVisible="False">
+                <VerticalStackLayout Padding="16" Spacing="10">
+                    <Label x:Name="DefaultAppTitle"
+                           Text="Hazla tu app de mensajes"
+                           Style="{StaticResource CardTitle}"
+                           FontSize="15"/>
+                    <Label x:Name="DefaultAppText"
+                           Text="Para escribir, borrar y marcar como leidos los mensajes, SMS Forwarder tiene que ser tu aplicacion de SMS predeterminada."
+                           Style="{StaticResource HintText}"
+                           LineBreakMode="WordWrap"/>
+                    <Button x:Name="DefaultAppButton"
+                            Text="Usar como predeterminada"
+                            Style="{StaticResource PrimaryButton}"
+                            Clicked="OnMakeDefaultClicked"/>
+                </VerticalStackLayout>
+            </Border>
+
+            <Grid ColumnDefinitions="*,*,Auto" ColumnSpacing="8">
+                <Button x:Name="InboxButton"
+                        Grid.Column="0"
+                        Text="Recibidos"
+                        FontSize="14"
+                        Clicked="OnInboxClicked"/>
+                <Button x:Name="SentButton"
+                        Grid.Column="1"
+                        Text="Enviados"
+                        FontSize="14"
+                        Clicked="OnSentClicked"/>
+                <Button x:Name="RefreshButton"
+                        Grid.Column="2"
+                        Text="↻"
+                        FontSize="18"
+                        WidthRequest="48"
+                        Style="{StaticResource OutlineButton}"
+                        Clicked="OnRefreshClicked"/>
+            </Grid>
+        </VerticalStackLayout>
+
+        <!-- Lista de mensajes -->
+        <!-- Abrir un mensaje va por seleccion y no por TapGestureRecognizer: en Android el
+             SwipeView de la plantilla consume los gestos de su contenido. -->
+        <CollectionView x:Name="MessagesList"
+                        Grid.Row="1"
+                        SelectionMode="Single"
+                        SelectionChanged="OnMessageSelected">
+            <CollectionView.EmptyView>
+                <VerticalStackLayout Padding="24" Spacing="8" VerticalOptions="Center">
+                    <Label x:Name="EmptyLabel"
+                           Text="No hay mensajes"
+                           Style="{StaticResource BodyText}"
+                           FontSize="16"
+                           HorizontalOptions="Center"/>
+                    <Label x:Name="EmptyHintLabel"
+                           Text="Los SMS que recibas apareceran aqui."
+                           Style="{StaticResource HintText}"
+                           HorizontalTextAlignment="Center"/>
+                </VerticalStackLayout>
+            </CollectionView.EmptyView>
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:SmsMessageItem">
+                    <Border Style="{StaticResource Card}" Margin="0,4">
+                        <SwipeView>
+                            <SwipeView.RightItems>
+                                <SwipeItems>
+                                    <SwipeItem Text="Eliminar"
+                                               BackgroundColor="{StaticResource Danger}"
+                                               Invoked="OnDeleteMessageClicked"
+                                               CommandParameter="{Binding .}"/>
+                                </SwipeItems>
+                            </SwipeView.RightItems>
+
+                            <Grid Padding="16,12" ColumnDefinitions="Auto,*" ColumnSpacing="12">
+
+                                <Border Grid.Column="0"
+                                        BackgroundColor="{StaticResource PrimaryLight}"
+                                        StrokeThickness="0"
+                                        StrokeShape="RoundRectangle 18"
+                                        WidthRequest="36"
+                                        HeightRequest="36"
+                                        VerticalOptions="Start">
+                                    <Label Text="{Binding DirectionIcon}"
+                                           FontSize="16"
+                                           HorizontalOptions="Center"
+                                           VerticalOptions="Center"/>
+                                </Border>
+
+                                <VerticalStackLayout Grid.Column="1" Spacing="4">
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <Label Grid.Column="0"
+                                               Text="{Binding DisplayAddress}"
+                                               Style="{StaticResource BodyText}"
+                                               FontSize="15"
+                                               FontAttributes="Bold"
+                                               LineBreakMode="TailTruncation"/>
+                                        <Label Grid.Column="1"
+                                               Text="{Binding DateText}"
+                                               Style="{StaticResource HintText}"/>
+                                    </Grid>
+                                    <Label Text="{Binding Snippet}"
+                                           Style="{StaticResource BodyText}"
+                                           LineBreakMode="WordWrap"/>
+                                </VerticalStackLayout>
+                            </Grid>
+                        </SwipeView>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <!-- Redactar un mensaje nuevo -->
+        <Button x:Name="ComposeButton"
+                Grid.Row="2"
+                Text="✏️ Nuevo mensaje"
+                Style="{StaticResource PrimaryButton}"
+                Clicked="OnComposeClicked"/>
+    </Grid>
+
+</ContentPage>

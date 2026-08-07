@@ -5,6 +5,56 @@ Todos los cambios notables de este proyecto serán documentados en este archivo.
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/),
 y este proyecto adhiere al [Versionado Semántico](https://semver.org/lang/es/).
 
+## [2026.08.07.0] - 2026-08-07
+
+### 📋 Cumplimiento de políticas
+- **Política de privacidad propia** ([`PRIVACY.md`](PRIVACY.md)): detalla el tratamiento de datos
+  con el enfoque de app de SMS predeterminada, permiso a permiso, y deja explícito que el reenvío
+  viaja por la red del operador sin servidor intermedio. Es coherente con declarar "no se recopilan
+  datos" en la sección Seguridad de los datos de Play
+
+### 🔧 Cambiado
+- Versión regenerada a fecha de hoy (`202608070`). El binario `202608020` quedó atrapado en el
+  canal *internal* mientras Google revisaba `202606260` en Alpha y `202607280` en producción, que
+  no incluyen `SmsDeliverReceiver` ni `MmsDeliverReceiver`: de ahí el rechazo del 2026-08-06 por
+  *"does not appear to have default handler capability"*. Sin cambios funcionales respecto a
+  `202608020`
+
+## [2026.08.02.0] - 2026-08-02
+
+### ✨ Agregado
+- **Buzón de mensajes** (`MessagesPage`): lista de SMS recibidos y enviados leídos del proveedor
+  del sistema, con marcar como leído, borrar deslizando y responder tocando el mensaje
+- **Redacción de mensajes** (`ComposePage`): destinatario con selector de contactos, contador de
+  caracteres y partes del SMS, y envío real guardado en Enviados
+- **Petición del rol de app de SMS predeterminada** desde el propio buzón
+
+### 🔧 Cambiado
+- `ComposeSmsActivity` deja de ser un redirector vacío: extrae destinatario y texto de los intents
+  `sms:`/`smsto:` (`sms_body`, `EXTRA_TEXT`, parámetro `body`) y abre la pantalla de redacción
+- `HeadlessSmsSendService` deja de ser un no-op: envía de verdad la respuesta rápida a una llamada
+  entrante y la guarda en Enviados
+- "Mensajes" pasa a ser la primera entrada del menú
+
+### 🐛 Correcciones
+- **Detección de "app de SMS predeterminada" en Xiaomi/HyperOS**: se consulta `RoleManager`
+  (fuente de verdad desde Android 10) en lugar de `Telephony.Sms.GetDefaultSmsPackage`. Estos
+  dispositivos conceden el rol dejando `Settings.Secure.sms_default_application` a null, con lo
+  que la app se creía no predeterminada: mostraba el aviso de forma permanente, bloqueaba el
+  borrado de mensajes y no inhibía el camino `SMS_RECEIVED` (doble reenvío)
+- La carpeta `_RECUPERADO_DEL_DLL` (volcado decompilado de referencia) se excluye de la
+  compilación: duplicaba tipos y rompía el build
+
+### 📋 Cumplimiento de políticas
+- Los cuatro componentes obligatorios de app de SMS por defecto están implementados, no declarados
+  en vacío. Es el requisito de la política de Permisos SMS/Call Log de Google Play, que prohíbe
+  pedir permisos sensibles para funciones no implementadas (rechazo del 2026-08-02, routing ZLFS)
+- **Ficha de Play reescrita**: `PlayStoreListing.es-ES.json` seguía con el texto centrado en el
+  reenvío, que es el caso de uso prohibido. Ahora presenta la app como gestor de SMS
+  predeterminado, tal y como exige la política de promocionar la función que justifica el permiso
+- **Permisos de la ficha alineados con el manifest**: `ficha.md` declaraba `READ_CONTACTS` e
+  `INTERNET`, que la app no pide. Declarar permisos que el APK no usa es motivo de rechazo
+
 ## [2026.06.26.0] - 2026-06-26
 
 ### ✨ Agregado

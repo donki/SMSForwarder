@@ -40,7 +40,12 @@ function Invoke-NativeCommand {
         [Parameter(Mandatory = $true)][string[]]$Arguments
     )
 
-    Write-Host "> $FilePath $($Arguments -join ' ')"
+    # Las contrasenas de firma no se escriben en el log: este script se ejecuta en CI y en
+    # consolas cuyo historial se comparte al pedir ayuda.
+    $printable = $Arguments | ForEach-Object {
+        $_ -replace '(?i)^(-p:Android(?:Signing(?:Key|Store))?Pass)=.*$', '$1=***'
+    }
+    Write-Host "> $FilePath $($printable -join ' ')"
     & $FilePath @Arguments
     if ($LASTEXITCODE -ne 0) {
         Exit-WithError $ErrorMessage
@@ -134,11 +139,16 @@ if ([string]::IsNullOrWhiteSpace($TargetFramework)) {
 $DotnetPath = Resolve-ToolPath $DotnetPath 'dotnet' 'C:\Program Files\dotnet\dotnet.exe'
 
 if ([string]::IsNullOrWhiteSpace($KeystorePath)) {
+    # La clave comun de todas las apps sOCratic vive en ..\Shared (misma fuente que signing.props).
+    # Se acepta una copia local en el proyecto por compatibilidad, pero no es la ruta esperada.
     $KeystorePath = if (-not [string]::IsNullOrWhiteSpace($env:ANDROID_KEYSTORE_PATH)) {
         $env:ANDROID_KEYSTORE_PATH
     }
-    else {
+    elseif (Test-Path -LiteralPath (Join-Path $ProjectRoot 'socratic.keystore')) {
         Join-Path $ProjectRoot 'socratic.keystore'
+    }
+    else {
+        Join-Path $ProjectRoot '..\Shared\socratic.keystore'
     }
 }
 $KeystorePath = if ([System.IO.Path]::IsPathRooted($KeystorePath)) { $KeystorePath } else { Join-Path $ProjectRoot $KeystorePath }

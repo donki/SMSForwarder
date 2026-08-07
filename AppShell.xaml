@@ -76,6 +76,15 @@
         </Grid>
     </Shell.FlyoutHeader>
 
+    <FlyoutItem x:Name="MessagesItem"
+                Title="Mensajes"
+                FlyoutIcon="messages.svg">
+        <ShellContent
+            Title="Mensajes"
+            ContentTemplate="{DataTemplate pages:MessagesPage}"
+            Route="MessagesPage"/>
+    </FlyoutItem>
+
     <FlyoutItem x:Name="SettingsItem"
                 Title="Configuración"
                 FlyoutIcon="settings.svg">
@@ -107,7 +116,7 @@
     <Shell.FlyoutFooter>
         <Grid Padding="20,12">
             <Label x:Name="FooterVersion"
-                   Text="v2026.07.28.0"
+                   Text="v2026.08.02.0"
                    FontSize="12"
                    Style="{StaticResource HintText}"
                    VerticalOptions="Center"

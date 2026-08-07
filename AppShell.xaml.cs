@@ -13,6 +13,8 @@ namespace SMSForwarder
 
             Routing.RegisterRoute(nameof(DiagnosticsPage), typeof(DiagnosticsPage));
             Routing.RegisterRoute(nameof(AboutPage), typeof(AboutPage));
+            Routing.RegisterRoute(nameof(MessagesPage), typeof(MessagesPage));
+            Routing.RegisterRoute(nameof(ComposePage), typeof(ComposePage));
 
             // Obtener el servicio de localización desde el contenedor de servicios
             _localizationService = MauiApplication.Current?.Services.GetRequiredService<ILocalizationService>() ?? new LocalizationService();
@@ -33,12 +35,13 @@ namespace SMSForwarder
             HeaderTitle.Text = "SMS Forwarder";
 
             // Actualizar items del menú
+            MessagesItem.Title = _localizationService.GetString("menu.messages");
             SettingsItem.Title = _localizationService.GetString("menu.settings");
             DiagnosticsItem.Title = _localizationService.GetString("menu.diagnostics");
             AboutItem.Title = _localizationService.GetString("menu.about");
 
             // Actualizar footer
-            FooterVersion.Text = $"v2026.07.28.0";
+            FooterVersion.Text = $"v2026.08.02.0";
         }
     }
 }

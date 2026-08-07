@@ -97,11 +97,6 @@
                         Style="{StaticResource PrimaryButton}"
                         FontSize="14"
                         HeightRequest="44" />
-
-                <Button Text="📤 Enviar SMS de Prueba"
-                        Clicked="OnTestSmsClicked"
-                        Style="{StaticResource OutlineButton}"
-                        HeightRequest="44" />
             </VerticalStackLayout>
 
             <!-- Registro -->

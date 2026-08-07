@@ -65,46 +65,6 @@ namespace SMSForwarder
             }
         }
 
-        private async void OnTestSmsClicked(object sender, EventArgs e)
-        {
-            try
-            {
-                var phonesJson = Preferences.Default.Get("phones", "[]");
-                var phones = JsonSerializer.Deserialize<List<string>>(phonesJson);
-
-                if (phones == null || phones.Count == 0)
-                {
-                    await SocShared.ModernDialog.AlertAsync(this,"Sin números", "No hay números configurados para enviar SMS de prueba", "OK");
-                    return;
-                }
-
-                var testMessage = $"SMS de prueba desde SMSForwarder - {DateTime.Now:HH:mm:ss}";
-                
-#if ANDROID
-                var smsManager = Android.Telephony.SmsManager.Default;
-                foreach (var phone in phones)
-                {
-                    try
-                    {
-                        smsManager.SendTextMessage(phone, null, testMessage, null, null);
-                        _loggingService.LogInfo($"SMS de prueba enviado a {phone}");
-                    }
-                    catch (Exception ex)
-                    {
-                        _loggingService.LogError($"Error enviando SMS de prueba a {phone}", ex);
-                    }
-                }
-#endif
-                await SocShared.ModernDialog.AlertAsync(this,"SMS de prueba", $"SMS de prueba enviado a {phones.Count} números", "OK");
-                await RefreshStatus();
-            }
-            catch (Exception ex)
-            {
-                _loggingService.LogError("Error en SMS de prueba", ex);
-                await SocShared.ModernDialog.AlertAsync(this,"Error", $"Error al enviar SMS de prueba: {ex.Message}", "OK");
-            }
-        }
-
         // Métodos para manejo de permisos (movidos desde MainPage)
         private async void OnCheckPermissionsClicked(object sender, EventArgs e)
         {

@@ -21,9 +21,12 @@ namespace SMSForwarder
             builder.Services.AddSingleton<ILoggingService, LoggingService>();
 #if ANDROID
             builder.Services.AddSingleton<IContactPicker, Platforms.Android.ContactPicker>();
+            builder.Services.AddSingleton<IMessageStore, Platforms.Android.MessageStore>();
 #endif
             builder.Services.AddSingleton<MainPage>();
             builder.Services.AddTransient<DiagnosticsPage>();
+            builder.Services.AddTransient<Pages.MessagesPage>();
+            builder.Services.AddTransient<Pages.ComposePage>();
 
             // Habilitar todos los niveles de registro en modo debug
 #if DEBUG

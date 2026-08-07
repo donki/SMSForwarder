@@ -1,8 +1,15 @@
 # 📱 SMSForwarder
 
-Una aplicación Android desarrollada en .NET MAUI que reenvía automáticamente los SMS recibidos a números de teléfono configurados.
+Una aplicación Android de mensajes desarrollada en .NET MAUI: gestiona tus SMS y, además, reenvía automáticamente los que recibes a los números de teléfono que configures.
 
 ## ✨ Características
+
+### 💬 Mensajes
+- **Buzón** de mensajes recibidos y enviados
+- **Redacción y envío** de SMS, con selector de contactos del sistema
+- **Responder** tocando un mensaje del buzón
+- **Marcar como leído** y **borrar** deslizando
+- **App de SMS predeterminada**: funciona como gestor de mensajes del teléfono
 
 ### 🔄 Reenvío Automático
 - **Reenvío instantáneo** de todos los SMS recibidos
@@ -30,8 +37,8 @@ Una aplicación Android desarrollada en .NET MAUI que reenvía automáticamente 
 ## 🚀 Instalación
 
 ### Requisitos
-- Android 7.0 (API 24) o superior
-- Permisos de SMS y Contactos
+- Android 5.0 (API 21) o superior; compilada contra la API 36
+- Permiso de SMS (el selector de contactos es el del sistema, no requiere permiso)
 
 ### Desde Código Fuente
 1. Clona el repositorio:
@@ -75,8 +82,14 @@ Una aplicación Android desarrollada en .NET MAUI que reenvía automáticamente 
 
 ### Permisos Requeridos
 - `RECEIVE_SMS` - Para recibir mensajes entrantes
-- `SEND_SMS` - Para reenviar mensajes
-- `READ_CONTACTS` - Para seleccionar desde contactos
+- `SEND_SMS` - Para enviar y reenviar mensajes
+- `READ_SMS` - Para listar el buzón del teléfono en la pantalla Mensajes
+- `RECEIVE_BOOT_COMPLETED` - Para seguir reenviando tras reiniciar el teléfono
+- `POST_NOTIFICATIONS` - Para avisar de los SMS entrantes (Android 13+)
+
+**Sin `READ_CONTACTS` a propósito**: elegir un número abre el selector del sistema
+(`ACTION_PICK`), que devuelve solo el número escogido. Lo exige la política de Google Play
+sobre acceso amplio a contactos (obligatoria el 2026-10-28).
 
 ### Optimización de Batería
 La aplicación puede requerir **exclusión de optimización de batería** para funcionar correctamente en segundo plano. Esto se configura automáticamente desde la sección de Diagnósticos.
@@ -131,10 +144,9 @@ La aplicación incluye **protección automática** contra bucles:
 - Identifica mensajes ya reenviados por el formato `[SMSForwarder]`
 - Previene duplicados en períodos cortos
 
-### Problemas de contactos
-1. Verifica el permiso de lectura de contactos
-2. Asegúrate de tener contactos con números de teléfono
-3. Reinicia la aplicación si es necesario
+### No puedo borrar mensajes del buzón
+Android solo permite borrar y marcar como leídos a la **app de SMS predeterminada**. Abre la
+pantalla Mensajes y pulsa "Usar como predeterminada".
 
 ## 📋 Roadmap
 

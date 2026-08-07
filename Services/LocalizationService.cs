@@ -81,7 +81,36 @@ namespace SMSForwarder.Services
                 { "menu.diagnostics", "Diagnósticos" },
                 { "menu.about", "Acerca de" },
                 { "menu.contacts", "Contactos" },
+                { "menu.messages", "Mensajes" },
                 { "menu.header.subtitle", "Control de mensajes" },
+
+                // MessagesPage - Buzón
+                { "messages.title", "Mensajes" },
+                { "messages.inbox", "Recibidos" },
+                { "messages.sent", "Enviados" },
+                { "messages.compose", "✏️ Nuevo mensaje" },
+                { "messages.empty", "No hay mensajes" },
+                { "messages.empty_inbox_hint", "Los SMS que recibas aparecerán aquí." },
+                { "messages.empty_sent_hint", "Los SMS que envíes aparecerán aquí." },
+                { "messages.confirm_delete", "¿Eliminar este mensaje del teléfono?" },
+                { "messages.delete_error", "No se pudo eliminar el mensaje" },
+                { "messages.load_error", "No se pudieron cargar los mensajes" },
+                { "messages.default_title", "Hazla tu app de mensajes" },
+                { "messages.default_text", "Para escribir, borrar y marcar como leídos los mensajes, SMS Forwarder tiene que ser tu aplicación de SMS predeterminada." },
+                { "messages.default_button", "Usar como predeterminada" },
+                { "messages.delete_needs_default", "Android solo permite borrar mensajes a la aplicación de SMS predeterminada." },
+
+                // ComposePage - Redacción
+                { "compose.title", "Nuevo mensaje" },
+                { "compose.to", "Para" },
+                { "compose.body", "Mensaje" },
+                { "compose.body_placeholder", "Escribe tu mensaje" },
+                { "compose.send", "Enviar" },
+                { "compose.sent", "Mensaje enviado" },
+                { "compose.send_error", "No se pudo enviar el mensaje" },
+                { "compose.invalid_number", "Introduce un número de teléfono válido (7-15 dígitos)." },
+                { "compose.empty_body", "Escribe el texto del mensaje." },
+                { "compose.no_permission", "Sin el permiso de SMS no se puede enviar el mensaje." },
 
                 // MainPage - Configuración
                 { "main.title", "Configuración" },
@@ -153,7 +182,36 @@ namespace SMSForwarder.Services
                 { "menu.diagnostics", "Diagnostics" },
                 { "menu.about", "About" },
                 { "menu.contacts", "Contacts" },
+                { "menu.messages", "Messages" },
                 { "menu.header.subtitle", "Message control" },
+
+                // MessagesPage - Inbox
+                { "messages.title", "Messages" },
+                { "messages.inbox", "Received" },
+                { "messages.sent", "Sent" },
+                { "messages.compose", "✏️ New message" },
+                { "messages.empty", "No messages" },
+                { "messages.empty_inbox_hint", "The SMS you receive will show up here." },
+                { "messages.empty_sent_hint", "The SMS you send will show up here." },
+                { "messages.confirm_delete", "Delete this message from the phone?" },
+                { "messages.delete_error", "The message could not be deleted" },
+                { "messages.load_error", "The messages could not be loaded" },
+                { "messages.default_title", "Make it your messaging app" },
+                { "messages.default_text", "To write, delete and mark messages as read, SMS Forwarder must be your default SMS application." },
+                { "messages.default_button", "Set as default" },
+                { "messages.delete_needs_default", "Android only lets the default SMS application delete messages." },
+
+                // ComposePage - Compose
+                { "compose.title", "New message" },
+                { "compose.to", "To" },
+                { "compose.body", "Message" },
+                { "compose.body_placeholder", "Write your message" },
+                { "compose.send", "Send" },
+                { "compose.sent", "Message sent" },
+                { "compose.send_error", "The message could not be sent" },
+                { "compose.invalid_number", "Enter a valid phone number (7-15 digits)." },
+                { "compose.empty_body", "Write the message text." },
+                { "compose.no_permission", "The SMS permission is required to send the message." },
 
                 // MainPage - Settings
                 { "main.title", "Settings" },
