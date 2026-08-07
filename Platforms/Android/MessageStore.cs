@@ -52,11 +52,25 @@ namespace SMSForwarder.Platforms.Android
             }
         }
 
-        /// <summary>True si el paquete de esta app es el gestor de SMS por defecto del sistema.</summary>
+        /// <summary>
+        /// True si esta app es el gestor de SMS por defecto del sistema.
+        ///
+        /// Desde Android 10 la fuente de verdad es RoleManager: hay dispositivos (Xiaomi/HyperOS,
+        /// por ejemplo) que conceden el rol dejando <c>Settings.Secure.sms_default_application</c>
+        /// a null, y entonces GetDefaultSmsPackage devuelve null aunque el rol si este concedido.
+        /// Por eso se consulta primero el rol y solo se cae al ajuste antiguo en API menores.
+        /// </summary>
         public static bool IsAppDefault(Context context)
         {
             try
             {
+                if (Build.VERSION.SdkInt >= BuildVersionCodes.Q)
+                {
+                    var rm = (RoleManager?)context.GetSystemService(Context.RoleService);
+                    if (rm != null && rm.IsRoleAvailable(RoleManager.RoleSms))
+                        return rm.IsRoleHeld(RoleManager.RoleSms);
+                }
+
                 var def = AndroidTelephony.Sms.GetDefaultSmsPackage(context);
                 return def != null && def == context.PackageName;
             }

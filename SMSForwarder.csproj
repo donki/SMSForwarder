@@ -16,8 +16,8 @@
     <ApplicationId>com.socratic.smsforwarder</ApplicationId>
 
     <!-- Versions -->
-    <ApplicationDisplayVersion>2026.07.31.0</ApplicationDisplayVersion>
-    <ApplicationVersion>202607310</ApplicationVersion>
+    <ApplicationDisplayVersion>2026.08.07.0</ApplicationDisplayVersion>
+    <ApplicationVersion>202608070</ApplicationVersion>
     
     <!-- Accept Android SDK Licenses -->
     <AcceptAndroidSDKLicenses>true</AcceptAndroidSDKLicenses>
@@ -48,16 +48,14 @@
     <UseInterpreter>false</UseInterpreter>
     <AndroidSdkDirectory>C:\Program Files (x86)\Android\android-sdk</AndroidSdkDirectory>
 
-    <AssemblyVersion>2026.07.17.0</AssemblyVersion>
-    <FileVersion>2026.07.17.0</FileVersion>
+    <AssemblyVersion>2026.08.02.0</AssemblyVersion>
+    <FileVersion>2026.08.02.0</FileVersion>
   </PropertyGroup>
 
-  <!-- Release configuration for Android -->
-  <PropertyGroup Condition="'$(Configuration)' == 'Release' and '$(TargetFramework)' == 'net9.0-android'">
-    <AndroidKeyStore>false</AndroidKeyStore>
-    <RunAOTCompilation>false</RunAOTCompilation>
-    <PublishTrimmed>true</PublishTrimmed>
-  </PropertyGroup>
+  <!-- La configuracion Release (formato aab + firma) vive en ..\Shared\signing.props, que se
+       importa al final. No se duplica aqui: el grupo que habia antes tenia la condicion
+       '$(TargetFramework)' == 'net9.0-android' (sin el 36.0 del TFM real), nunca se aplicaba, y
+       ademas ponia AndroidKeyStore=false, que habria roto la firma el dia que coincidiera. -->
 
   <!-- Debug configuration for Android emulators: disable Fast Deployment -->
   <PropertyGroup Condition="'$(Configuration)' == 'Debug' and $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
@@ -87,6 +85,15 @@
 
     <!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
     <MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
+  </ItemGroup>
+
+  <!-- Volcado decompilado que se guarda solo como referencia historica del incidente de
+       reorganizacion: tiene su propio csproj y duplica tipos, asi que no entra en la compilacion. -->
+  <ItemGroup>
+    <Compile Remove="_RECUPERADO_DEL_DLL\**" />
+    <MauiXaml Remove="_RECUPERADO_DEL_DLL\**" />
+    <EmbeddedResource Remove="_RECUPERADO_DEL_DLL\**" />
+    <None Remove="_RECUPERADO_DEL_DLL\**" />
   </ItemGroup>
 
   <ItemGroup>

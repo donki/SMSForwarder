@@ -98,6 +98,41 @@ namespace SMSForwarder
         }
 
 
+        protected override void OnResume()
+        {
+            base.OnResume();
+
+            // Peticion externa de "enviar mensaje" (ver ComposeSmsActivity): ya hay UI, se abre
+            // la pantalla de redaccion con el destinatario y el texto que traia el intent.
+            TryHandlePendingCompose();
+        }
+
+        private static void TryHandlePendingCompose()
+        {
+            if (!PendingCompose.TryTake(out var to, out var body)) return;
+
+            MainThread.BeginInvokeOnMainThread(async () =>
+            {
+                try
+                {
+                    // En arranque en frio Shell tarda un instante en existir.
+                    for (var i = 0; i < 20 && Shell.Current is null; i++)
+                        await Task.Delay(100);
+                    if (Shell.Current is null) return;
+
+                    var parameters = new ShellNavigationQueryParameters();
+                    if (!string.IsNullOrWhiteSpace(to)) parameters["to"] = to;
+                    if (!string.IsNullOrEmpty(body)) parameters["body"] = body;
+
+                    await Shell.Current.GoToAsync(nameof(Pages.ComposePage), parameters);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error al abrir la redaccion de mensaje: {ex.Message}");
+                }
+            });
+        }
+
         protected override void OnActivityResult(int requestCode, Result resultCode, Intent? data)
         {
             base.OnActivityResult(requestCode, resultCode, data);
