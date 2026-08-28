@@ -5,6 +5,20 @@ Todos los cambios notables de este proyecto serán documentados en este archivo.
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/),
 y este proyecto adhiere al [Versionado Semántico](https://semver.org/lang/es/).
 
+## [2026.08.28.0] - 2026-08-28
+
+### ✨ Agregado
+- **Pantalla de detalle del mensaje** (`MessageDetailPage`): tocar un mensaje ya no salta directo
+  a responder, sino que muestra el **texto completo**. En la lista solo cabe un extracto de 100
+  caracteres, así que un SMS largo no había forma de leerlo (nota de autor del 2026-08-24)
+- **Copiar el número** del remitente con un botón junto a la cabecera, y copiar el texto del
+  mensaje (notas de autor del 2026-08-24)
+- **Los enlaces web del mensaje se pueden pulsar** y abren el navegador. Se reconoce `http(s)://`
+  y también el `www.` suelto, que es como los escriben la mitad de los SMS comerciales; un `Label`
+  de MAUI no detecta URL por su cuenta, así que el cuerpo se compone en tramos (nota de autor del
+  2026-08-24)
+- **Responder** sigue estando, ahora como botón de la pantalla de detalle
+
 ## [2026.08.07.0] - 2026-08-07
 
 ### 📋 Cumplimiento de políticas

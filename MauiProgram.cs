@@ -27,6 +27,7 @@ namespace SMSForwarder
             builder.Services.AddTransient<DiagnosticsPage>();
             builder.Services.AddTransient<Pages.MessagesPage>();
             builder.Services.AddTransient<Pages.ComposePage>();
+            builder.Services.AddTransient<Pages.MessageDetailPage>();
 
             // Habilitar todos los niveles de registro en modo debug
 #if DEBUG

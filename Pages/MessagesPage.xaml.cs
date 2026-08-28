@@ -129,7 +129,10 @@ namespace SMSForwarder.Pages
                 }
             }
 
-            await GoToComposeAsync(message.Address);
+            // Antes se saltaba directo a responder: no habia forma de leer un SMS largo, ni de
+            // copiar el numero, ni de abrir un enlace (nota de autor del 2026-08-24).
+            var parameters = new ShellNavigationQueryParameters { ["message"] = message };
+            await Shell.Current.GoToAsync(nameof(MessageDetailPage), parameters);
         }
 
         private async void OnDeleteMessageClicked(object? sender, EventArgs e)

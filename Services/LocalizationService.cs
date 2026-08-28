@@ -99,6 +99,13 @@ namespace SMSForwarder.Services
                 { "messages.default_text", "Para escribir, borrar y marcar como leídos los mensajes, SMS Forwarder tiene que ser tu aplicación de SMS predeterminada." },
                 { "messages.default_button", "Usar como predeterminada" },
                 { "messages.delete_needs_default", "Android solo permite borrar mensajes a la aplicación de SMS predeterminada." },
+                { "messages.detail_title", "Mensaje" },
+                { "messages.reply", "Responder" },
+                { "messages.copy_text", "Copiar el texto" },
+                { "messages.copied_title", "Copiado" },
+                { "messages.copied_number", "El número está en el portapapeles." },
+                { "messages.copied_text", "El texto del mensaje está en el portapapeles." },
+                { "messages.link_error", "No se ha podido abrir el enlace." },
 
                 // ComposePage - Redacción
                 { "compose.title", "Nuevo mensaje" },
@@ -200,6 +207,13 @@ namespace SMSForwarder.Services
                 { "messages.default_text", "To write, delete and mark messages as read, SMS Forwarder must be your default SMS application." },
                 { "messages.default_button", "Set as default" },
                 { "messages.delete_needs_default", "Android only lets the default SMS application delete messages." },
+                { "messages.detail_title", "Message" },
+                { "messages.reply", "Reply" },
+                { "messages.copy_text", "Copy the text" },
+                { "messages.copied_title", "Copied" },
+                { "messages.copied_number", "The number is on the clipboard." },
+                { "messages.copied_text", "The message text is on the clipboard." },
+                { "messages.link_error", "The link could not be opened." },
 
                 // ComposePage - Compose
                 { "compose.title", "New message" },
