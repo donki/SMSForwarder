@@ -8,7 +8,6 @@ namespace SMSForwarder.Pages
     {
         // CONFIGURACIÓN
         private const string ContactEmail = "jsoladelarosa@gmail.com";
-        private const string DonationUrl = "https://ko-fi.com/josepsola";
         private const string EmailSubject = "Contacto desde SMS Forwarder";
 
         // Versión leída de AppInfo (= ApplicationDisplayVersion del csproj), nunca hardcodeada.
@@ -50,9 +49,6 @@ namespace SMSForwarder.Pages
             ContactTitleLabel.Text = "Contacto";
             ContactInstructionLabel.Text = "Toca para enviar un correo electrónico";
 
-            SupportTitleLabel.Text = "Apoya el Desarrollo";
-            DonationButton.Text = "Ko-fi.com - Invítame un café";
-            SupportDescLabel.Text = "Tu apoyo ayuda a mantener y mejorar la aplicación";
 
             LanguageTitleLabel.Text = "Idioma";
             LanguageDescLabel.Text = "Selecciona tu idioma preferido";
@@ -78,9 +74,6 @@ namespace SMSForwarder.Pages
             ContactTitleLabel.Text = "Contact";
             ContactInstructionLabel.Text = "Tap to send an email";
 
-            SupportTitleLabel.Text = "Support Development";
-            DonationButton.Text = "Ko-fi.com - Buy me a coffee";
-            SupportDescLabel.Text = "Your support helps maintain and improve the app";
 
             LanguageTitleLabel.Text = "Language";
             LanguageDescLabel.Text = "Select your preferred language";
@@ -199,69 +192,5 @@ namespace SMSForwarder.Pages
             }
         }
 
-        private async void OnDonationClicked(object? sender, EventArgs e)
-        {
-            try
-            {
-                var uri = new Uri(DonationUrl);
-                var browserLaunchOptions = new Microsoft.Maui.ApplicationModel.BrowserLaunchOptions
-                {
-                    LaunchMode = Microsoft.Maui.ApplicationModel.BrowserLaunchMode.SystemPreferred,
-                    TitleMode = Microsoft.Maui.ApplicationModel.BrowserTitleMode.Show,
-                    PreferredToolbarColor = Color.FromArgb("#E67E22"),
-                    PreferredControlColor = Color.FromArgb("#FFFFFF")
-                };
-
-                await Microsoft.Maui.ApplicationModel.Browser.OpenAsync(uri, browserLaunchOptions);
-            }
-            catch (FeatureNotSupportedException)
-            {
-                try
-                {
-                    await Microsoft.Maui.ApplicationModel.DataTransfer.Clipboard.SetTextAsync(DonationUrl);
-                    var currentLanguage = GetCurrentLanguage();
-                    var title = currentLanguage == "es" ? "Navegador no disponible" : "Browser not available";
-                    var message = currentLanguage == "es"
-                        ? $"Enlace copiado al portapapeles:\n{DonationUrl}"
-                        : $"Link copied to clipboard:\n{DonationUrl}";
-
-                    await SocShared.ModernDialog.AlertAsync(this,title, message, "OK");
-                }
-                catch
-                {
-                    var currentLanguage = GetCurrentLanguage();
-                    var errorTitle = currentLanguage == "es" ? "Error" : "Error";
-                    var errorMessage = currentLanguage == "es"
-                        ? $"No se pudo abrir el navegador: {DonationUrl}"
-                        : $"Could not open browser: {DonationUrl}";
-
-                    await SocShared.ModernDialog.AlertAsync(this,errorTitle, errorMessage, "OK");
-                }
-            }
-            catch (Exception ex)
-            {
-                try
-                {
-                    await Microsoft.Maui.ApplicationModel.DataTransfer.Clipboard.SetTextAsync(DonationUrl);
-                    var currentLanguage = GetCurrentLanguage();
-                    var title = currentLanguage == "es" ? "Error al abrir enlace" : "Error opening link";
-                    var message = currentLanguage == "es"
-                        ? $"No se pudo abrir el navegador ({ex.Message}), enlace copiado al portapapeles."
-                        : $"Could not open browser ({ex.Message}), link copied to clipboard.";
-
-                    await SocShared.ModernDialog.AlertAsync(this,title, message, "OK");
-                }
-                catch
-                {
-                    var currentLanguage = GetCurrentLanguage();
-                    var errorTitle = currentLanguage == "es" ? "Error" : "Error";
-                    var errorMessage = currentLanguage == "es"
-                        ? $"No se pudo abrir el enlace: {DonationUrl}"
-                        : $"Could not open link: {DonationUrl}";
-
-                    await SocShared.ModernDialog.AlertAsync(this,errorTitle, errorMessage, "OK");
-                }
-            }
-        }
     }
 }
