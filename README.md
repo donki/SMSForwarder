@@ -2,6 +2,11 @@
 
 Una aplicación Android de mensajes desarrollada en .NET MAUI: gestiona tus SMS y, además, reenvía automáticamente los que recibes a los números de teléfono que configures.
 
+## Dónde conseguirla
+
+- **Google Play:** https://play.google.com/store/apps/details?id=com.socratic.smsforwarder
+- **Releases de GitHub** (APK / EXE / MSIX de cada versión): https://github.com/donki/SMSForwarder/releases
+
 ## ✨ Características
 
 ### 💬 Mensajes
