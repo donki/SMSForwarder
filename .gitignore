@@ -381,3 +381,4 @@ keystore.password.txt
 # Material de firma / herramientas (no versionar)
 firmaparaGPC.zip
 pepk*.jar
+releases/
