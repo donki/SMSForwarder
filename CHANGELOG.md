@@ -5,6 +5,16 @@ Todos los cambios notables de este proyecto serán documentados en este archivo.
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/),
 y este proyecto adhiere al [Versionado Semántico](https://semver.org/lang/es/).
 
+## [2026.09.22.2] - 2026-09-22
+
+### ✨ Agregado
+- **«📤 Reenviar a…» en el mensaje**: abriendo un SMS recibido, un botón deja configurado en dos
+  toques a quién se le reenvían los mensajes de ese remitente, sin pasar por Configuración. Pregunta
+  a qué número (los ya configurados o uno nuevo) y qué mandarle: **todos los SMS de ese remitente** o
+  **solo los que contengan una palabra o frase**. Si ese número recibía todos los SMS, avisa de que
+  al poner la condición dejará de recibirlos todos; y si ya tenía palabras puestas, lo dice en la
+  confirmación (los mensajes del remitente también tendrán que cumplirlas).
+
 ## [2026.09.22.1] - 2026-09-22
 
 ### ✨ Agregado

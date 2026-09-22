@@ -41,10 +41,17 @@
             </Border>
         </ScrollView>
 
-        <Button x:Name="ReplyButton"
-                Grid.Row="2"
-                Style="{StaticResource PrimaryButton}"
-                Clicked="OnReplyClicked" />
+        <!-- Responder y, al lado, dejar configurado a quien se reenvian los SMS de este remitente. -->
+        <Grid Grid.Row="2" ColumnDefinitions="*,*" ColumnSpacing="8">
+            <Button x:Name="ForwardRuleButton"
+                    Grid.Column="0"
+                    Style="{StaticResource OutlineButton}"
+                    Clicked="OnForwardRuleClicked" />
+            <Button x:Name="ReplyButton"
+                    Grid.Column="1"
+                    Style="{StaticResource PrimaryButton}"
+                    Clicked="OnReplyClicked" />
+        </Grid>
     </Grid>
 
 </ContentPage>
