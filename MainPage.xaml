@@ -97,7 +97,11 @@
                                                        CommandParameter="{Binding .}"/>
                                         </SwipeItems>
                                     </SwipeView.RightItems>
+                                    <!-- Tocar la fila abre que SMS recibe ese numero (por defecto, todos). -->
                                     <Grid Padding="16,12" ColumnDefinitions="Auto,*,Auto">
+                                        <Grid.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="OnDestinationTapped" />
+                                        </Grid.GestureRecognizers>
                                         <Border Grid.Column="0"
                                                 BackgroundColor="{StaticResource PrimaryLight}"
                                                 StrokeThickness="0"
@@ -110,12 +114,15 @@
                                                    HorizontalOptions="Center"
                                                    VerticalOptions="Center"/>
                                         </Border>
-                                        <Label Grid.Column="1"
-                                               Text="{Binding .}"
-                                               Style="{StaticResource BodyText}"
-                                               FontSize="16"
-                                               VerticalOptions="Center"
-                                               Margin="12,0,0,0"/>
+                                        <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center" Margin="12,0,0,0">
+                                            <Label Text="{Binding Phone}"
+                                                   Style="{StaticResource BodyText}"
+                                                   FontSize="16"/>
+                                            <Label Text="{Binding Summary}"
+                                                   Style="{StaticResource HintText}"
+                                                   FontSize="12"
+                                                   LineBreakMode="TailTruncation"/>
+                                        </VerticalStackLayout>
                                         <Label Grid.Column="2"
                                                Text="›"
                                                FontSize="22"

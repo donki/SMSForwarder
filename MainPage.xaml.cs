@@ -1,6 +1,6 @@
-﻿using SMSForwarder.Services;
-using System.Collections.ObjectModel;
-using System.Text.Json;
+﻿using SMSForwarder.Models;
+using SMSForwarder.Pages;
+using SMSForwarder.Services;
 using System.Text.RegularExpressions;
 
 namespace SMSForwarder
@@ -14,7 +14,6 @@ namespace SMSForwarder
         private readonly IContactPicker _contactPicker;
         private readonly ILocalizationService _localizationService;
         private bool _isApplyingLanguageSelection;
-        private ObservableCollection<string> phones = new();
 
         public MainPage(ILoggingService loggingService, IContactPicker contactPicker, ILocalizationService localizationService)
         {
@@ -23,14 +22,8 @@ namespace SMSForwarder
             _contactPicker = contactPicker;
             _localizationService = localizationService;
 
-            var json = Preferences.Default.Get("phones", "[]");
-            var list = JsonSerializer.Deserialize<List<string>>(json);
-            if (list != null)
-            {
-                foreach (var phone in list)
-                    phones.Add(phone);
-            }
-            PhoneList.ItemsSource = phones;
+            DestinationStore.Load();
+            PhoneList.ItemsSource = DestinationStore.Items;
 
             // Actualizar strings localizados
             UpdateLocalizedStrings();
@@ -48,15 +41,16 @@ namespace SMSForwarder
             ContactsButton.Text = _localizationService.GetString("main.from_contacts");
             NumbersListLabel.Text = _localizationService.GetString("main.numbers_list");
             InfoTitle.Text = "💡 " + _localizationService.GetString("menu.settings");
+            RefreshSummaries();
 
             // Actualizar información de ayuda según idioma
             if (_localizationService.CurrentLanguage == "es-ES")
             {
-                InfoText.Text = "• Los SMS recibidos se reenviarán automáticamente a estos números\n• Puedes escribir números manualmente o seleccionarlos desde tus contactos\n• Para configurar permisos avanzados, ve a la sección Diagnósticos\n• Desliza hacia la izquierda en un número para eliminarlo";
+                InfoText.Text = "• Los SMS recibidos se reenviarán automáticamente a estos números\n• Toca un número para elegir qué SMS recibe: por defecto le llegan todos\n• Puedes escribir números manualmente o seleccionarlos desde tus contactos\n• Para configurar permisos avanzados, ve a la sección Diagnósticos\n• Desliza hacia la izquierda en un número para eliminarlo";
             }
             else
             {
-                InfoText.Text = "• Received SMS will be automatically forwarded to these numbers\n• You can enter numbers manually or select them from your contacts\n• For advanced permission settings, go to the Diagnostics section\n• Swipe left on a number to delete it";
+                InfoText.Text = "• Received SMS will be automatically forwarded to these numbers\n• Tap a number to choose which SMS it receives: by default it gets them all\n• You can enter numbers manually or select them from your contacts\n• For advanced permission settings, go to the Diagnostics section\n• Swipe left on a number to delete it";
             }
         }
 
@@ -111,10 +105,9 @@ namespace SMSForwarder
                     var cleanNumber = PhoneEntry.Text.Replace(" ", "").Trim();
                     if (IsValidPhoneNumber(cleanNumber))
                     {
-                        if (!phones.Contains(cleanNumber))
+                        if (!Contains(cleanNumber))
                         {
-                            phones.Add(cleanNumber);
-                            SavePhones();
+                            AddDestination(cleanNumber);
                             PhoneEntry.Text = string.Empty;
                             _loggingService.LogInfo($"Número agregado: {cleanNumber}");
                         }
@@ -150,11 +143,11 @@ namespace SMSForwarder
         {
             try
             {
-                if (sender is SwipeItem swipeItem && swipeItem.CommandParameter is string phone)
+                if (sender is SwipeItem { CommandParameter: ForwardDestination destination })
                 {
-                    phones.Remove(phone);
-                    SavePhones();
-                    _loggingService.LogInfo($"Número eliminado: {phone}");
+                    DestinationStore.Items.Remove(destination);
+                    DestinationStore.Save(_loggingService);
+                    _loggingService.LogInfo($"Número eliminado: {destination.Phone}");
                 }
             }
             catch (Exception ex)
@@ -167,27 +160,29 @@ namespace SMSForwarder
             }
         }
 
-        private void SavePhones()
-        {
-            var phonesJson = JsonSerializer.Serialize(phones);
-            Preferences.Default.Set("phones", phonesJson);
+        private bool Contains(string phone) => DestinationStore.Items.Any(d => PhoneNumbers.AreEqual(d.Phone, phone));
 
-            // También guardar en las preferencias compartidas de Android para el BroadcastReceiver
-            if (Application.Current?.Handler?.MauiContext?.Context is Android.Content.Context context)
-            {
-                try
-                {
-                    var prefs = context.GetSharedPreferences($"{context.PackageName}_preferences", Android.Content.FileCreationMode.Private);
-                    var editor = prefs?.Edit();
-                    editor?.PutString("phones", phonesJson);
-                    editor?.Apply();
-                    _loggingService.LogInfo($"Números guardados en preferencias de Android: {phonesJson}");
-                }
-                catch (Exception ex)
-                {
-                    _loggingService.LogError($"Error al guardar en preferencias de Android: {ex.Message}");
-                }
-            }
+        /// <summary>Un numero nuevo nace sin filtros: le llegan todos los SMS hasta que se le pongan.</summary>
+        private void AddDestination(string phone)
+        {
+            var destination = new ForwardDestination { Phone = phone };
+            destination.Summary = DestinationStore.Describe(destination, _localizationService);
+            DestinationStore.Items.Add(destination);
+            DestinationStore.Save(_loggingService);
+        }
+
+        private void RefreshSummaries()
+        {
+            foreach (var destination in DestinationStore.Items)
+                destination.Summary = DestinationStore.Describe(destination, _localizationService);
+        }
+
+        /// <summary>Tocar un numero: que SMS recibe (remitentes y palabras).</summary>
+        private async void OnDestinationTapped(object? sender, TappedEventArgs e)
+        {
+            if ((sender as BindableObject)?.BindingContext is not ForwardDestination destination)
+                return;
+            await Shell.Current.GoToAsync(nameof(DestinationPage), new Dictionary<string, object> { ["destination"] = destination });
         }
 
         private void OnItemSelected(object sender, SelectionChangedEventArgs e)
@@ -241,10 +236,9 @@ namespace SMSForwarder
 
                     if (IsValidPhoneNumber(cleanNumber))
                     {
-                        if (!phones.Contains(cleanNumber))
+                        if (!Contains(cleanNumber))
                         {
-                            phones.Add(cleanNumber);
-                            SavePhones();
+                            AddDestination(cleanNumber);
                             _loggingService.LogInfo($"Número agregado desde contactos: {cleanNumber}");
 
                             // Mostrar confirmación
@@ -296,6 +290,13 @@ namespace SMSForwarder
             {
                 _loggingService.LogError("Error al procesar contacto seleccionado", ex);
             }
+        }
+
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+            // Al volver de la pantalla de filtros, la frase de cada fila puede haber cambiado.
+            RefreshSummaries();
         }
 
         protected override void OnDisappearing()

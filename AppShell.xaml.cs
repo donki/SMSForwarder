@@ -16,6 +16,7 @@ namespace SMSForwarder
             Routing.RegisterRoute(nameof(MessagesPage), typeof(MessagesPage));
             Routing.RegisterRoute(nameof(ComposePage), typeof(ComposePage));
             Routing.RegisterRoute(nameof(MessageDetailPage), typeof(MessageDetailPage));
+            Routing.RegisterRoute(nameof(DestinationPage), typeof(DestinationPage));
 
             // Obtener el servicio de localización desde el contenedor de servicios
             _localizationService = MauiApplication.Current?.Services.GetRequiredService<ILocalizationService>() ?? new LocalizationService();

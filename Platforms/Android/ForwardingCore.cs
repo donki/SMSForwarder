@@ -1,6 +1,6 @@
 using Android.App;
 using Android.Content;
-using System.Text.Json;
+using SMSForwarder.Models;
 using AndroidSmsManager = Android.Telephony.SmsManager;
 using Application = Android.App.Application;
 
@@ -47,32 +47,18 @@ namespace SMSForwarder.Platforms.Android
                     return;
                 }
 
-                var phonesJson = prefs.GetString("phones", null);
-                if (string.IsNullOrEmpty(phonesJson))
+                // Los destinos completos (con sus filtros); si solo hay el formato viejo, se leen los numeros.
+                var destinations = ForwardDestinations.Parse(
+                    prefs.GetString(ForwardDestinations.DestinationsKey, null),
+                    prefs.GetString(ForwardDestinations.PhonesKey, null));
+                if (destinations.Count == 0)
                 {
                     SafeLog("No hay numeros guardados en preferencias");
                     return;
                 }
 
-                List<string>? phones;
-                try
-                {
-                    phones = JsonSerializer.Deserialize<List<string>>(phonesJson);
-                    if (phones == null || phones.Count == 0)
-                    {
-                        SafeLog("No hay numeros para reenviar");
-                        return;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    SafeLog($"Error deserializando numeros: {ex.Message}");
-                    return;
-                }
-
                 // PREVENCION DE BUCLES: no reenviar si el remitente es uno de los numeros de reenvio
-                var cleanSender = CleanPhoneNumber(sender);
-                var isFromForwardingNumber = phones.Any(phone => ArePhoneNumbersEqual(cleanSender, CleanPhoneNumber(phone)));
+                var isFromForwardingNumber = destinations.Any(d => PhoneNumbers.AreEqual(d.Phone, sender));
                 if (isFromForwardingNumber)
                 {
                     SafeLog($"BUCLE DETECTADO: mensaje desde un numero de reenvio ({sender}). No se reenvia.");
@@ -84,7 +70,14 @@ namespace SMSForwarder.Platforms.Android
                     return;
                 }
 
-                SafeLog($"Procesando reenvio a {phones.Count} numeros");
+                // Cada destino decide: sin filtros le llega todo; con remitentes o palabras, solo lo que casa.
+                var targets = destinations.Where(d => !string.IsNullOrWhiteSpace(d.Phone) && d.Matches(sender, messageBody)).ToList();
+                if (targets.Count == 0)
+                {
+                    SafeLog($"Ningun destino casa con este mensaje ({destinations.Count} configurados). No se reenvia.");
+                    return;
+                }
+                SafeLog($"Procesando reenvio a {targets.Count} de {destinations.Count} numeros");
 
                 var forwardedMessage = $"[SMSForwarder] De: {sender}\n{messageBody}";
                 if (forwardedMessage.Length > 160)
@@ -98,7 +91,7 @@ namespace SMSForwarder.Platforms.Android
 
                 var successCount = 0;
                 var errorCount = 0;
-                foreach (var phone in phones.Where(p => !string.IsNullOrWhiteSpace(p)))
+                foreach (var phone in targets.Select(d => d.Phone))
                 {
                     try
                     {
@@ -160,23 +153,6 @@ namespace SMSForwarder.Platforms.Android
         {
             try { System.Diagnostics.Debug.WriteLine($"[Forwarding] {DateTime.Now:HH:mm:ss}: {message}"); }
             catch { }
-        }
-
-        private static string CleanPhoneNumber(string phoneNumber)
-        {
-            if (string.IsNullOrWhiteSpace(phoneNumber)) return "";
-            return phoneNumber.Replace(" ", "").Replace("-", "").Replace("(", "")
-                              .Replace(")", "").Replace(".", "").Replace("+", "").Trim();
-        }
-
-        private static bool ArePhoneNumbersEqual(string phone1, string phone2)
-        {
-            if (string.IsNullOrWhiteSpace(phone1) || string.IsNullOrWhiteSpace(phone2)) return false;
-            if (phone1 == phone2) return true;
-            var minLength = Math.Min(phone1.Length, phone2.Length);
-            if (minLength >= 9)
-                return phone1.Substring(phone1.Length - 9) == phone2.Substring(phone2.Length - 9);
-            return false;
         }
 
         private static bool IsForwardedMessage(string messageBody)

@@ -5,6 +5,25 @@ Todos los cambios notables de este proyecto serán documentados en este archivo.
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/),
 y este proyecto adhiere al [Versionado Semántico](https://semver.org/lang/es/).
 
+## [2026.09.22.1] - 2026-09-22
+
+### ✨ Agregado
+- **Cada número decide qué SMS recibe.** Por defecto le llegan **todos**, como hasta ahora. Tocando
+  un número de la lista se abre «Qué SMS recibe», donde se puede apagar «Todos los SMS» y poner:
+  - **Solo de estos remitentes**: uno o varios teléfonos (a mano o desde el selector de contactos).
+    Vale con que el SMS venga de uno de ellos; el número se compara por sus últimos 9 dígitos, así
+    que da igual si llega con prefijo de país o sin él.
+  - **Que contenga estas palabras o frases**: una o varias. Vale con que aparezca una, y no
+    distingue mayúsculas ni acentos («PAGO» encuentra «pagó»).
+  - Con las dos cosas puestas hay que **cumplir las dos**: que venga de ese remitente **y** que
+    contenga una de esas palabras.
+  - La lista de números enseña debajo de cada uno qué recibe («Le llegan todos los SMS», «Solo de 2
+    remitente(s) · con 3 palabra(s) o frase(s)»). Se guarda al momento, sin botón de guardar.
+
+### 🔧 Cambiado
+- Los destinos se guardan en `destinations` (número + filtros) y se sigue escribiendo `phones` (solo
+  los números) para que una versión anterior instalada encima siga reenviando a todos.
+
 ## [2026.08.28.0] - 2026-08-28
 
 ### ✨ Agregado
