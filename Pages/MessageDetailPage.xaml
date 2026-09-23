@@ -41,17 +41,25 @@
             </Border>
         </ScrollView>
 
-        <!-- Responder y, al lado, dejar configurado a quien se reenvian los SMS de este remitente. -->
-        <Grid Grid.Row="2" ColumnDefinitions="*,*" ColumnSpacing="8">
-            <Button x:Name="ForwardRuleButton"
-                    Grid.Column="0"
-                    Style="{StaticResource OutlineButton}"
-                    Clicked="OnForwardRuleClicked" />
+        <!-- Reenviar este mensaje a alguien, dejar configurado a quien se reenvian los SMS de este
+             remitente, y responder. -->
+        <VerticalStackLayout Grid.Row="2" Spacing="8">
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="8">
+                <Button x:Name="ForwardButton"
+                        Grid.Column="0"
+                        FontSize="14"
+                        Style="{StaticResource OutlineButton}"
+                        Clicked="OnForwardClicked" />
+                <Button x:Name="ForwardRuleButton"
+                        Grid.Column="1"
+                        FontSize="14"
+                        Style="{StaticResource OutlineButton}"
+                        Clicked="OnForwardRuleClicked" />
+            </Grid>
             <Button x:Name="ReplyButton"
-                    Grid.Column="1"
                     Style="{StaticResource PrimaryButton}"
                     Clicked="OnReplyClicked" />
-        </Grid>
+        </VerticalStackLayout>
     </Grid>
 
 </ContentPage>

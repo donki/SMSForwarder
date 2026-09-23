@@ -5,6 +5,22 @@ Todos los cambios notables de este proyecto serán documentados en este archivo.
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/),
 y este proyecto adhiere al [Versionado Semántico](https://semver.org/lang/es/).
 
+## [2026.09.23.0] - 2026-09-23
+
+### ✨ Agregado
+- **Borrar mensajes sin deslizar.** Cada mensaje de la lista lleva su propio botón de papelera:
+  deslizar para borrar abría el detalle del SMS en vez de borrarlo (en Android el `SwipeView` de la
+  fila se comía el gesto), así que se ha quitado el deslizamiento.
+- **Selección múltiple en el buzón.** El botón ☑️ de la cabecera entra en modo selección: cada fila
+  enseña su casilla, tocar la fila la marca o la desmarca, el pie ofrece marcar o desmarcar todo y
+  **🗑️ Eliminar (n)** borra de una vez los marcados (con una confirmación que dice cuántos son). Si
+  alguno no se puede borrar, se sigue con el resto y se avisa de cuántos se borraron. El botón de
+  atrás sale del modo selección en vez de cerrar la aplicación.
+- **Reenviar un mensaje desde su detalle.** Botón **↪️ Reenviar**: pregunta a quién (los números de
+  destino ya configurados o cualquier otro) y abre la redacción con el texto ya puesto, precedido de
+  «De: <remitente>», para retocarlo antes de enviarlo. Es distinto de «📤 Reenviar a…», que configura
+  el reenvío automático de ese remitente.
+
 ## [2026.09.22.2] - 2026-09-22
 
 ### ✨ Agregado

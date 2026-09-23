@@ -51,6 +51,7 @@ namespace SMSForwarder.Pages
             DateLabel.Text = _message.DateText;
             CopyBodyButton.Text = _localization.GetString("messages.copy_text");
             ReplyButton.Text = _localization.GetString("messages.reply");
+            ForwardButton.Text = _localization.GetString("messages.forward_now");
             ForwardRuleButton.Text = _localization.GetString("messages.forward_rule");
 
             // Sin numero no hay a quien responder ni que copiar (puede pasar en mensajes de servicio).
@@ -58,6 +59,8 @@ namespace SMSForwarder.Pages
             CopyAddressButton.IsEnabled = hasAddress;
             ReplyButton.IsEnabled = hasAddress;
             ForwardRuleButton.IsEnabled = hasAddress;
+            // Reenviar el texto no necesita conocer el remitente: vale incluso para un SMS de servicio.
+            ForwardButton.IsEnabled = !string.IsNullOrEmpty(_message.Body);
 
             BodyLabel.FormattedText = BuildBody(_message.Body);
         }
@@ -141,6 +144,54 @@ namespace SMSForwarder.Pages
                 _localization.GetString("messages.copied_title"),
                 _localization.GetString("messages.copied_text"),
                 _localization.GetString("common.ok"));
+        }
+
+        /// <summary>
+        /// Reenvia este mensaje ahora mismo: se elige a quien (los numeros ya configurados como
+        /// destino o cualquier otro) y se abre la redaccion con el texto ya puesto, para poder
+        /// retocarlo antes de enviarlo. No toca las reglas de reenvio automatico.
+        /// </summary>
+        private async void OnForwardClicked(object? sender, EventArgs e)
+        {
+            if (_message is null) return;
+
+            try
+            {
+                string? to = null;
+                DestinationStore.Load();
+                var numbers = DestinationStore.Items
+                    .Where(d => !string.IsNullOrWhiteSpace(d.Phone))
+                    .Select(d => d.Phone)
+                    .ToList();
+
+                if (numbers.Count > 0)
+                {
+                    // Con destinos configurados se ofrecen primero: es a quien se reenvia casi siempre.
+                    var other = _localization.GetString("messages.forward_other_recipient");
+                    var cancel = _localization.GetString("common.cancel");
+                    var chosen = await ModernDialog.ActionSheetAsync(this,
+                        _localization.GetString("messages.forward_now_to"),
+                        cancel, numbers.Append(other).ToArray());
+                    if (chosen is null || chosen == cancel) return;
+                    if (chosen != other) to = chosen;
+                }
+
+                var culture = System.Globalization.CultureInfo.CurrentCulture;
+                var body = string.IsNullOrWhiteSpace(_message.Address)
+                    ? _message.Body
+                    : string.Format(culture, _localization.GetString("messages.forward_body"),
+                        _message.Address, _message.Body);
+
+                var parameters = new ShellNavigationQueryParameters { ["body"] = body };
+                if (!string.IsNullOrWhiteSpace(to)) parameters["to"] = to;
+                await Shell.Current.GoToAsync(nameof(ComposePage), parameters);
+            }
+            catch (Exception ex)
+            {
+                _logging.LogError("Error reenviando el mensaje desde el detalle", ex);
+                await ModernDialog.AlertAsync(this, _localization.GetString("common.error"), ex.Message,
+                    _localization.GetString("common.ok"));
+            }
         }
 
         /// <summary>

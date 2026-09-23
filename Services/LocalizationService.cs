@@ -119,6 +119,14 @@ namespace SMSForwarder.Services
                 { "messages.forward_done", "{0} recibir\u00e1 los SMS de {1}." },
                 { "messages.forward_done_word", "{0} recibir\u00e1 los SMS de {1} que contengan \u00ab{2}\u00bb." },
                 { "messages.forward_done_words", "{0} recibir\u00e1 los SMS de {1} que contengan alguna de las palabras que ya ten\u00eda puestas: {2}." },
+                { "messages.forward_now", "\u21aa\ufe0f Reenviar" },
+                { "messages.forward_now_to", "\u00bfA qui\u00e9n le reenv\u00edas este mensaje?" },
+                { "messages.forward_other_recipient", "\U0001F465 Otro destinatario\u2026" },
+                { "messages.forward_body", "De: {0}\n{1}" },
+                { "messages.delete_selected", "\U0001F5D1\ufe0f Eliminar" },
+                { "messages.delete_selected_count", "\U0001F5D1\ufe0f Eliminar ({0})" },
+                { "messages.confirm_delete_many", "\u00bfEliminar {0} mensajes del tel\u00e9fono?" },
+                { "messages.delete_partial", "Se han borrado {0} de {1}." },
 
                 // ComposePage - Redacción
                 { "compose.title", "Nuevo mensaje" },
@@ -253,6 +261,14 @@ namespace SMSForwarder.Services
                 { "messages.forward_done", "{0} will get the SMS from {1}." },
                 { "messages.forward_done_word", "{0} will get the SMS from {1} containing \u201c{2}\u201d." },
                 { "messages.forward_done_words", "{0} will get the SMS from {1} containing one of the words already set: {2}." },
+                { "messages.forward_now", "\u21aa\ufe0f Forward" },
+                { "messages.forward_now_to", "Who should this message be forwarded to?" },
+                { "messages.forward_other_recipient", "\U0001F465 Another recipient\u2026" },
+                { "messages.forward_body", "From: {0}\n{1}" },
+                { "messages.delete_selected", "\U0001F5D1\ufe0f Delete" },
+                { "messages.delete_selected_count", "\U0001F5D1\ufe0f Delete ({0})" },
+                { "messages.confirm_delete_many", "Delete {0} messages from the phone?" },
+                { "messages.delete_partial", "{0} of {1} messages were deleted." },
 
                 // ComposePage - Compose
                 { "compose.title", "New message" },

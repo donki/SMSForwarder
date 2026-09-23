@@ -1,11 +1,16 @@
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+
 namespace SMSForwarder.Models
 {
     /// <summary>
     /// Un mensaje SMS leido del proveedor del sistema (buzon de entrada o enviados).
     /// Modelo neutro de plataforma para poder mostrarlo en la UI de MAUI.
     /// </summary>
-    public class SmsMessageItem
+    public class SmsMessageItem : INotifyPropertyChanged
     {
+        private bool _isSelected;
+
         public long Id { get; set; }
         public string Address { get; set; } = "";
         public string Body { get; set; } = "";
@@ -13,9 +18,29 @@ namespace SMSForwarder.Models
         public bool IsRead { get; set; }
         public bool IsInbox { get; set; }   // true = recibido, false = enviado
 
+        /// <summary>
+        /// Marcado en el modo de seleccion multiple del buzon. Notifica porque la casilla de cada
+        /// fila se enlaza en los dos sentidos y hay que poder desmarcarlas todas desde la pagina.
+        /// </summary>
+        public bool IsSelected
+        {
+            get => _isSelected;
+            set
+            {
+                if (_isSelected == value) return;
+                _isSelected = value;
+                OnPropertyChanged();
+            }
+        }
+
         public string DateText => Date == DateTime.MinValue ? "" : Date.ToString("dd/MM/yyyy HH:mm");
         public string DirectionIcon => IsInbox ? "📥" : "📤";
         public string Snippet => Body.Length > 100 ? Body.Substring(0, 100) + "…" : Body;
         public string DisplayAddress => string.IsNullOrWhiteSpace(Address) ? "(desconocido)" : Address;
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        private void OnPropertyChanged([CallerMemberName] string? name = null)
+            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
     }
 }

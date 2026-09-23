@@ -6,8 +6,9 @@ namespace SMSForwarder.Pages
 {
     /// <summary>
     /// Buzon de mensajes: lista los SMS recibidos y enviados del proveedor del sistema, permite
-    /// marcarlos como leidos, borrarlos y responder. Es la pantalla que justifica READ_SMS y el
-    /// rol de app de SMS por defecto: sin ella la app no gestionaria mensajes, solo los reenviaria.
+    /// marcarlos como leidos, borrarlos (de uno en uno o varios a la vez) y responder. Es la
+    /// pantalla que justifica READ_SMS y el rol de app de SMS por defecto: sin ella la app no
+    /// gestionaria mensajes, solo los reenviaria.
     /// </summary>
     public partial class MessagesPage : ContentPage
     {
@@ -16,6 +17,7 @@ namespace SMSForwarder.Pages
         private readonly ObservableCollection<SmsMessageItem> _messages = new();
         private bool _showingInbox = true;
         private bool _loading;
+        private bool _isSelecting;
 
         public MessagesPage(IMessageStore store, ILocalizationService localization)
         {
@@ -30,12 +32,37 @@ namespace SMSForwarder.Pages
             _localization.LanguageChanged += OnLanguageChanged;
         }
 
+        /// <summary>
+        /// Modo de seleccion multiple. Las filas lo miran por <c>x:Reference</c> para enseñar la
+        /// casilla (y esconder el boton de borrar de la fila, que ahi sobra).
+        /// </summary>
+        public bool IsSelecting
+        {
+            get => _isSelecting;
+            private set
+            {
+                if (_isSelecting == value) return;
+                _isSelecting = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(IsNotSelecting));
+            }
+        }
+
+        /// <summary>Lo contrario de <see cref="IsSelecting"/>: XAML no sabe negar un enlace.</summary>
+        public bool IsNotSelecting => !_isSelecting;
+
         protected override async void OnAppearing()
         {
             base.OnAppearing();
             UpdateDefaultAppBanner();
             await LoadAsync();
         }
+
+        /// <summary>
+        /// Sale del modo de seleccion multiple. Lo llama el <c>AppShell</c> cuando se pulsa atras:
+        /// el boton de atras de la pagina raiz se lo queda el Shell.
+        /// </summary>
+        public void CancelSelection() => LeaveSelectionMode();
 
         // ---------------------------------------------------------------- carga
 
@@ -58,6 +85,8 @@ namespace SMSForwarder.Pages
                 _messages.Clear();
                 foreach (var item in items)
                     _messages.Add(item);
+
+                UpdateSelectionBar();
             }
             catch (Exception ex)
             {
@@ -98,23 +127,38 @@ namespace SMSForwarder.Pages
         {
             if (_showingInbox == inbox) return;
             _showingInbox = inbox;
+            LeaveSelectionMode();
             UpdateTabButtons();
             UpdateLocalizedStrings();
             await LoadAsync();
         }
 
-        private async void OnRefreshClicked(object? sender, EventArgs e) => await LoadAsync();
+        private async void OnRefreshClicked(object? sender, EventArgs e)
+        {
+            LeaveSelectionMode();
+            await LoadAsync();
+        }
 
         private async void OnComposeClicked(object? sender, EventArgs e)
             => await GoToComposeAsync(null);
 
-        /// <summary>Al tocar un mensaje: se marca como leido y se abre la respuesta al remitente.</summary>
+        /// <summary>
+        /// Al tocar un mensaje: si estamos seleccionando, marca o desmarca la fila; si no, se marca
+        /// como leido y se abre el detalle.
+        /// </summary>
         private async void OnMessageSelected(object? sender, SelectionChangedEventArgs e)
         {
             if (e.CurrentSelection.FirstOrDefault() is not SmsMessageItem message) return;
 
             // Se limpia la seleccion para poder volver a abrir el mismo mensaje al regresar.
             MessagesList.SelectedItem = null;
+
+            if (IsSelecting)
+            {
+                message.IsSelected = !message.IsSelected;
+                UpdateSelectionBar();
+                return;
+            }
 
             if (message.IsInbox && !message.IsRead)
             {
@@ -135,19 +179,63 @@ namespace SMSForwarder.Pages
             await Shell.Current.GoToAsync(nameof(MessageDetailPage), parameters);
         }
 
+        // --------------------------------------------------- seleccion multiple
+
+        private void OnSelectModeClicked(object? sender, EventArgs e)
+        {
+            if (IsSelecting)
+                LeaveSelectionMode();
+            else
+                EnterSelectionMode();
+        }
+
+        private void OnCancelSelectionClicked(object? sender, EventArgs e) => LeaveSelectionMode();
+
+        /// <summary>Marca todo o, si ya estaba todo marcado, lo desmarca.</summary>
+        private void OnSelectAllClicked(object? sender, EventArgs e)
+        {
+            var marcar = _messages.Any(m => !m.IsSelected);
+            foreach (var message in _messages)
+                message.IsSelected = marcar;
+            UpdateSelectionBar();
+        }
+
+        private void OnItemCheckedChanged(object? sender, CheckedChangedEventArgs e) => UpdateSelectionBar();
+
+        private void EnterSelectionMode()
+        {
+            IsSelecting = true;
+            SelectionBar.IsVisible = true;
+            ComposeButton.IsVisible = false;
+            UpdateSelectionBar();
+        }
+
+        private void LeaveSelectionMode()
+        {
+            foreach (var message in _messages)
+                message.IsSelected = false;
+            IsSelecting = false;
+            SelectionBar.IsVisible = false;
+            ComposeButton.IsVisible = true;
+        }
+
+        private void UpdateSelectionBar()
+        {
+            if (!IsSelecting) return;
+            var count = _messages.Count(m => m.IsSelected);
+            DeleteSelectedButton.IsEnabled = count > 0;
+            DeleteSelectedButton.Text = count > 0
+                ? string.Format(System.Globalization.CultureInfo.CurrentCulture,
+                    _localization.GetString("messages.delete_selected_count"), count)
+                : _localization.GetString("messages.delete_selected");
+        }
+
+        // ------------------------------------------------------------- borrados
+
         private async void OnDeleteMessageClicked(object? sender, EventArgs e)
         {
-            if (sender is not SwipeItem { CommandParameter: SmsMessageItem message }) return;
-
-            // Borrar del proveedor del sistema solo funciona siendo la app de SMS por defecto.
-            if (!_store.IsDefaultSmsApp)
-            {
-                await SocShared.ModernDialog.AlertAsync(this,
-                    _localization.GetString("messages.default_title"),
-                    _localization.GetString("messages.delete_needs_default"),
-                    _localization.GetString("common.ok"));
-                return;
-            }
+            if (sender is not Button { CommandParameter: SmsMessageItem message }) return;
+            if (!await EnsureCanDeleteAsync()) return;
 
             var confirmed = await SocShared.ModernDialog.AlertAsync(this,
                 _localization.GetString("common.delete"),
@@ -173,6 +261,64 @@ namespace SMSForwarder.Pages
                     $"{_localization.GetString("messages.delete_error")}: {ex.Message}",
                     _localization.GetString("common.ok"));
             }
+        }
+
+        /// <summary>Borra de una vez todos los mensajes marcados.</summary>
+        private async void OnDeleteSelectedClicked(object? sender, EventArgs e)
+        {
+            var selected = _messages.Where(m => m.IsSelected).ToList();
+            if (selected.Count == 0) return;
+            if (!await EnsureCanDeleteAsync()) return;
+
+            var culture = System.Globalization.CultureInfo.CurrentCulture;
+            var confirmed = await SocShared.ModernDialog.AlertAsync(this,
+                _localization.GetString("common.delete"),
+                string.Format(culture, _localization.GetString("messages.confirm_delete_many"), selected.Count),
+                _localization.GetString("common.yes"),
+                _localization.GetString("common.cancel"));
+            if (!confirmed) return;
+
+            var borrados = 0;
+            var error = string.Empty;
+            foreach (var message in selected)
+            {
+                try
+                {
+                    if (!await _store.DeleteAsync(message)) continue;
+                    _messages.Remove(message);
+                    borrados++;
+                }
+                catch (Exception ex)
+                {
+                    // Se sigue con el resto: un mensaje que falla no tiene por que parar el borrado.
+                    error = ex.Message;
+                    System.Diagnostics.Debug.WriteLine($"[Messages] DeleteSelected: {ex.Message}");
+                }
+            }
+
+            LeaveSelectionMode();
+
+            if (borrados < selected.Count)
+            {
+                var detalle = string.Format(culture,
+                    _localization.GetString("messages.delete_partial"), borrados, selected.Count);
+                await SocShared.ModernDialog.AlertAsync(this,
+                    _localization.GetString("common.error"),
+                    error.Length > 0 ? $"{detalle} ({error})" : detalle,
+                    _localization.GetString("common.ok"));
+            }
+        }
+
+        /// <summary>Borrar del proveedor del sistema solo funciona siendo la app de SMS por defecto.</summary>
+        private async Task<bool> EnsureCanDeleteAsync()
+        {
+            if (_store.IsDefaultSmsApp) return true;
+
+            await SocShared.ModernDialog.AlertAsync(this,
+                _localization.GetString("messages.default_title"),
+                _localization.GetString("messages.delete_needs_default"),
+                _localization.GetString("common.ok"));
+            return false;
         }
 
         private async void OnMakeDefaultClicked(object? sender, EventArgs e)
@@ -236,6 +382,8 @@ namespace SMSForwarder.Pages
             EmptyLabel.Text = _localization.GetString("messages.empty");
             EmptyHintLabel.Text = _localization.GetString(
                 _showingInbox ? "messages.empty_inbox_hint" : "messages.empty_sent_hint");
+            DeleteSelectedButton.Text = _localization.GetString("messages.delete_selected");
+            UpdateSelectionBar();
         }
     }
 }

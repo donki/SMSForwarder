@@ -158,6 +158,15 @@ namespace SMSForwarder
 
         public override void OnBackPressed()
         {
+            // Estando en el modo de seleccion multiple del buzon, atras sale del modo en vez de
+            // cerrar la app. Se decide aqui porque esta actividad se queda el boton de atras: ni
+            // el Shell ni la pagina llegan a verlo.
+            if (Shell.Current?.CurrentPage is Pages.MessagesPage { IsSelecting: true } messages)
+            {
+                messages.CancelSelection();
+                return;
+            }
+
             MoveTaskToBack(true);
             FinishAndRemoveTask();
         }

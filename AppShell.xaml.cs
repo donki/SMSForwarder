@@ -26,6 +26,21 @@ namespace SMSForwarder
             UpdateLocalizedStrings();
         }
 
+        /// <summary>
+        /// Estando en el modo de seleccion multiple del buzon, el boton de atras sale del modo en
+        /// vez de cerrar la pantalla. Va aqui y no en la pagina porque el Shell se queda el gesto
+        /// de atras de su pagina raiz: el <c>OnBackButtonPressed</c> de la pagina no llega a correr.
+        /// </summary>
+        protected override bool OnBackButtonPressed()
+        {
+            if (CurrentPage is MessagesPage { IsSelecting: true } messages)
+            {
+                messages.CancelSelection();
+                return true;
+            }
+            return base.OnBackButtonPressed();
+        }
+
         private void OnLanguageChanged(object? sender, EventArgs e)
         {
             MainThread.BeginInvokeOnMainThread(UpdateLocalizedStrings);
