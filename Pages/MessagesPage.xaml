@@ -53,7 +53,7 @@
                         Clicked="OnSelectModeClicked"/>
                 <Button x:Name="RefreshButton"
                         Grid.Column="3"
-                        Text="↻"
+                        Text="🔄"
                         FontSize="18"
                         WidthRequest="48"
                         Style="{StaticResource OutlineButton}"
@@ -173,7 +173,7 @@
                         Clicked="OnDeleteSelectedClicked"/>
                 <Button x:Name="CancelSelectionButton"
                         Grid.Column="2"
-                        Text="✖️"
+                        Text="❌"
                         FontSize="18"
                         WidthRequest="48"
                         Style="{StaticResource OutlineButton}"

@@ -61,7 +61,7 @@
 
         <Button x:Name="SendButton"
                 Grid.Row="2"
-                Text="Enviar"
+                Text="📨 Enviar"
                 Style="{StaticResource PrimaryButton}"
                 Clicked="OnSendClicked"/>
     </Grid>

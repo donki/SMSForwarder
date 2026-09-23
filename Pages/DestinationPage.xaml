@@ -65,7 +65,7 @@
                             </Border>
                             <Button x:Name="AddSenderButton"
                                     Grid.Column="1"
-                                    Text="＋"
+                                    Text="➕"
                                     FontSize="20"
                                     WidthRequest="48"
                                     Style="{StaticResource PrimaryButton}"
@@ -87,7 +87,7 @@
                                                Style="{StaticResource BodyText}"
                                                VerticalOptions="Center"/>
                                         <Button Grid.Column="1"
-                                                Text="🗑"
+                                                Text="🗑️"
                                                 FontSize="16"
                                                 WidthRequest="44"
                                                 HeightRequest="38"
@@ -119,7 +119,7 @@
                             </Border>
                             <Button x:Name="AddKeywordButton"
                                     Grid.Column="1"
-                                    Text="＋"
+                                    Text="➕"
                                     FontSize="20"
                                     WidthRequest="48"
                                     Style="{StaticResource PrimaryButton}"
@@ -135,7 +135,7 @@
                                                LineBreakMode="TailTruncation"
                                                VerticalOptions="Center"/>
                                         <Button Grid.Column="1"
-                                                Text="🗑"
+                                                Text="🗑️"
                                                 FontSize="16"
                                                 WidthRequest="44"
                                                 HeightRequest="38"

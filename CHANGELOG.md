@@ -5,6 +5,26 @@ Todos los cambios notables de este proyecto serán documentados en este archivo.
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/),
 y este proyecto adhiere al [Versionado Semántico](https://semver.org/lang/es/).
 
+## [2026.09.23.1] - 2026-09-23
+
+### 🔄 Cambiado
+- **Un solo juego de iconos.** Convivían símbolos de texto finos (`↻`, `⧉`, `☎`, `✎`, `＋`, `✖️`) con
+  emoji de colores; ahora todos los botones usan la misma familia y cada acción tiene su icono:
+  añadir ➕, contactos 👥, actualizar 🔄, seleccionar ☑️, borrar 🗑️, cancelar ❌, copiar 📋,
+  responder ↩️, reenviar ↪️, reenvío automático ⚙️, enviar 📨, remitentes 📞, palabras 💬.
+  La bandera inglesa de «Acerca de» pasa a ser 🇬🇧, la misma que en Configuración.
+- **Los dos botones de reenvío del detalle ya no se llaman igual.** Antes ponía «Reenviar» en uno y
+  «Reenviar a…» en el otro: ahora son **«↪️ Reenviar»** (mandar este mensaje a alguien) y
+  **«⚙️ Reenvío automático»** (a quién se le reenvían los SMS de este remitente), este último a lo
+  ancho para que el texto quepa entero; «Responder» sube al lado de «Reenviar».
+- **En Configuración, los números también se borran con su botón** de papelera (con confirmación) en
+  vez de deslizando: deslizar competía con el toque que abre «Qué SMS recibe», igual que pasaba en el
+  buzón. La ayuda de la pantalla lo dice ya así.
+
+### 🐛 Corregido
+- La versión del menú lateral estaba escrita a mano y se había quedado en la 2026.08.02.0; ahora se
+  lee del propio paquete.
+
 ## [2026.09.23.0] - 2026-09-23
 
 ### ✨ Agregado

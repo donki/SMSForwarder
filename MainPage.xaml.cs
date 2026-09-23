@@ -46,11 +46,11 @@ namespace SMSForwarder
             // Actualizar información de ayuda según idioma
             if (_localizationService.CurrentLanguage == "es-ES")
             {
-                InfoText.Text = "• Los SMS recibidos se reenviarán automáticamente a estos números\n• Toca un número para elegir qué SMS recibe: por defecto le llegan todos\n• Puedes escribir números manualmente o seleccionarlos desde tus contactos\n• Para configurar permisos avanzados, ve a la sección Diagnósticos\n• Desliza hacia la izquierda en un número para eliminarlo";
+                InfoText.Text = "• Los SMS recibidos se reenviarán automáticamente a estos números\n• Toca un número para elegir qué SMS recibe: por defecto le llegan todos\n• Puedes escribir números manualmente o seleccionarlos desde tus contactos\n• Para configurar permisos avanzados, ve a la sección Diagnósticos\n• Toca la papelera de un número para eliminarlo";
             }
             else
             {
-                InfoText.Text = "• Received SMS will be automatically forwarded to these numbers\n• Tap a number to choose which SMS it receives: by default it gets them all\n• You can enter numbers manually or select them from your contacts\n• For advanced permission settings, go to the Diagnostics section\n• Swipe left on a number to delete it";
+                InfoText.Text = "• Received SMS will be automatically forwarded to these numbers\n• Tap a number to choose which SMS it receives: by default it gets them all\n• You can enter numbers manually or select them from your contacts\n• For advanced permission settings, go to the Diagnostics section\n• Tap the bin on a number to delete it";
             }
         }
 
@@ -139,12 +139,21 @@ namespace SMSForwarder
             }
         }
 
-        private void OnDeleteClicked(object sender, EventArgs e)
+        private async void OnDeleteClicked(object sender, EventArgs e)
         {
             try
             {
-                if (sender is SwipeItem { CommandParameter: ForwardDestination destination })
+                // Antes se borraba deslizando la fila; ahora hay un boton, asi que se confirma
+                // igual que en el buzon (un toque sin querer no debe borrar un destino).
+                if (sender is Button { CommandParameter: ForwardDestination destination })
                 {
+                    var confirmed = await SocShared.ModernDialog.AlertAsync(this,
+                        _localizationService.GetString("main.delete"),
+                        _localizationService.GetString("main.confirm_delete"),
+                        _localizationService.GetString("main.delete_confirm_button"),
+                        _localizationService.GetString("main.cancel"));
+                    if (!confirmed) return;
+
                     DestinationStore.Items.Remove(destination);
                     DestinationStore.Save(_loggingService);
                     _loggingService.LogInfo($"Número eliminado: {destination.Phone}");

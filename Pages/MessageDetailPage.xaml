@@ -18,7 +18,7 @@
                 </VerticalStackLayout>
                 <Button x:Name="CopyAddressButton"
                         Grid.Column="1"
-                        Text="⧉"
+                        Text="📋"
                         FontSize="20"
                         WidthRequest="48"
                         Style="{StaticResource OutlineButton}"
@@ -44,21 +44,24 @@
         <!-- Reenviar este mensaje a alguien, dejar configurado a quien se reenvian los SMS de este
              remitente, y responder. -->
         <VerticalStackLayout Grid.Row="2" Spacing="8">
+            <!-- Lo de este mensaje: mandarselo a alguien o contestar al remitente -->
             <Grid ColumnDefinitions="*,*" ColumnSpacing="8">
                 <Button x:Name="ForwardButton"
                         Grid.Column="0"
                         FontSize="14"
                         Style="{StaticResource OutlineButton}"
                         Clicked="OnForwardClicked" />
-                <Button x:Name="ForwardRuleButton"
+                <Button x:Name="ReplyButton"
                         Grid.Column="1"
                         FontSize="14"
-                        Style="{StaticResource OutlineButton}"
-                        Clicked="OnForwardRuleClicked" />
+                        Style="{StaticResource PrimaryButton}"
+                        Clicked="OnReplyClicked" />
             </Grid>
-            <Button x:Name="ReplyButton"
-                    Style="{StaticResource PrimaryButton}"
-                    Clicked="OnReplyClicked" />
+            <!-- La regla de reenvio automatico va a lo ancho: su texto no cabia en media fila -->
+            <Button x:Name="ForwardRuleButton"
+                    FontSize="14"
+                    Style="{StaticResource OutlineButton}"
+                    Clicked="OnForwardRuleClicked" />
         </VerticalStackLayout>
     </Grid>
 

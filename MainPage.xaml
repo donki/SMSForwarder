@@ -60,7 +60,7 @@
                 <Grid ColumnDefinitions="*,*" ColumnSpacing="8">
                     <Button x:Name="AddButton"
                             Grid.Column="0"
-                            Text="📝 Agregar Número"
+                            Text="➕ Agregar número"
                             Clicked="OnAddClicked"
                             Style="{StaticResource PrimaryButton}"
                             FontSize="14"/>
@@ -87,49 +87,53 @@
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
                             <Border Style="{StaticResource Card}" Margin="0,4">
-                                <SwipeView>
-                                    <SwipeView.RightItems>
-                                        <SwipeItems>
-                                            <SwipeItem x:Name="DeleteSwipeItem"
-                                                       Text="Eliminar"
-                                                       BackgroundColor="{StaticResource Danger}"
-                                                       Invoked="OnDeleteClicked"
-                                                       CommandParameter="{Binding .}"/>
-                                        </SwipeItems>
-                                    </SwipeView.RightItems>
-                                    <!-- Tocar la fila abre que SMS recibe ese numero (por defecto, todos). -->
-                                    <Grid Padding="16,12" ColumnDefinitions="Auto,*,Auto">
-                                        <Grid.GestureRecognizers>
-                                            <TapGestureRecognizer Tapped="OnDestinationTapped" />
-                                        </Grid.GestureRecognizers>
-                                        <Border Grid.Column="0"
-                                                BackgroundColor="{StaticResource PrimaryLight}"
-                                                StrokeThickness="0"
-                                                StrokeShape="RoundRectangle 16"
-                                                WidthRequest="32"
-                                                HeightRequest="32"
-                                                VerticalOptions="Center">
-                                            <Label Text="📱"
-                                                   FontSize="16"
-                                                   HorizontalOptions="Center"
-                                                   VerticalOptions="Center"/>
-                                        </Border>
-                                        <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center" Margin="12,0,0,0">
-                                            <Label Text="{Binding Phone}"
-                                                   Style="{StaticResource BodyText}"
-                                                   FontSize="16"/>
-                                            <Label Text="{Binding Summary}"
-                                                   Style="{StaticResource HintText}"
-                                                   FontSize="12"
-                                                   LineBreakMode="TailTruncation"/>
-                                        </VerticalStackLayout>
-                                        <Label Grid.Column="2"
-                                               Text="›"
-                                               FontSize="22"
-                                               Style="{StaticResource HintText}"
+                                <!-- Tocar la fila abre que SMS recibe ese numero (por defecto, todos).
+                                     Borrar va por boton y no deslizando: el deslizamiento competia
+                                     con el toque y acababa abriendo el numero (igual que pasaba en
+                                     el buzon). -->
+                                <Grid Padding="16,12" ColumnDefinitions="Auto,*,Auto,Auto">
+                                    <Grid.GestureRecognizers>
+                                        <TapGestureRecognizer Tapped="OnDestinationTapped" />
+                                    </Grid.GestureRecognizers>
+                                    <Border Grid.Column="0"
+                                            BackgroundColor="{StaticResource PrimaryLight}"
+                                            StrokeThickness="0"
+                                            StrokeShape="RoundRectangle 16"
+                                            WidthRequest="32"
+                                            HeightRequest="32"
+                                            VerticalOptions="Center">
+                                        <Label Text="📱"
+                                               FontSize="16"
+                                               HorizontalOptions="Center"
                                                VerticalOptions="Center"/>
-                                    </Grid>
-                                </SwipeView>
+                                    </Border>
+                                    <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center" Margin="12,0,0,0">
+                                        <Label Text="{Binding Phone}"
+                                               Style="{StaticResource BodyText}"
+                                               FontSize="16"/>
+                                        <Label Text="{Binding Summary}"
+                                               Style="{StaticResource HintText}"
+                                               FontSize="12"
+                                               LineBreakMode="TailTruncation"/>
+                                    </VerticalStackLayout>
+                                    <Label Grid.Column="2"
+                                           Text="›"
+                                           FontSize="22"
+                                           Style="{StaticResource HintText}"
+                                           VerticalOptions="Center"/>
+                                    <Button Grid.Column="3"
+                                            Text="🗑️"
+                                            FontSize="16"
+                                            WidthRequest="44"
+                                            HeightRequest="44"
+                                            Padding="0"
+                                            Margin="8,0,0,0"
+                                            BackgroundColor="Transparent"
+                                            TextColor="{StaticResource Danger}"
+                                            VerticalOptions="Center"
+                                            Clicked="OnDeleteClicked"
+                                            CommandParameter="{Binding .}"/>
+                                </Grid>
                             </Border>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
@@ -147,7 +151,7 @@
                            Style="{StaticResource CardTitle}"
                            FontSize="14"/>
                     <Label x:Name="InfoText"
-                           Text="• Los SMS recibidos se reenviarán automáticamente a estos números&#x0a;• Puedes escribir números manualmente o seleccionarlos desde tus contactos&#x0a;• Para configurar permisos avanzados, ve a la sección Diagnósticos&#x0a;• Desliza hacia la izquierda en un número para eliminarlo"
+                           Text="• Los SMS recibidos se reenviarán automáticamente a estos números&#x0a;• Puedes escribir números manualmente o seleccionarlos desde tus contactos&#x0a;• Para configurar permisos avanzados, ve a la sección Diagnósticos&#x0a;• Toca la papelera de un número para eliminarlo"
                            Style="{StaticResource HintText}"
                            LineBreakMode="WordWrap"/>
                 </VerticalStackLayout>

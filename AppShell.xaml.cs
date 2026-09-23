@@ -58,7 +58,8 @@ namespace SMSForwarder
             AboutItem.Title = _localizationService.GetString("menu.about");
 
             // Actualizar footer
-            FooterVersion.Text = $"v2026.08.02.0";
+            // La version se lee del paquete: escrita a mano se quedaba vieja (decia 2026.08.02.0).
+            FooterVersion.Text = $"v{AppInfo.Current.VersionString}";
         }
     }
 }
