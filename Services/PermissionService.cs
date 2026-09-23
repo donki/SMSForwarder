@@ -178,10 +178,11 @@ namespace SMSForwarder.Services
                 var batteryStatus = await CheckBatteryOptimizationStatusAsync();
                 var manufacturer = GetManufacturer();
 
+                // Sin emoji: el texto de un diálogo no lleva iconos (van en los botones, y son SVG).
                 var message = $"Estado de permisos:\n\n" +
-                             $"📱 SMS: {(smsStatus == PermissionStatus.Granted ? "✅ Concedido" : "❌ Denegado")}\n" +
-                             $"🔋 Optimización batería: {(batteryStatus ? "✅ Desactivada" : "❌ Activada")}\n" +
-                             $"🚀 Fabricante: {manufacturer}\n\n" +
+                             $"SMS: {(smsStatus == PermissionStatus.Granted ? "concedido" : "denegado")}\n" +
+                             $"Optimización de batería: {(batteryStatus ? "desactivada" : "activada")}\n" +
+                             $"Fabricante: {manufacturer}\n\n" +
                              $"Para un funcionamiento óptimo, todos los permisos deben estar concedidos.";
 
                 await SocShared.ModernDialog.AlertAsync(Application.Current.MainPage,"Estado de Permisos", message, "OK");

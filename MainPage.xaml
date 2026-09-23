@@ -33,14 +33,18 @@
                 <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
                     <Button x:Name="SpanishButton"
                             Grid.Column="0"
-                            Text="🇪🇸 Español"
+                            Text="Español"
                             FontSize="14"
+                            ImageSource="ic_flag_es.png"
+                            ContentLayout="Left,8"
                             Clicked="OnSpanishClicked"/>
 
                     <Button x:Name="EnglishButton"
                             Grid.Column="1"
-                            Text="🇬🇧 English"
+                            Text="English"
                             FontSize="14"
+                            ImageSource="ic_flag_gb.png"
+                            ContentLayout="Left,8"
                             Clicked="OnEnglishClicked"/>
                 </Grid>
             </VerticalStackLayout>
@@ -60,14 +64,19 @@
                 <Grid ColumnDefinitions="*,*" ColumnSpacing="8">
                     <Button x:Name="AddButton"
                             Grid.Column="0"
-                            Text="➕ Agregar número"
+                            Text="Agregar número"
+                            ImageSource="ic_add_w.png"
+                            ContentLayout="Left,8"
                             Clicked="OnAddClicked"
                             Style="{StaticResource PrimaryButton}"
                             FontSize="14"/>
 
                     <Button x:Name="ContactsButton"
                             Grid.Column="1"
-                            Text="👥 Contactos"
+                            Text="Contactos"
+                            FontSize="14"
+                            ImageSource="ic_group_w.png"
+                            ContentLayout="Left,8"
                             Clicked="OnSelectFromContactsClicked"
                             Style="{StaticResource PrimaryButton}"
                             BackgroundColor="{StaticResource Accent}"/>
@@ -102,8 +111,10 @@
                                             WidthRequest="32"
                                             HeightRequest="32"
                                             VerticalOptions="Center">
-                                        <Label Text="📱"
-                                               FontSize="16"
+                                        <Image Source="ic_phone.png"
+                                               Aspect="AspectFit"
+                                               WidthRequest="18"
+                                               HeightRequest="18"
                                                HorizontalOptions="Center"
                                                VerticalOptions="Center"/>
                                     </Border>
@@ -114,25 +125,21 @@
                                         <Label Text="{Binding Summary}"
                                                Style="{StaticResource HintText}"
                                                FontSize="12"
-                                               LineBreakMode="TailTruncation"/>
+                                               LineBreakMode="WordWrap"/>
                                     </VerticalStackLayout>
-                                    <Label Grid.Column="2"
-                                           Text="›"
-                                           FontSize="22"
-                                           Style="{StaticResource HintText}"
+                                    <Image Grid.Column="2"
+                                           Source="ic_chevron_right.png"
+                                           Aspect="AspectFit"
+                                           WidthRequest="18"
+                                           HeightRequest="18"
                                            VerticalOptions="Center"/>
-                                    <Button Grid.Column="3"
-                                            Text="🗑️"
-                                            FontSize="16"
-                                            WidthRequest="44"
-                                            HeightRequest="44"
-                                            Padding="0"
-                                            Margin="8,0,0,0"
-                                            BackgroundColor="Transparent"
-                                            TextColor="{StaticResource Danger}"
-                                            VerticalOptions="Center"
-                                            Clicked="OnDeleteClicked"
-                                            CommandParameter="{Binding .}"/>
+                                    <ImageButton Grid.Column="3"
+                                                 Source="ic_delete_danger.png"
+                                                 Style="{StaticResource IconButtonPlain}"
+                                                 Margin="8,0,0,0"
+                                                 VerticalOptions="Center"
+                                                 Clicked="OnDeleteClicked"
+                                                 CommandParameter="{Binding .}"/>
                                 </Grid>
                             </Border>
                         </DataTemplate>
@@ -146,10 +153,18 @@
                     Padding="16"
                     Margin="0,8,0,0">
                 <VerticalStackLayout Spacing="8">
-                    <Label x:Name="InfoTitle"
-                           Text="💡 Información"
-                           Style="{StaticResource CardTitle}"
-                           FontSize="14"/>
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
+                        <Image Source="ic_info.png"
+                               Aspect="AspectFit"
+                               WidthRequest="18"
+                               HeightRequest="18"
+                               VerticalOptions="Center"/>
+                        <Label x:Name="InfoTitle"
+                               Grid.Column="1"
+                               Text="Información"
+                               Style="{StaticResource CardTitle}"
+                               FontSize="14"/>
+                    </Grid>
                     <Label x:Name="InfoText"
                            Text="• Los SMS recibidos se reenviarán automáticamente a estos números&#x0a;• Puedes escribir números manualmente o seleccionarlos desde tus contactos&#x0a;• Para configurar permisos avanzados, ve a la sección Diagnósticos&#x0a;• Toca la papelera de un número para eliminarlo"
                            Style="{StaticResource HintText}"

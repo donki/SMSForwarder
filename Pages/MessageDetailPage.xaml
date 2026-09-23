@@ -16,13 +16,11 @@
                            LineBreakMode="TailTruncation" />
                     <Label x:Name="DateLabel" Style="{StaticResource HintText}" />
                 </VerticalStackLayout>
-                <Button x:Name="CopyAddressButton"
-                        Grid.Column="1"
-                        Text="📋"
-                        FontSize="20"
-                        WidthRequest="48"
-                        Style="{StaticResource OutlineButton}"
-                        Clicked="OnCopyAddressClicked" />
+                <ImageButton x:Name="CopyAddressButton"
+                             Grid.Column="1"
+                             Source="ic_copy.png"
+                             Style="{StaticResource IconButton}"
+                             Clicked="OnCopyAddressClicked" />
             </Grid>
         </Border>
 
@@ -35,31 +33,37 @@
                            Style="{StaticResource BodyText}"
                            LineBreakMode="WordWrap" />
                     <Button x:Name="CopyBodyButton"
+                            ImageSource="ic_copy.png"
+                            ContentLayout="Left,10"
                             Style="{StaticResource OutlineButton}"
                             Clicked="OnCopyBodyClicked" />
                 </VerticalStackLayout>
             </Border>
         </ScrollView>
 
-        <!-- Reenviar este mensaje a alguien, dejar configurado a quien se reenvian los SMS de este
-             remitente, y responder. -->
         <VerticalStackLayout Grid.Row="2" Spacing="8">
             <!-- Lo de este mensaje: mandarselo a alguien o contestar al remitente -->
             <Grid ColumnDefinitions="*,*" ColumnSpacing="8">
                 <Button x:Name="ForwardButton"
                         Grid.Column="0"
                         FontSize="14"
+                        ImageSource="ic_forward.png"
+                        ContentLayout="Left,8"
                         Style="{StaticResource OutlineButton}"
                         Clicked="OnForwardClicked" />
                 <Button x:Name="ReplyButton"
                         Grid.Column="1"
                         FontSize="14"
+                        ImageSource="ic_reply_w.png"
+                        ContentLayout="Left,8"
                         Style="{StaticResource PrimaryButton}"
                         Clicked="OnReplyClicked" />
             </Grid>
             <!-- La regla de reenvio automatico va a lo ancho: su texto no cabia en media fila -->
             <Button x:Name="ForwardRuleButton"
                     FontSize="14"
+                    ImageSource="ic_settings.png"
+                    ContentLayout="Left,10"
                     Style="{StaticResource OutlineButton}"
                     Clicked="OnForwardRuleClicked" />
         </VerticalStackLayout>

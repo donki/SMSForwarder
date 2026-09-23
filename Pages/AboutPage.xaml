@@ -65,7 +65,7 @@
                     <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
                         <Button x:Name="SpanishButton"
                                 Grid.Column="0"
-                                Text="🇪🇸 Español"
+                                Text="Español" ImageSource="ic_flag_es.png" ContentLayout="Left,8"
                                 Style="{StaticResource PrimaryButton}"
                                 FontSize="14"
                                 LineBreakMode="WordWrap"
@@ -74,7 +74,7 @@
 
                         <Button x:Name="EnglishButton"
                                 Grid.Column="1"
-                                Text="🇬🇧 English"
+                                Text="English" ImageSource="ic_flag_gb.png" ContentLayout="Left,8"
                                 Style="{StaticResource OutlineButton}"
                                 FontSize="14"
                                 LineBreakMode="WordWrap"
@@ -157,7 +157,7 @@
                                     <RoundRectangle CornerRadius="6" />
                                 </Border.StrokeShape>
                                 <Label x:Name="WarningLabel"
-                                       Text="⚠️ Uso bajo su propio riesgo"
+                                       Text="Uso bajo su propio riesgo"
                                        FontSize="13"
                                        FontAttributes="Bold"
                                        LineHeight="1.4"

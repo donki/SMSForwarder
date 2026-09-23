@@ -118,7 +118,7 @@ namespace SMSForwarder.Pages
 
         private void OnRemoveSenderClicked(object? sender, EventArgs e)
         {
-            if (sender is Button { CommandParameter: string number })
+            if (sender is ImageButton { CommandParameter: string number })
             {
                 _senders.Remove(number);
                 Save();
@@ -153,7 +153,7 @@ namespace SMSForwarder.Pages
 
         private void OnRemoveKeywordClicked(object? sender, EventArgs e)
         {
-            if (sender is Button { CommandParameter: string word })
+            if (sender is ImageButton { CommandParameter: string word })
             {
                 _keywords.Remove(word);
                 Save();

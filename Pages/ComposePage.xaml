@@ -24,13 +24,12 @@
                            FontSize="16"/>
                 </Border>
 
-                <Button x:Name="ContactsButton"
-                        Grid.Column="1"
-                        Text="👥"
-                        FontSize="18"
-                        WidthRequest="56"
-                        Style="{StaticResource OutlineButton}"
-                        Clicked="OnPickContactClicked"/>
+                <ImageButton x:Name="ContactsButton"
+                             Grid.Column="1"
+                             Source="ic_group.png"
+                             Style="{StaticResource IconButton}"
+                             WidthRequest="56"
+                             Clicked="OnPickContactClicked"/>
             </Grid>
         </VerticalStackLayout>
 
@@ -61,7 +60,9 @@
 
         <Button x:Name="SendButton"
                 Grid.Row="2"
-                Text="📨 Enviar"
+                Text="Enviar"
+                ImageSource="ic_send_w.png"
+                ContentLayout="Left,10"
                 Style="{StaticResource PrimaryButton}"
                 Clicked="OnSendClicked"/>
     </Grid>

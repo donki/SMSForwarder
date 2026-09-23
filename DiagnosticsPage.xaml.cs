@@ -115,7 +115,7 @@ namespace SMSForwarder
 
                 if (status == PermissionStatus.Granted)
                 {
-                    await SocShared.ModernDialog.AlertAsync(this,"Estado de Batería", "✅ La optimización de batería está desactivada correctamente", "OK");
+                    await SocShared.ModernDialog.AlertAsync(this,"Estado de Batería", "La optimización de batería está desactivada correctamente", "OK");
                 }
                 else
                 {

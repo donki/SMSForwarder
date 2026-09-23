@@ -40,7 +40,7 @@ namespace SMSForwarder
             AddButton.Text = _localizationService.GetString("main.add_number");
             ContactsButton.Text = _localizationService.GetString("main.from_contacts");
             NumbersListLabel.Text = _localizationService.GetString("main.numbers_list");
-            InfoTitle.Text = "💡 " + _localizationService.GetString("menu.settings");
+            InfoTitle.Text = _localizationService.GetString("menu.settings");
             RefreshSummaries();
 
             // Actualizar información de ayuda según idioma
@@ -145,7 +145,7 @@ namespace SMSForwarder
             {
                 // Antes se borraba deslizando la fila; ahora hay un boton, asi que se confirma
                 // igual que en el buzon (un toque sin querer no debe borrar un destino).
-                if (sender is Button { CommandParameter: ForwardDestination destination })
+                if (sender is ImageButton { CommandParameter: ForwardDestination destination })
                 {
                     var confirmed = await SocShared.ModernDialog.AlertAsync(this,
                         _localizationService.GetString("main.delete"),

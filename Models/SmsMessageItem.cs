@@ -34,7 +34,22 @@ namespace SMSForwarder.Models
         }
 
         public string DateText => Date == DateTime.MinValue ? "" : Date.ToString("dd/MM/yyyy HH:mm");
-        public string DirectionIcon => IsInbox ? "📥" : "📤";
+
+        /// <summary>
+        /// La fecha para la lista, corta: la hora si es de hoy y el dia si no. La fecha larga
+        /// ocupaba media fila y dejaba el remitente en «+…» con la letra del sistema grande.
+        /// </summary>
+        public string ListDateText
+        {
+            get
+            {
+                if (Date == DateTime.MinValue) return "";
+                if (Date.Date == DateTime.Today) return Date.ToString("HH:mm");
+                return Date.Year == DateTime.Today.Year ? Date.ToString("dd/MM") : Date.ToString("dd/MM/yy");
+            }
+        }
+        /// <summary>Icono plano de la bandeja (Resources/Images): recibido o enviado.</summary>
+        public string DirectionIcon => IsInbox ? "ic_inbox.png" : "ic_outbox.png";
         public string Snippet => Body.Length > 100 ? Body.Substring(0, 100) + "…" : Body;
         public string DisplayAddress => string.IsNullOrWhiteSpace(Address) ? "(desconocido)" : Address;
 

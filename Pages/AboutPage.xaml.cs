@@ -62,7 +62,7 @@ namespace SMSForwarder.Pages
             LegalTitleLabel.Text = "Aviso Legal";
             LegalText1Label.Text = "Este software se proporciona «tal cual», sin garantías de ningún tipo. El usuario es responsable del uso adecuado de la aplicación y del cumplimiento de las leyes locales.";
             LegalText2Label.Text = "En ningún caso los autores serán responsables de daños directos, indirectos, incidentales o consecuentes que resulten del uso de este software.";
-            WarningLabel.Text = "⚠️ Uso bajo su propio riesgo";
+            WarningLabel.Text = "Uso bajo su propio riesgo";
         }
 
         private void SetEnglishTexts()
@@ -87,7 +87,7 @@ namespace SMSForwarder.Pages
             LegalTitleLabel.Text = "Legal Notice";
             LegalText1Label.Text = "This software is provided 'as is', without warranty of any kind. The user is responsible for proper use of the app and compliance with local laws.";
             LegalText2Label.Text = "In no event shall the authors be liable for any direct, indirect, incidental or consequential damages arising from the use of this software.";
-            WarningLabel.Text = "⚠️ Use at your own risk";
+            WarningLabel.Text = "Use at your own risk";
         }
 
         // Resalta el botón de idioma activo con el estilo primario y el inactivo con el

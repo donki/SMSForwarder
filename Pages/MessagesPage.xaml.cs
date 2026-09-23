@@ -234,7 +234,7 @@ namespace SMSForwarder.Pages
 
         private async void OnDeleteMessageClicked(object? sender, EventArgs e)
         {
-            if (sender is not Button { CommandParameter: SmsMessageItem message }) return;
+            if (sender is not ImageButton { CommandParameter: SmsMessageItem message }) return;
             if (!await EnsureCanDeleteAsync()) return;
 
             var confirmed = await SocShared.ModernDialog.AlertAsync(this,
@@ -362,6 +362,10 @@ namespace SMSForwarder.Pages
         {
             InboxButton.Style = LookupStyle(_showingInbox ? "PrimaryButton" : "OutlineButton");
             SentButton.Style = LookupStyle(_showingInbox ? "OutlineButton" : "PrimaryButton");
+
+            // El icono va blanco sobre el boton relleno e indigo sobre el de contorno.
+            InboxButton.ImageSource = _showingInbox ? "ic_inbox_w.png" : "ic_inbox.png";
+            SentButton.ImageSource = _showingInbox ? "ic_outbox.png" : "ic_outbox_w.png";
         }
 
         private static Style? LookupStyle(string key)

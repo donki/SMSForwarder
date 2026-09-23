@@ -5,6 +5,28 @@ Todos los cambios notables de este proyecto serán documentados en este archivo.
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/),
 y este proyecto adhiere al [Versionado Semántico](https://semver.org/lang/es/).
 
+## [2026.09.23.8] - 2026-09-23
+
+### 🔄 Cambiado
+- **Iconos planos en toda la aplicación.** Fuera los emoji: ahora son dibujos de línea en SVG
+  (24×24, trazo 1,8, un solo color) guardados en `Resources/Images/ic_*.svg`, como en el resto del
+  catálogo, con la variante blanca (`_w`) para los botones rellenos y la roja para borrar. Los emoji
+  cambiaban de dibujo según el teléfono, no seguían el tema y se cortaban con la letra del sistema en
+  grande. Queda escrito en la constitución ([General §6.2](https://github.com/donki/constitution)).
+- **Las pestañas del buzón**, con su icono y una palabra corta («Entrada» / «Enviados»): con la letra
+  grande, «Recibidos» se partía por la mitad.
+- **La fecha de la lista es corta** (la hora si el SMS es de hoy, el día si no). La larga ocupaba
+  media fila y dejaba el remitente en «+…»; ahora el número se ve entero, partiendo en dos líneas si
+  hace falta.
+
+### 🐛 Corregido
+- **Textos cortados con la letra del sistema en grande.** Los botones ya no tienen altura fija: su
+  texto parte de línea y el botón crece (estilos comunes). En Diagnósticos se cortaban «Verificar
+  estado de permisos» y «Configurar todos los permisos», y en Configuración «Agregar número».
+- **Iconos invisibles**: en los botones rellenos el icono iba del mismo índigo que el fondo (la lupa
+  de Diagnósticos no se veía); ahora esos botones llevan la variante blanca.
+- El resumen de cada número de destino ya no se corta a media palabra.
+
 ## [2026.09.23.1] - 2026-09-23
 
 ### 🔄 Cambiado
