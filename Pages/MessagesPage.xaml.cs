@@ -106,6 +106,7 @@ namespace SMSForwarder.Pages
         {
             try
             {
+                await DefaultRolePrompt.Done;
                 var status = await Permissions.CheckStatusAsync<Permissions.Sms>();
                 if (status != PermissionStatus.Granted)
                     status = await Permissions.RequestAsync<Permissions.Sms>();

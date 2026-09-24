@@ -5,6 +5,14 @@ Todos los cambios notables de este proyecto serán documentados en este archivo.
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/),
 y este proyecto adhiere al [Versionado Semántico](https://semver.org/lang/es/).
 
+## [2026.09.24.1] - 2026-09-24
+
+### 🐛 Corregido
+- **El permiso de SMS salía a la vez que el diálogo de app predeterminada.** El buzón es la primera
+  pantalla y pedía el permiso al aparecer, en paralelo con la actividad; probado en el Xiaomi, los
+  dos diálogos quedaban uno encima del otro. Ahora el buzón y la redacción esperan a que se cierre
+  el del rol (`Services/DefaultRolePrompt.cs`) antes de pedir nada.
+
 ## [2026.09.24.0] - 2026-09-24
 
 ### 🐛 Corregido

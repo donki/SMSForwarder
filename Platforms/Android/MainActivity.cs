@@ -77,6 +77,10 @@ namespace SMSForwarder
             {
                 Console.WriteLine($"Error al pedir el rol de app de SMS por defecto: {ex.Message}");
             }
+            finally
+            {
+                SMSForwarder.Services.DefaultRolePrompt.MarkDone();
+            }
 
             // Permiso de notificaciones (Android 13+) para avisar de SMS entrantes. No bloquea.
             try
