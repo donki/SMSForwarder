@@ -5,6 +5,15 @@ Todos los cambios notables de este proyecto serán documentados en este archivo.
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/),
 y este proyecto adhiere al [Versionado Semántico](https://semver.org/lang/es/).
 
+## [2026.09.24.0] - 2026-09-24
+
+### 🐛 Corregido
+- **Play rechazó la 2026.09.23.8** («Unable to trigger default handler prompt prior to runtime
+  permissions»): al abrir la app se pedían las notificaciones y los SMS antes de ofrecer ser la app
+  de SMS predeterminada, que solo salía desde el buzón. Ahora el diálogo del rol va lo primero al
+  arrancar y los permisos, después; siendo la predeterminada, Android ya concede los de SMS sin
+  preguntar.
+
 ## [2026.09.23.8] - 2026-09-23
 
 ### 🔄 Cambiado

@@ -77,9 +77,14 @@ namespace SMSForwarder.Platforms.Android
             catch { return false; }
         }
 
-        public Task<bool> RequestDefaultAsync()
+        public Task<bool> RequestDefaultAsync() => RequestDefaultAsync(Platform.CurrentActivity);
+
+        /// <summary>
+        /// Igual que <see cref="RequestDefaultAsync()"/> pero con la actividad explicita: MainActivity
+        /// lo llama desde OnCreate, cuando Platform.CurrentActivity puede no estar puesta aun.
+        /// </summary>
+        public static Task<bool> RequestDefaultAsync(Activity? activity)
         {
-            var activity = Platform.CurrentActivity;
             if (activity == null) return Task.FromResult(false);
 
             if (IsAppDefault(activity)) return Task.FromResult(true);

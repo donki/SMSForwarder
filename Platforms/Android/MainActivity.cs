@@ -64,6 +64,20 @@ namespace SMSForwarder
             };
             smsReceiver = new SmsReceiver();
 
+            // Politica de Play para apps que son gestor por defecto: el dialogo de "app de SMS
+            // predeterminada" tiene que salir ANTES que cualquier permiso en tiempo de ejecucion.
+            // Siendo la app por defecto, Android concede los permisos de SMS sin preguntar.
+            try
+            {
+                var store = new MessageStore();
+                if (store.CanBeDefault && !MessageStore.IsAppDefault(this))
+                    await MessageStore.RequestDefaultAsync(this);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al pedir el rol de app de SMS por defecto: {ex.Message}");
+            }
+
             // Permiso de notificaciones (Android 13+) para avisar de SMS entrantes. No bloquea.
             try
             {
