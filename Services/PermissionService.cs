@@ -16,6 +16,14 @@ namespace SMSForwarder.Services
 
         private string T(string key) => _l.GetString(key);
 
+        // ModernDialog necesita una ContentPage donde poner el aviso: con el Shell,
+        // Application.Current.MainPage es el propio Shell, el aviso no salia y la tarea quedaba
+        // esperando para siempre («Ver el estado de los permisos» no hacia nada, 2026-09-27).
+        private static Page Host =>
+            Shell.Current?.CurrentPage
+            ?? Application.Current?.Windows.FirstOrDefault()?.Page
+            ?? throw new InvalidOperationException("No hay pagina donde mostrar el aviso.");
+
         public async Task<bool> CheckAndRequestAllPermissionsAsync()
         {
             var results = new List<bool>();
@@ -42,7 +50,7 @@ namespace SMSForwarder.Services
                 if (receiveSmsStatus != PermissionStatus.Granted ||
                     sendSmsStatus != PermissionStatus.Granted)
                 {
-                    var result = await SocShared.ModernDialog.AlertAsync(Application.Current.MainPage,
+                    var result = await SocShared.ModernDialog.AlertAsync(Host,
                         T("perm.sms_title"),
                         T("perm.sms_text"),
                         T("common.yes"), T("common.no"));
@@ -65,7 +73,7 @@ namespace SMSForwarder.Services
             }
             catch (Exception ex)
             {
-                await SocShared.ModernDialog.AlertAsync(Application.Current.MainPage, T("common.error"), string.Format(T("perm.sms_error"), ex.Message), T("common.ok"));
+                await SocShared.ModernDialog.AlertAsync(Host, T("common.error"), string.Format(T("perm.sms_error"), ex.Message), T("common.ok"));
                 return false;
             }
         }
@@ -79,7 +87,7 @@ namespace SMSForwarder.Services
 
                 if (status != PermissionStatus.Granted)
                 {
-                    var result = await SocShared.ModernDialog.AlertAsync(Application.Current.MainPage,
+                    var result = await SocShared.ModernDialog.AlertAsync(Host,
                         T("diagnostics.battery_title"),
                         T("perm.battery_text"),
                         T("common.yes"), T("common.not_now"));
@@ -94,7 +102,7 @@ namespace SMSForwarder.Services
 
                         if (status != PermissionStatus.Granted)
                         {
-                            await SocShared.ModernDialog.AlertAsync(Application.Current.MainPage,
+                            await SocShared.ModernDialog.AlertAsync(Host,
                                 T("perm.info"),
                                 T("perm.battery_warn"),
                                 T("common.understood"));
@@ -105,7 +113,7 @@ namespace SMSForwarder.Services
             }
             catch (Exception ex)
             {
-                await SocShared.ModernDialog.AlertAsync(Application.Current.MainPage, T("common.error"), string.Format(T("perm.battery_error"), ex.Message), T("common.ok"));
+                await SocShared.ModernDialog.AlertAsync(Host, T("common.error"), string.Format(T("perm.battery_error"), ex.Message), T("common.ok"));
                 return false;
             }
         }
@@ -138,7 +146,7 @@ namespace SMSForwarder.Services
                         break;
                 }
 
-                var result = await SocShared.ModernDialog.AlertAsync(Application.Current.MainPage,
+                var result = await SocShared.ModernDialog.AlertAsync(Host,
                     T("diagnostics.autostart_title"),
                     message + "\n\n" + T("perm.autostart_open"),
                     T("common.yes"), T("common.not_now"));
@@ -151,7 +159,7 @@ namespace SMSForwarder.Services
             }
             catch (Exception ex)
             {
-                await SocShared.ModernDialog.AlertAsync(Application.Current.MainPage, T("common.error"), string.Format(T("perm.autostart_error"), ex.Message), T("common.ok"));
+                await SocShared.ModernDialog.AlertAsync(Host, T("common.error"), string.Format(T("perm.autostart_error"), ex.Message), T("common.ok"));
             }
         }
 
@@ -192,11 +200,11 @@ namespace SMSForwarder.Services
                     T(batteryStatus ? "perm.battery_off" : "perm.battery_on"),
                     manufacturer);
 
-                await SocShared.ModernDialog.AlertAsync(Application.Current.MainPage, T("perm.status_title"), message, T("common.ok"));
+                await SocShared.ModernDialog.AlertAsync(Host, T("perm.status_title"), message, T("common.ok"));
             }
             catch (Exception ex)
             {
-                await SocShared.ModernDialog.AlertAsync(Application.Current.MainPage, T("common.error"), string.Format(T("perm.status_error"), ex.Message), T("common.ok"));
+                await SocShared.ModernDialog.AlertAsync(Host, T("common.error"), string.Format(T("perm.status_error"), ex.Message), T("common.ok"));
             }
         }
     }

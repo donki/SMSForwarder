@@ -20,6 +20,15 @@ y este proyecto adhiere al [Versionado Semántico](https://semver.org/lang/es/).
   Configuración, Diagnósticos o Acerca de, al buzón; solo en el buzón oculta la app. Con Android 16
   el «atrás predictivo» queda desactivado para que el botón llegue a la app. / *Back now goes to the
   previous screen; only the inbox hides the app.*
+- **«Ver el estado de los permisos» y «Configurar todos los permisos» no hacían nada**: el aviso se
+  pedía sobre el Shell, donde el diálogo no se puede mostrar, y se quedaba esperando. Ahora sale
+  sobre la pantalla visible. / *The permission status and setup buttons now show their dialogs.*
+
+### ✨ Añadido
+- **Gestor global de excepciones** (constitución General §6.12, pieza común
+  `Mobile/Shared/CrashGuard.cs`): un error inesperado ya no cierra la app; se registra con su traza
+  en `crash.log` y se avisa en el idioma de la app. / *An unexpected error no longer closes the app:
+  it is logged and the user is told in their language.*
 
 ### 📝 Documentación
 - README al día: ya no dice que se borra deslizando ni que pide acceso a Contactos.

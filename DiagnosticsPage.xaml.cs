@@ -80,7 +80,8 @@ namespace SMSForwarder
                 // Contar números configurados
                 var phonesJson = Preferences.Default.Get("phones", "[]");
                 var phones = JsonSerializer.Deserialize<List<string>>(phonesJson);
-                PhonesCount.Text = string.Format(T("diagnostics.numbers_count"), phones?.Count ?? 0);
+                var count = phones?.Count ?? 0;
+                PhonesCount.Text = count == 1 ? T("diagnostics.numbers_count_one") : string.Format(T("diagnostics.numbers_count"), count);
 
                 // Cargar logs
                 var logs = _loggingService.GetLogContents();
