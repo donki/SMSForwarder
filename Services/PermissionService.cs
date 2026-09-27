@@ -4,6 +4,18 @@ namespace SMSForwarder.Services
 {
     public class PermissionService
     {
+        private readonly ILocalizationService _l;
+
+        // Los textos van por los recursos de idioma: hasta la 2026.09.27.0 estaban en castellano.
+        public PermissionService(ILocalizationService? localization = null)
+        {
+            _l = localization
+                 ?? IPlatformApplication.Current?.Services.GetService<ILocalizationService>()
+                 ?? new LocalizationService();
+        }
+
+        private string T(string key) => _l.GetString(key);
+
         public async Task<bool> CheckAndRequestAllPermissionsAsync()
         {
             var results = new List<bool>();
@@ -31,9 +43,9 @@ namespace SMSForwarder.Services
                     sendSmsStatus != PermissionStatus.Granted)
                 {
                     var result = await SocShared.ModernDialog.AlertAsync(Application.Current.MainPage,
-                        "Permisos SMS Requeridos",
-                        "Esta aplicación necesita permisos SMS para funcionar correctamente. ¿Desea conceder los permisos?",
-                        "Sí", "No");
+                        T("perm.sms_title"),
+                        T("perm.sms_text"),
+                        T("common.yes"), T("common.no"));
 
                     if (result)
                     {
@@ -53,7 +65,7 @@ namespace SMSForwarder.Services
             }
             catch (Exception ex)
             {
-                await SocShared.ModernDialog.AlertAsync(Application.Current.MainPage,"Error", $"Error al verificar permisos SMS: {ex.Message}", "OK");
+                await SocShared.ModernDialog.AlertAsync(Application.Current.MainPage, T("common.error"), string.Format(T("perm.sms_error"), ex.Message), T("common.ok"));
                 return false;
             }
         }
@@ -68,24 +80,24 @@ namespace SMSForwarder.Services
                 if (status != PermissionStatus.Granted)
                 {
                     var result = await SocShared.ModernDialog.AlertAsync(Application.Current.MainPage,
-                        "Optimización de Batería",
-                        "Para que la aplicación funcione correctamente en segundo plano, es recomendable desactivar la optimización de batería.\n\n¿Desea abrir la configuración?",
-                        "Sí", "Ahora no");
+                        T("diagnostics.battery_title"),
+                        T("perm.battery_text"),
+                        T("common.yes"), T("common.not_now"));
 
                     if (result)
                     {
                         await batteryPermission.RequestAsync();
-                        
+
                         // Esperar un poco y verificar nuevamente
                         await Task.Delay(2000);
                         status = await batteryPermission.CheckStatusAsync();
-                        
+
                         if (status != PermissionStatus.Granted)
                         {
                             await SocShared.ModernDialog.AlertAsync(Application.Current.MainPage,
-                                "Información",
-                                "Si no desactivó la optimización de batería, la aplicación podría no recibir mensajes cuando esté en segundo plano.",
-                                "Entendido");
+                                T("perm.info"),
+                                T("perm.battery_warn"),
+                                T("common.understood"));
                         }
                     }
                 }
@@ -93,7 +105,7 @@ namespace SMSForwarder.Services
             }
             catch (Exception ex)
             {
-                await SocShared.ModernDialog.AlertAsync(Application.Current.MainPage,"Error", $"Error al verificar optimización de batería: {ex.Message}", "OK");
+                await SocShared.ModernDialog.AlertAsync(Application.Current.MainPage, T("common.error"), string.Format(T("perm.battery_error"), ex.Message), T("common.ok"));
                 return false;
             }
         }
@@ -103,37 +115,33 @@ namespace SMSForwarder.Services
             try
             {
                 var manufacturer = GetManufacturer().ToLower();
-                string message = "Para que la aplicación funcione correctamente después de reiniciar el dispositivo, ";
+                string message = T("perm.autostart_prefix");
 
                 switch (manufacturer)
                 {
                     case "xiaomi":
-                        message += "vaya a Configuración > Aplicaciones > Administrar aplicaciones > SMS Forwarder > Inicio automático y actívelo.";
+                        message += T("perm.autostart_xiaomi");
                         break;
                     case "huawei":
-                        message += "vaya a Configuración > Aplicaciones > SMS Forwarder > Inicio automático y actívelo.";
+                        message += T("perm.autostart_huawei");
                         break;
                     case "oppo":
-                        message += "vaya a Configuración > Aplicaciones > SMS Forwarder > Permisos > Inicio automático y actívelo.";
-                        break;
                     case "vivo":
-                        message += "vaya a Configuración > Aplicaciones > SMS Forwarder > Permisos > Inicio automático y actívelo.";
+                    case "oneplus":
+                        message += T("perm.autostart_perms");
                         break;
                     case "samsung":
-                        message += "vaya a Configuración > Aplicaciones > SMS Forwarder > Batería > Optimizar uso de batería y desactívelo.";
-                        break;
-                    case "oneplus":
-                        message += "vaya a Configuración > Aplicaciones > SMS Forwarder > Permisos > Inicio automático y actívelo.";
+                        message += T("perm.autostart_samsung");
                         break;
                     default:
-                        message += "asegúrese de que la aplicación tenga permisos para ejecutarse en segundo plano.";
+                        message += T("perm.autostart_other");
                         break;
                 }
 
                 var result = await SocShared.ModernDialog.AlertAsync(Application.Current.MainPage,
-                    "Configuración de Autostart",
-                    message + "\n\n¿Desea abrir la configuración ahora?",
-                    "Sí", "Ahora no");
+                    T("diagnostics.autostart_title"),
+                    message + "\n\n" + T("perm.autostart_open"),
+                    T("common.yes"), T("common.not_now"));
 
                 if (result)
                 {
@@ -143,7 +151,7 @@ namespace SMSForwarder.Services
             }
             catch (Exception ex)
             {
-                await SocShared.ModernDialog.AlertAsync(Application.Current.MainPage,"Error", $"Error al mostrar información de autostart: {ex.Message}", "OK");
+                await SocShared.ModernDialog.AlertAsync(Application.Current.MainPage, T("common.error"), string.Format(T("perm.autostart_error"), ex.Message), T("common.ok"));
             }
         }
 
@@ -179,17 +187,16 @@ namespace SMSForwarder.Services
                 var manufacturer = GetManufacturer();
 
                 // Sin emoji: el texto de un diálogo no lleva iconos (van en los botones, y son SVG).
-                var message = $"Estado de permisos:\n\n" +
-                             $"SMS: {(smsStatus == PermissionStatus.Granted ? "concedido" : "denegado")}\n" +
-                             $"Optimización de batería: {(batteryStatus ? "desactivada" : "activada")}\n" +
-                             $"Fabricante: {manufacturer}\n\n" +
-                             $"Para un funcionamiento óptimo, todos los permisos deben estar concedidos.";
+                var message = string.Format(T("perm.status_text"),
+                    T(smsStatus == PermissionStatus.Granted ? "diagnostics.granted" : "diagnostics.denied"),
+                    T(batteryStatus ? "perm.battery_off" : "perm.battery_on"),
+                    manufacturer);
 
-                await SocShared.ModernDialog.AlertAsync(Application.Current.MainPage,"Estado de Permisos", message, "OK");
+                await SocShared.ModernDialog.AlertAsync(Application.Current.MainPage, T("perm.status_title"), message, T("common.ok"));
             }
             catch (Exception ex)
             {
-                await SocShared.ModernDialog.AlertAsync(Application.Current.MainPage,"Error", $"Error al verificar estado: {ex.Message}", "OK");
+                await SocShared.ModernDialog.AlertAsync(Application.Current.MainPage, T("common.error"), string.Format(T("perm.status_error"), ex.Message), T("common.ok"));
             }
         }
     }

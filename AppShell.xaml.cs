@@ -27,18 +27,38 @@ namespace SMSForwarder
         }
 
         /// <summary>
-        /// Estando en el modo de seleccion multiple del buzon, el boton de atras sale del modo en
-        /// vez de cerrar la pantalla. Va aqui y no en la pagina porque el Shell se queda el gesto
-        /// de atras de su pagina raiz: el <c>OnBackButtonPressed</c> de la pagina no llega a correr.
+        /// Atras (Mobile 7): primero se cierra lo que haya encima (el menu lateral, el modo de
+        /// seleccion multiple del buzon); con una pantalla apilada (mensaje, redaccion, filtros de
+        /// un numero), la desapila el Shell; en Configuracion, Diagnosticos o Acerca de abiertas
+        /// desde el menu vuelve al buzon, que es el inicio; y en el buzon la app se oculta.
+        /// Va aqui y no en la pagina porque el Shell se queda el gesto de atras de su pagina raiz.
+        /// Hasta la 2026.09.27.0 lo decidia MainActivity.OnBackPressed y ocultaba la app siempre.
         /// </summary>
         protected override bool OnBackButtonPressed()
         {
+            if (FlyoutIsPresented)
+            {
+                FlyoutIsPresented = false;
+                return true;
+            }
             if (CurrentPage is MessagesPage { IsSelecting: true } messages)
             {
                 messages.CancelSelection();
                 return true;
             }
+            if (Navigation.NavigationStack.Count > 1)
+                return base.OnBackButtonPressed();
+            if (CurrentItem != MessagesItem)
+            {
+                CurrentItem = MessagesItem;
+                return true;
+            }
+#if ANDROID
+            Platform.CurrentActivity?.MoveTaskToBack(true);
+            return true;
+#else
             return base.OnBackButtonPressed();
+#endif
         }
 
         private void OnLanguageChanged(object? sender, EventArgs e)

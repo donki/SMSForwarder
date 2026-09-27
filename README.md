@@ -1,4 +1,4 @@
-# 📱 SMSForwarder
+# SMSForwarder
 
 Una aplicación Android de mensajes desarrollada en .NET MAUI: gestiona tus SMS y, además, reenvía automáticamente los que recibes a los números de teléfono que configures.
 
@@ -12,20 +12,21 @@ Una aplicación Android de mensajes desarrollada en .NET MAUI: gestiona tus SMS 
 ### 💬 Mensajes
 - **Buzón** de mensajes recibidos y enviados
 - **Redacción y envío** de SMS, con selector de contactos del sistema
-- **Responder** tocando un mensaje del buzón
-- **Marcar como leído** y **borrar** deslizando
+- **Ver el mensaje completo** tocándolo en el buzón (se marca como leído), con responder, reenviar, copiar el número o el texto y abrir enlaces
+- **Borrar** con el botón de papelera de cada fila, o varios a la vez con la selección múltiple (pulsación larga)
 - **App de SMS predeterminada**: funciona como gestor de mensajes del teléfono
 
 ### 🔄 Reenvío Automático
-- **Reenvío instantáneo** de todos los SMS recibidos
+- **Reenvío instantáneo** de los SMS recibidos
 - **Múltiples destinatarios** configurables
+- **Filtros por destinatario**: tocando un número eliges qué SMS le llegan (todos, solo de ciertos remitentes o solo los que contengan ciertas palabras)
 - **Formato identificable** con prefijo `[SMSForwarder]`
 
 ### 📝 Gestión de Números
 - **Entrada manual** de números de teléfono
-- **Selección desde contactos** con interfaz de búsqueda
+- **Selección desde contactos** con el selector del sistema (sin permiso de Contactos)
 - **Validación automática** de formato de números
-- **Eliminación fácil** por deslizamiento
+- **Eliminación** con el botón de papelera de cada número
 
 ### 🛡️ Prevención de Bucles Infinitos
 - **Detección inteligente** de mensajes reenviados
@@ -36,6 +37,7 @@ Una aplicación Android de mensajes desarrollada en .NET MAUI: gestiona tus SMS 
 ### 🎨 Interfaz Moderna
 - **Diseño Material Design** con iconos intuitivos
 - **Tema claro/oscuro** automático
+- **Castellano e inglés**: sigue el idioma del teléfono y se puede cambiar en Configuración
 - **Navegación fluida** entre secciones
 - **Feedback visual** para todas las acciones
 
@@ -66,22 +68,22 @@ Una aplicación Android de mensajes desarrollada en .NET MAUI: gestiona tus SMS 
 
 ### Configuración Inicial
 1. **Abre la aplicación** y ve a la sección "Configuración"
-2. **Concede permisos** de SMS y Contactos cuando se soliciten
+2. **Acepta ser la app de SMS predeterminada** (sale lo primero) y concede el permiso de SMS y el de notificaciones. La app no pide acceso a Contactos: el botón «Contactos» abre el selector del sistema, que solo le pasa el número elegido
 3. **Agrega números** de destino usando una de estas opciones:
    - Escribir manualmente en el campo de texto
-   - Seleccionar desde contactos con el botón "👥 Desde Contactos"
+   - Seleccionar desde contactos con el botón «Contactos»
 
 ### Gestión de Números
-- **Agregar**: Usa el botón "📝 Agregar Número" o "👥 Desde Contactos"
-- **Eliminar**: Desliza hacia la izquierda en cualquier número de la lista
+- **Agregar**: Usa el botón «Agregar número» o «Contactos»
+- **Elegir qué SMS recibe**: toca el número
+- **Eliminar**: toca la papelera del número y confirma
 - **Validación**: Los números se validan automáticamente al agregarlos
 
 ### Diagnósticos
 - Ve a la sección **"Diagnósticos"** para:
-  - Verificar permisos del sistema
-  - Probar envío de SMS
-  - Ver logs de actividad
-  - Configurar inicio automático
+  - Ver el estado de los permisos (en castellano o en inglés, según el idioma de la app)
+  - Configurar la batería y el inicio automático
+  - Ver y limpiar el registro de actividad
 
 ## 🔧 Configuración Avanzada
 
@@ -156,7 +158,6 @@ pantalla Mensajes y pulsa "Usar como predeterminada".
 ## 📋 Roadmap
 
 ### Próximas Características
-- [ ] **Filtros de mensajes** por remitente o contenido
 - [ ] **Programación de horarios** para reenvío
 - [ ] **Estadísticas de uso** y reportes
 - [ ] **Backup y restauración** de configuración
@@ -166,7 +167,6 @@ pantalla Mensajes y pulsa "Usar como predeterminada".
 - [ ] **Migración a CommunityToolkit.Mvvm** para messaging
 - [ ] **Optimización de rendimiento** en listas grandes
 - [ ] **Soporte para temas personalizados**
-- [ ] **Localización** a múltiples idiomas
 
 ## 🤝 Contribuir
 

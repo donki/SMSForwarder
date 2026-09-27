@@ -40,7 +40,7 @@ namespace SMSForwarder
             AddButton.Text = _localizationService.GetString("main.add_number");
             ContactsButton.Text = _localizationService.GetString("main.from_contacts");
             NumbersListLabel.Text = _localizationService.GetString("main.numbers_list");
-            InfoTitle.Text = _localizationService.GetString("menu.settings");
+            InfoTitle.Text = _localizationService.GetString("main.info_title");
             RefreshSummaries();
 
             // Actualizar información de ayuda según idioma

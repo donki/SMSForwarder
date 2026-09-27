@@ -5,6 +5,25 @@ Todos los cambios notables de este proyecto serán documentados en este archivo.
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/),
 y este proyecto adhiere al [Versionado Semántico](https://semver.org/lang/es/).
 
+## [2026.09.27.0] - 2026-09-27
+
+### 🐛 Corregido
+- **Diagnósticos, en el idioma de la app.** La pantalla estaba escrita a mano en castellano (con el
+  móvil en inglés salía todo en castellano) y el estado de los permisos salía en inglés
+  («Granted» / «Denied»). Ahora todo va por los recursos de idioma, en castellano o en inglés,
+  «Concedido» / «Denegado» incluidos, y también los diálogos de permisos, batería e inicio
+  automático. / *Diagnostics now follows the app language, permission status included.*
+- **El bloque «Información» de Configuración** salía titulado «Configuración» / «Settings»; ahora
+  «Información» / «Information».
+- **Botón de atrás** (constitución Mobile §7): la app se ocultaba desde cualquier pantalla. Ahora
+  atrás cierra primero el menú lateral o la selección múltiple, vuelve a la pantalla anterior y, desde
+  Configuración, Diagnósticos o Acerca de, al buzón; solo en el buzón oculta la app. Con Android 16
+  el «atrás predictivo» queda desactivado para que el botón llegue a la app. / *Back now goes to the
+  previous screen; only the inbox hides the app.*
+
+### 📝 Documentación
+- README al día: ya no dice que se borra deslizando ni que pide acceso a Contactos.
+
 ## [2026.09.24.1] - 2026-09-24
 
 ### 🐛 Corregido

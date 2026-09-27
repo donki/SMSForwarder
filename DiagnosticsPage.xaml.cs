@@ -6,13 +6,60 @@ namespace SMSForwarder
     public partial class DiagnosticsPage : ContentPage
     {
         private readonly ILoggingService _loggingService;
+        private readonly ILocalizationService _l;
 
-        public DiagnosticsPage(ILoggingService loggingService)
+        public DiagnosticsPage(ILoggingService loggingService, ILocalizationService localizationService)
         {
             InitializeComponent();
             _loggingService = loggingService;
-            RefreshStatus();
+            _l = localizationService;
+
+            // Hasta la 2026.09.27.0 la pagina estaba escrita a mano en castellano: con el movil en
+            // ingles salia todo en castellano y el estado de los permisos, en ingles («Granted»).
+            UpdateLocalizedStrings();
+            _l.LanguageChanged += OnLanguageChanged;
+            _ = RefreshStatus();
         }
+
+        private string T(string key) => _l.GetString(key);
+
+        private void OnLanguageChanged(object? sender, EventArgs e)
+        {
+            MainThread.BeginInvokeOnMainThread(async () =>
+            {
+                UpdateLocalizedStrings();
+                await RefreshStatus();
+            });
+        }
+
+        private void UpdateLocalizedStrings()
+        {
+            Title = T("diagnostics.title");
+            TitleLabel.Text = T("diagnostics.title");
+            SubtitleLabel.Text = T("diagnostics.subtitle");
+            PermissionsLabel.Text = T("diagnostics.permissions");
+            NumbersLabel.Text = T("diagnostics.numbers");
+            PermissionsSetupLabel.Text = T("diagnostics.permissions_setup");
+            CheckPermissionsButton.Text = T("diagnostics.check_permissions");
+            ConfigureAllButton.Text = T("diagnostics.configure_all");
+            BatteryButton.Text = T("diagnostics.battery");
+            AutostartButton.Text = T("diagnostics.autostart");
+            HintLabel.Text = T("diagnostics.hint");
+            ToolsLabel.Text = T("diagnostics.tools");
+            RefreshButton.Text = T("diagnostics.refresh");
+            ActivityLogLabel.Text = T("diagnostics.activity_log");
+            ClearLogButton.Text = T("diagnostics.clear_log");
+            if (string.IsNullOrEmpty(PermissionsStatus.Text)) PermissionsStatus.Text = T("diagnostics.checking");
+            if (string.IsNullOrEmpty(LogsLabel.Text)) LogsLabel.Text = T("diagnostics.no_activity");
+        }
+
+        /// <summary>El estado de un permiso en el idioma de la aplicación («Concedido» / «Granted»).</summary>
+        private string StatusText(PermissionStatus status) => status switch
+        {
+            PermissionStatus.Granted => T("diagnostics.granted"),
+            PermissionStatus.Unknown => T("diagnostics.not_decided"),
+            _ => T("diagnostics.denied"),
+        };
 
         private async void OnRefreshClicked(object sender, EventArgs e)
         {
@@ -27,23 +74,24 @@ namespace SMSForwarder
                 var receiveSmsStatus = await Permissions.CheckStatusAsync<SmsPermissions.ReceiveSms>();
                 var sendSmsStatus = await Permissions.CheckStatusAsync<SmsPermissions.SendSms>();
 
-                PermissionsStatus.Text = $"Recibir SMS: {receiveSmsStatus}\n" +
-                                       $"Enviar SMS: {sendSmsStatus}";
+                PermissionsStatus.Text = string.Format(T("diagnostics.receive_sms"), StatusText(receiveSmsStatus)) + "\n" +
+                                         string.Format(T("diagnostics.send_sms"), StatusText(sendSmsStatus));
 
                 // Contar números configurados
                 var phonesJson = Preferences.Default.Get("phones", "[]");
                 var phones = JsonSerializer.Deserialize<List<string>>(phonesJson);
-                PhonesCount.Text = $"{phones?.Count ?? 0} números configurados";
+                PhonesCount.Text = string.Format(T("diagnostics.numbers_count"), phones?.Count ?? 0);
 
                 // Cargar logs
-                LogsLabel.Text = _loggingService.GetLogContents();
+                var logs = _loggingService.GetLogContents();
+                LogsLabel.Text = string.IsNullOrWhiteSpace(logs) ? T("diagnostics.no_activity") : logs;
 
                 _loggingService.LogInfo("Estado de diagnósticos actualizado");
             }
             catch (Exception ex)
             {
                 _loggingService.LogError("Error al actualizar diagnósticos", ex);
-                await SocShared.ModernDialog.AlertAsync(this,"Error", "Error al actualizar el estado", "OK");
+                await SocShared.ModernDialog.AlertAsync(this, T("common.error"), T("diagnostics.refresh_error"), T("common.ok"));
             }
         }
 
@@ -56,12 +104,12 @@ namespace SMSForwarder
                 {
                     File.Delete(logFile);
                 }
-                LogsLabel.Text = "Logs limpiados";
+                LogsLabel.Text = T("diagnostics.log_cleared");
                 _loggingService.LogInfo("Logs limpiados por el usuario");
             }
             catch (Exception ex)
             {
-                await SocShared.ModernDialog.AlertAsync(this,"Error", $"Error al limpiar logs: {ex.Message}", "OK");
+                await SocShared.ModernDialog.AlertAsync(this, T("common.error"), string.Format(T("diagnostics.clear_error"), ex.Message), T("common.ok"));
             }
         }
 
@@ -70,14 +118,14 @@ namespace SMSForwarder
         {
             try
             {
-                var permissionService = new PermissionService();
+                var permissionService = new PermissionService(_l);
                 await permissionService.ShowPermissionStatusAsync();
                 await RefreshStatus(); // Actualizar estado después de verificar
             }
             catch (Exception ex)
             {
                 _loggingService.LogError("Error al verificar permisos", ex);
-                await SocShared.ModernDialog.AlertAsync(this,"Error", "Error al verificar el estado de los permisos", "OK");
+                await SocShared.ModernDialog.AlertAsync(this, T("common.error"), T("diagnostics.check_error"), T("common.ok"));
             }
         }
 
@@ -85,24 +133,24 @@ namespace SMSForwarder
         {
             try
             {
-                var permissionService = new PermissionService();
+                var permissionService = new PermissionService(_l);
                 var result = await permissionService.CheckAndRequestAllPermissionsAsync();
-                
+
                 if (result)
                 {
-                    await SocShared.ModernDialog.AlertAsync(this,"Éxito", "Todos los permisos han sido configurados correctamente", "OK");
+                    await SocShared.ModernDialog.AlertAsync(this, T("common.success"), T("diagnostics.all_configured"), T("common.ok"));
                 }
                 else
                 {
-                    await SocShared.ModernDialog.AlertAsync(this,"Atención", "Algunos permisos no pudieron ser configurados. Revise la configuración manualmente.", "OK");
+                    await SocShared.ModernDialog.AlertAsync(this, T("diagnostics.attention"), T("diagnostics.some_not_configured"), T("common.ok"));
                 }
-                
+
                 await RefreshStatus(); // Actualizar estado después de configurar
             }
             catch (Exception ex)
             {
                 _loggingService.LogError("Error al configurar permisos", ex);
-                await SocShared.ModernDialog.AlertAsync(this,"Error", "Error al configurar los permisos", "OK");
+                await SocShared.ModernDialog.AlertAsync(this, T("common.error"), T("diagnostics.configure_error"), T("common.ok"));
             }
         }
 
@@ -115,27 +163,27 @@ namespace SMSForwarder
 
                 if (status == PermissionStatus.Granted)
                 {
-                    await SocShared.ModernDialog.AlertAsync(this,"Estado de Batería", "La optimización de batería está desactivada correctamente", "OK");
+                    await SocShared.ModernDialog.AlertAsync(this, T("diagnostics.battery_ok_title"), T("diagnostics.battery_ok"), T("common.ok"));
                 }
                 else
                 {
                     var result = await SocShared.ModernDialog.AlertAsync(this,
-                        "Optimización de Batería",
-                        "La optimización de batería está activada. Esto puede impedir que la aplicación funcione en segundo plano.\n\n¿Desea abrir la configuración?",
-                        "Sí", "No");
+                        T("diagnostics.battery_title"),
+                        T("diagnostics.battery_on"),
+                        T("common.yes"), T("common.no"));
 
                     if (result)
                     {
                         await batteryPermission.RequestAsync();
                     }
                 }
-                
+
                 await RefreshStatus(); // Actualizar estado después de gestionar batería
             }
             catch (Exception ex)
             {
                 _loggingService.LogError("Error al gestionar optimización de batería", ex);
-                await SocShared.ModernDialog.AlertAsync(this,"Error", "Error al acceder a la configuración de batería", "OK");
+                await SocShared.ModernDialog.AlertAsync(this, T("common.error"), T("diagnostics.battery_error"), T("common.ok"));
             }
         }
 
@@ -144,11 +192,11 @@ namespace SMSForwarder
             try
             {
                 var autostartPermission = new SmsPermissions.AutoStartPermission();
-                
+
                 await SocShared.ModernDialog.AlertAsync(this,
-                    "Configuración de Autostart",
-                    "Se abrirá la configuración de autostart. Busque 'SMS Forwarder' en la lista y active el inicio automático para asegurar que la aplicación funcione después de reiniciar el dispositivo.",
-                    "Entendido");
+                    T("diagnostics.autostart_title"),
+                    T("diagnostics.autostart_text"),
+                    T("common.understood"));
 
                 await autostartPermission.RequestAsync();
                 await RefreshStatus(); // Actualizar estado después de gestionar autostart
@@ -156,7 +204,7 @@ namespace SMSForwarder
             catch (Exception ex)
             {
                 _loggingService.LogError("Error al gestionar autostart", ex);
-                await SocShared.ModernDialog.AlertAsync(this,"Error", "Error al acceder a la configuración de autostart", "OK");
+                await SocShared.ModernDialog.AlertAsync(this, T("common.error"), T("diagnostics.autostart_error"), T("common.ok"));
             }
         }
     }

@@ -28,12 +28,17 @@
     android:largeScreens="false"
     android:xlargeScreens="false" />
 
+  <!--
+    enableOnBackInvokedCallback="false": con targetSdk 36, Android 16 activa el "atras predictivo" y
+    el boton de atras deja de llegar al Shell (Mobile 7).
+  -->
   <application
 		android:allowBackup="true"
 		android:supportsRtl="true"
 		android:label="SMS Forwarder"
 		android:icon="@mipmap/appicon"
-		android:theme="@style/Maui.SplashTheme">
+		android:theme="@style/Maui.SplashTheme"
+		android:enableOnBackInvokedCallback="false">
 
     <!-- Receptor SMS -->
     <receiver

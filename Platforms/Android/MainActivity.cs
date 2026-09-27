@@ -174,20 +174,9 @@ namespace SMSForwarder
             }
         }
 
-        public override void OnBackPressed()
-        {
-            // Estando en el modo de seleccion multiple del buzon, atras sale del modo en vez de
-            // cerrar la app. Se decide aqui porque esta actividad se queda el boton de atras: ni
-            // el Shell ni la pagina llegan a verlo.
-            if (Shell.Current?.CurrentPage is Pages.MessagesPage { IsSelecting: true } messages)
-            {
-                messages.CancelSelection();
-                return;
-            }
-
-            MoveTaskToBack(true);
-            FinishAndRemoveTask();
-        }
+        // Sin OnBackPressed a proposito (Mobile 7): si la actividad se queda el boton de atras, el
+        // Shell y las paginas no lo ven y la app se ocultaba desde cualquier pantalla. Lo decide
+        // AppShell.OnBackButtonPressed, que sabe si hay pantalla anterior.
 
         // Android 15 dibuja de borde a borde: separa el contenido del reloj y de la barra inferior.
         private void ApplySystemBarInsets()
