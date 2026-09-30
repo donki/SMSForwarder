@@ -1,0 +1,52 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Pruebas de la logica de SMS Forwarder. La app es un solo proyecto MAUI para Android, asi que aqui
+    se enlazan los ficheros puros (modelos, reglas de reenvio, servicios sin plataforma) y se
+    compilan para net10.0. Lo que la app toma de MAUI (FileSystem, Preferences) lo sustituyen las
+    cuñas de Shims/.
+  -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+    <RootNamespace>SMSForwarder.Tests</RootNamespace>
+    <!-- El codigo enlazado de la app arrastra avisos de nulabilidad que no son de las pruebas. -->
+    <NoWarn>$(NoWarn);CS8625</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- xunit (Apache-2.0), su runner (Apache-2.0), Microsoft.NET.Test.Sdk (MIT) y coverlet (MIT): solo para probar, no se distribuyen. -->
+    <PackageReference Include="coverlet.collector" Version="10.1.0">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+    <PackageReference Include="xunit" Version="2.9.3" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="3.1.4">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Xunit" />
+    <Using Include="Microsoft.Maui.Storage" />
+  </ItemGroup>
+
+  <!-- Codigo de la app que se prueba (enlazado, no copiado). -->
+  <ItemGroup>
+    <Compile Include="..\Models\ForwardDestination.cs" Link="App\Models\ForwardDestination.cs" />
+    <Compile Include="..\Models\SmsMessageItem.cs" Link="App\Models\SmsMessageItem.cs" />
+    <Compile Include="..\Services\DefaultRolePrompt.cs" Link="App\Services\DefaultRolePrompt.cs" />
+    <Compile Include="..\Services\DestinationStore.cs" Link="App\Services\DestinationStore.cs" />
+    <Compile Include="..\Services\ForwardingRules.cs" Link="App\Services\ForwardingRules.cs" />
+    <Compile Include="..\Services\ILocalizationService.cs" Link="App\Services\ILocalizationService.cs" />
+    <Compile Include="..\Services\ILoggingService.cs" Link="App\Services\ILoggingService.cs" />
+    <Compile Include="..\Services\LocalizationService.cs" Link="App\Services\LocalizationService.cs" />
+    <Compile Include="..\Services\LoggingService.cs" Link="App\Services\LoggingService.cs" />
+  </ItemGroup>
+
+</Project>

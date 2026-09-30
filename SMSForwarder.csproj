@@ -16,8 +16,8 @@
     <ApplicationId>com.socratic.smsforwarder</ApplicationId>
 
     <!-- Versions -->
-    <ApplicationDisplayVersion>2026.09.27.0</ApplicationDisplayVersion>
-    <ApplicationVersion>2026092700</ApplicationVersion>
+    <ApplicationDisplayVersion>2026.09.30.0</ApplicationDisplayVersion>
+    <ApplicationVersion>2026093000</ApplicationVersion>
     
     <!-- Accept Android SDK Licenses -->
     <AcceptAndroidSDKLicenses>true</AcceptAndroidSDKLicenses>
@@ -48,8 +48,8 @@
     <UseInterpreter>false</UseInterpreter>
     <AndroidSdkDirectory>C:\Program Files (x86)\Android\android-sdk</AndroidSdkDirectory>
 
-    <AssemblyVersion>2026.08.02.0</AssemblyVersion>
-    <FileVersion>2026.08.02.0</FileVersion>
+    <AssemblyVersion>2026.9.30.0</AssemblyVersion>
+    <FileVersion>2026.9.30.0</FileVersion>
   </PropertyGroup>
 
   <!-- La configuracion Release (formato aab + firma) vive en ..\Shared\signing.props, que se
@@ -91,6 +91,9 @@
        reorganizacion: tiene su propio csproj y duplica tipos, asi que no entra en la compilacion. -->
   <ItemGroup>
     <Compile Remove="_RECUPERADO_DEL_DLL\**" />
+    <!-- El proyecto de pruebas vive dentro del repo: la app no compila sus ficheros. -->
+    <Compile Remove="SMSForwarder.Tests\**" />
+    <None Remove="SMSForwarder.Tests\**" />
     <MauiXaml Remove="_RECUPERADO_DEL_DLL\**" />
     <EmbeddedResource Remove="_RECUPERADO_DEL_DLL\**" />
     <None Remove="_RECUPERADO_DEL_DLL\**" />

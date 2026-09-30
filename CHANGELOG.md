@@ -5,6 +5,22 @@ Todos los cambios notables de este proyecto serán documentados en este archivo.
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/),
 y este proyecto adhiere al [Versionado Semántico](https://semver.org/lang/es/).
 
+## [2026.09.30.0] - 2026-09-30
+
+### 🐛 Corregido
+- **Ya no se quedan sin reenviar mensajes normales que llevan «de:» o «from:» al principio.** Para
+  no reenviar reenvíos, bastaba con que «De:», «From:», «Reenviado:»… aparecieran en los 30
+  primeros caracteres: «Compra de: 23,00 EUR en…» o «Código de: acceso…» se tomaban por un reenvío y
+  no salían. Ahora ese encabezado tiene que ir al principio del mensaje. / *Messages such as
+  "Purchase of: …" containing "de:"/"from:" near the start are forwarded again.*
+- **Los remitentes con nombre casan sin mirar mayúsculas.** Un filtro «bbva» no dejaba pasar los
+  SMS de «BBVA». / *Named senders now match regardless of case.*
+
+### 🧪 Pruebas
+- Proyecto `SMSForwarder.Tests` (xUnit): filtros por número y por palabra, formato del reenvío,
+  bucles y duplicados, guardado de destinos, idiomas y registro. Las reglas del reenvío salen del
+  receptor de Android a `Services/ForwardingRules.cs` para poder probarlas.
+
 ## [2026.09.27.0] - 2026-09-27
 
 ### 🐛 Corregido

@@ -91,6 +91,17 @@ namespace SMSForwarder.Models
         }
 
         /// <summary>
+        /// Numero que se puede anadir como destino: de 7 a 15 digitos, con o sin «+» delante y sin
+        /// empezar por 0 (los separadores habituales se ignoran).
+        /// </summary>
+        public static bool IsValid(string phoneNumber)
+        {
+            if (string.IsNullOrWhiteSpace(phoneNumber)) return false;
+            var cleanNumber = phoneNumber.Replace(" ", "").Replace("-", "").Replace("(", "").Replace(")", "");
+            return System.Text.RegularExpressions.Regex.IsMatch(cleanNumber, @"^\+?[1-9]\d{6,14}$");
+        }
+
+        /// <summary>
         /// Iguales si coinciden enteros o en sus ultimos 9 digitos: el mismo numero llega unas veces
         /// con prefijo de pais y otras sin el.
         /// </summary>
@@ -99,7 +110,9 @@ namespace SMSForwarder.Models
             var x = Clean(a);
             var y = Clean(b);
             if (string.IsNullOrWhiteSpace(x) || string.IsNullOrWhiteSpace(y)) return false;
-            if (x == y) return true;
+            // Sin distinguir mayusculas: los remitentes con nombre («BBVA», «Amazon») llegan con la
+            // grafia del banco, y el usuario los escribe como le sale. Antes «bbva» no casaba.
+            if (string.Equals(x, y, StringComparison.OrdinalIgnoreCase)) return true;
             var min = Math.Min(x.Length, y.Length);
             return min >= 9 && x[^9..] == y[^9..];
         }

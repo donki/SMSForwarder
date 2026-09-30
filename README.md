@@ -126,6 +126,25 @@ SMSForwarder/
 - **Logging integrado** para depuración
 - **Manejo robusto de errores** y excepciones
 
+### Pruebas
+
+**90 pruebas** (xUnit), todas pasan · cobertura del código probado **99,3 %** de líneas · sobre
+toda la app **16,9 %** (654 de ~3 870 líneas; el resto es interfaz MAUI y código de Android:
+receptores de SMS, buzón del sistema, permisos) · el banco tarda **~0,2 s** (≈ 6 s con la
+cobertura). Medido el 2026-09-30.
+
+```powershell
+dotnet test SMSForwarder.Tests
+# con cobertura (coverlet) y resumen (ReportGenerator, herramienta local del repo)
+dotnet test SMSForwarder.Tests -s SMSForwarder.Tests/coverlet.runsettings --collect:"XPlat Code Coverage"
+dotnet tool restore; dotnet tool run reportgenerator -reports:SMSForwarder.Tests/TestResults/*/coverage.cobertura.xml -targetdir:SMSForwarder.Tests/TestResults/report -reporttypes:TextSummary
+```
+
+Se prueban los filtros por número y por palabra (sin mayúsculas ni acentos), la comparación de
+números con y sin prefijo, la validación al añadir, el formato y recorte del reenvío, la detección
+de bucles y de duplicados, el guardado de destinos (formato nuevo y viejo), los idiomas (mismas
+claves y huecos en los dos) y el registro. Sin red, sin SMS y sin dispositivo.
+
 ## 🔒 Seguridad y Privacidad
 
 ### Datos Locales

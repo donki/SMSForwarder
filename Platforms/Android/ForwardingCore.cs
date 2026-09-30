@@ -1,6 +1,7 @@
 using Android.App;
 using Android.Content;
 using SMSForwarder.Models;
+using SMSForwarder.Services;
 using AndroidSmsManager = Android.Telephony.SmsManager;
 using Application = Android.App.Application;
 
@@ -14,21 +15,16 @@ namespace SMSForwarder.Platforms.Android
     /// </summary>
     public static class ForwardingCore
     {
-        private static string? _lastSender;
-        private static string? _lastBody;
-        private static DateTime _lastReceived = DateTime.MinValue;
+        private static readonly DuplicateFilter Duplicates = new(TimeSpan.FromSeconds(5));
 
         public static void Forward(Context context, string sender, string messageBody)
         {
             // Evita reenvios duplicados en un corto periodo de tiempo (multipart, doble broadcast, etc.)
-            if (_lastSender == sender && _lastBody == messageBody && (DateTime.Now - _lastReceived).TotalSeconds < 5)
+            if (Duplicates.IsDuplicate(sender, messageBody, DateTime.Now))
             {
                 SafeLog("Mensaje duplicado detectado, no se reenvia.");
                 return;
             }
-            _lastSender = sender;
-            _lastBody = messageBody;
-            _lastReceived = DateTime.Now;
 
             try
             {
@@ -51,43 +47,17 @@ namespace SMSForwarder.Platforms.Android
                 var destinations = ForwardDestinations.Parse(
                     prefs.GetString(ForwardDestinations.DestinationsKey, null),
                     prefs.GetString(ForwardDestinations.PhonesKey, null));
-                if (destinations.Count == 0)
-                {
-                    SafeLog("No hay numeros guardados en preferencias");
-                    return;
-                }
 
-                // PREVENCION DE BUCLES: no reenviar si el remitente es uno de los numeros de reenvio
-                var isFromForwardingNumber = destinations.Any(d => PhoneNumbers.AreEqual(d.Phone, sender));
-                if (isFromForwardingNumber)
+                // Quien recibe el mensaje, bucles incluidos, lo decide ForwardingRules (codigo puro, con pruebas).
+                var (decision, targets) = ForwardingRules.Decide(destinations, sender, messageBody);
+                if (decision != ForwardDecision.Forward)
                 {
-                    SafeLog($"BUCLE DETECTADO: mensaje desde un numero de reenvio ({sender}). No se reenvia.");
-                    return;
-                }
-                if (IsForwardedMessage(messageBody))
-                {
-                    SafeLog("BUCLE DETECTADO: el mensaje parece un reenvio de SMSForwarder. No se reenvia.");
-                    return;
-                }
-
-                // Cada destino decide: sin filtros le llega todo; con remitentes o palabras, solo lo que casa.
-                var targets = destinations.Where(d => !string.IsNullOrWhiteSpace(d.Phone) && d.Matches(sender, messageBody)).ToList();
-                if (targets.Count == 0)
-                {
-                    SafeLog($"Ningun destino casa con este mensaje ({destinations.Count} configurados). No se reenvia.");
+                    SafeLog($"No se reenvia: {decision} ({destinations.Count} destinos configurados, remitente {sender}).");
                     return;
                 }
                 SafeLog($"Procesando reenvio a {targets.Count} de {destinations.Count} numeros");
 
-                var forwardedMessage = $"[SMSForwarder] De: {sender}\n{messageBody}";
-                if (forwardedMessage.Length > 160)
-                {
-                    var maxBodyLength = 160 - "[SMSForwarder] De: ".Length - sender.Length - 4;
-                    var truncatedBody = messageBody.Length > maxBodyLength
-                        ? messageBody.Substring(0, Math.Max(0, maxBodyLength)) + "..."
-                        : messageBody;
-                    forwardedMessage = $"[SMSForwarder] De: {sender}\n{truncatedBody}";
-                }
+                var forwardedMessage = ForwardingRules.BuildMessage(sender, messageBody);
 
                 var successCount = 0;
                 var errorCount = 0;
@@ -153,15 +123,6 @@ namespace SMSForwarder.Platforms.Android
         {
             try { System.Diagnostics.Debug.WriteLine($"[Forwarding] {DateTime.Now:HH:mm:ss}: {message}"); }
             catch { }
-        }
-
-        private static bool IsForwardedMessage(string messageBody)
-        {
-            if (string.IsNullOrWhiteSpace(messageBody)) return false;
-            if (messageBody.StartsWith("[SMSForwarder]", StringComparison.OrdinalIgnoreCase)) return true;
-            var forwardPatterns = new[] { "De:", "From:", "Reenviado:", "Forwarded:", "SMS de:" };
-            var messageStart = messageBody.Substring(0, Math.Min(30, messageBody.Length)).ToLower();
-            return forwardPatterns.Any(pattern => messageStart.Contains(pattern.ToLower()));
         }
     }
 }

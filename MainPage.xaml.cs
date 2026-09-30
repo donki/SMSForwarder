@@ -199,17 +199,7 @@ namespace SMSForwarder
             ((CollectionView)sender).SelectedItem = null; // deseleccionar
         }
 
-        private bool IsValidPhoneNumber(string phoneNumber)
-        {
-            // Limpiar el número de espacios y caracteres especiales
-            var cleanNumber = phoneNumber.Replace(" ", "").Replace("-", "").Replace("(", "").Replace(")", "");
-
-            // Expresión regular más flexible para números de teléfono
-            // Acepta números con o sin código de país, mínimo 7 dígitos, máximo 15
-            var phoneRegex = new Regex(@"^\+?[1-9]\d{6,14}$");
-
-            return phoneRegex.IsMatch(cleanNumber) && cleanNumber.Length >= 7 && cleanNumber.Length <= 15;
-        }
+        private static bool IsValidPhoneNumber(string phoneNumber) => PhoneNumbers.IsValid(phoneNumber);
 
         private async void OnSelectFromContactsClicked(object sender, EventArgs e)
         {
