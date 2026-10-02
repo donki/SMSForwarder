@@ -1,3 +1,4 @@
+using SMSForwarder;
 public class SmsPermissions
 {
     // Clase para manejar permisos de autostart
@@ -194,7 +195,7 @@ public class SmsPermissions
         public override Task<PermissionStatus> CheckStatusAsync()
         {
 #if ANDROID
-            return Permissions.CheckStatusAsync<Permissions.Sms>();
+            return AppPlatform.CheckStatusAsync<Permissions.Sms>();
 #else
             return Task.FromResult(PermissionStatus.Granted);
 #endif
@@ -203,7 +204,7 @@ public class SmsPermissions
         public override Task<PermissionStatus> RequestAsync()
         {
 #if ANDROID
-            return Permissions.RequestAsync<Permissions.Sms>();
+            return AppPlatform.RequestAsync<Permissions.Sms>();
 #else
             return Task.FromResult(PermissionStatus.Granted);
 #endif
@@ -229,7 +230,7 @@ public class SmsPermissions
         public override Task<PermissionStatus> CheckStatusAsync()
         {
 #if ANDROID
-            return Permissions.CheckStatusAsync<Permissions.Sms>();
+            return AppPlatform.CheckStatusAsync<Permissions.Sms>();
 #else
             return Task.FromResult(PermissionStatus.Granted);
 #endif
@@ -238,7 +239,7 @@ public class SmsPermissions
         public override Task<PermissionStatus> RequestAsync()
         {
 #if ANDROID
-            return Permissions.RequestAsync<Permissions.Sms>();
+            return AppPlatform.RequestAsync<Permissions.Sms>();
 #else
             return Task.FromResult(PermissionStatus.Granted);
 #endif
@@ -264,7 +265,7 @@ public class SmsPermissions
         public override Task<PermissionStatus> CheckStatusAsync()
         {
 #if ANDROID
-            return Permissions.CheckStatusAsync<Permissions.Sms>();
+            return AppPlatform.CheckStatusAsync<Permissions.Sms>();
 #else
             return Task.FromResult(PermissionStatus.Granted);
 #endif
@@ -273,7 +274,7 @@ public class SmsPermissions
         public override Task<PermissionStatus> RequestAsync()
         {
 #if ANDROID
-            return Permissions.RequestAsync<Permissions.Sms>();
+            return AppPlatform.RequestAsync<Permissions.Sms>();
 #else
             return Task.FromResult(PermissionStatus.Granted);
 #endif

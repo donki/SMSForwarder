@@ -1,3 +1,4 @@
+using SMSForwarder.Services;
 using System.Globalization;
 using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.Storage;
@@ -11,22 +12,28 @@ namespace SMSForwarder.Pages
         private const string EmailSubject = "Contacto desde SMS Forwarder";
 
         // Versión leída de AppInfo (= ApplicationDisplayVersion del csproj), nunca hardcodeada.
-        private static string AppVersion => AppInfo.Current.VersionString;
+        private static string AppVersion => AppPlatform.AppInfo.VersionString;
+
+        private readonly ILocalizationService _localization;
 
         public AboutPage()
+            : this(IPlatformApplication.Current?.Services.GetService<ILocalizationService>() ?? new LocalizationService())
+        {
+        }
+
+        public AboutPage(ILocalizationService localization)
         {
             InitializeComponent();
+            _localization = localization;
+            _localization.LanguageChanged += (_, _) => AppPlatform.BeginInvokeOnMainThread(() => ApplyLanguage(GetCurrentLanguage()));
             ApplyLanguage(GetCurrentLanguage());
         }
 
-        private static string GetCurrentLanguage()
-            => Preferences.Get("AppLanguage", GetSystemLanguage());
-
-        private static string GetSystemLanguage()
-        {
-            var culture = CultureInfo.CurrentCulture.TwoLetterISOLanguageName;
-            return culture == "es" ? "es" : "en";
-        }
+        // El idioma de la app (el del servicio de idiomas). Hasta la 2026.10.02.0 esta pantalla
+        // guardaba el suyo aparte («AppLanguage»): sus botones de idioma solo cambiaban sus propios
+        // textos y el resto de la app seguia en el otro idioma.
+        private string GetCurrentLanguage()
+            => _localization.CurrentLanguage.StartsWith("es", StringComparison.OrdinalIgnoreCase) ? "es" : "en";
 
         private void ApplyLanguage(string language)
         {
@@ -114,13 +121,13 @@ namespace SMSForwarder.Pages
 
         private void OnSpanishClicked(object? sender, EventArgs e)
         {
-            Preferences.Set("AppLanguage", "es");
+            _localization.SetLanguage("es-ES");
             ApplyLanguage("es");
         }
 
         private void OnEnglishClicked(object? sender, EventArgs e)
         {
-            Preferences.Set("AppLanguage", "en");
+            _localization.SetLanguage("en-US");
             ApplyLanguage("en");
         }
 
@@ -137,28 +144,10 @@ namespace SMSForwarder.Pages
                     ? $"Hola,\n\nMe pongo en contacto desde la aplicación {appName} (versión {appVersion}).\n\n[Escribe tu mensaje aquí]\n\nSaludos."
                     : $"Hello,\n\nI'm contacting you from the {appName} app (version {appVersion}).\n\n[Write your message here]\n\nBest regards.";
 
-#if ANDROID
-                // Usar Intent de Android directamente
-                var context = Platform.CurrentActivity ?? Android.App.Application.Context;
-                if (context != null)
-                {
-                    var emailIntent = new Android.Content.Intent(Android.Content.Intent.ActionSendto);
-                    emailIntent.SetData(Android.Net.Uri.Parse($"mailto:{ContactEmail}"));
-                    emailIntent.PutExtra(Android.Content.Intent.ExtraSubject, EmailSubject);
-                    emailIntent.PutExtra(Android.Content.Intent.ExtraText, emailBody);
-
-                    // Crear chooser para mostrar todas las aplicaciones de email disponibles
-                    var chooserTitle = currentLanguage == "es" ? "Enviar email con:" : "Send email with:";
-                    var chooser = Android.Content.Intent.CreateChooser(emailIntent, chooserTitle);
-
-                    if (chooser != null)
-                    {
-                        chooser.AddFlags(Android.Content.ActivityFlags.NewTask);
-                        context.StartActivity(chooser);
-                        return;
-                    }
-                }
-#endif
+                // En Android, el selector del sistema con todas las apps de correo (MainActivity).
+                var chooserTitle = currentLanguage == "es" ? "Enviar email con:" : "Send email with:";
+                if (AppPlatform.StartEmailChooser(EmailSubject, emailBody, chooserTitle))
+                    return;
 
                 // Fallback usando MAUI Essentials si el Intent no funciona
                 var message = new Microsoft.Maui.ApplicationModel.Communication.EmailMessage
@@ -168,7 +157,7 @@ namespace SMSForwarder.Pages
                     To = new List<string> { ContactEmail }
                 };
 
-                await Microsoft.Maui.ApplicationModel.Communication.Email.ComposeAsync(message);
+                await AppPlatform.Email.ComposeAsync(message);
             }
             catch (FeatureNotSupportedException)
             {
@@ -178,7 +167,7 @@ namespace SMSForwarder.Pages
                     ? "Cliente de correo no disponible en este dispositivo"
                     : "Email client not available on this device";
 
-                await SocShared.ModernDialog.AlertAsync(this,errorTitle, errorMessage, "OK");
+                await AppPlatform.AlertAsync(this,errorTitle, errorMessage, "OK");
             }
             catch (Exception ex)
             {
@@ -188,7 +177,7 @@ namespace SMSForwarder.Pages
                     ? $"No se pudo abrir el cliente de correo: {ex.Message}"
                     : $"Could not open email client: {ex.Message}";
 
-                await SocShared.ModernDialog.AlertAsync(this,errorTitle, errorMessage, "OK");
+                await AppPlatform.AlertAsync(this,errorTitle, errorMessage, "OK");
             }
         }
 

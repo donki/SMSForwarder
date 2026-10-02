@@ -112,12 +112,12 @@ namespace SMSForwarder.Pages
 
             try
             {
-                await Launcher.Default.OpenAsync(url);
+                await AppPlatform.Launcher.OpenAsync(url);
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"[MessageDetail] OpenLink: {ex.Message}");
-                await SocShared.ModernDialog.AlertAsync(this,
+                await AppPlatform.AlertAsync(this,
                     _localization.GetString("common.error"),
                     _localization.GetString("messages.link_error"),
                     _localization.GetString("common.ok"));
@@ -128,8 +128,8 @@ namespace SMSForwarder.Pages
         {
             if (_message is null) return;
 
-            await Clipboard.Default.SetTextAsync(_message.Address);
-            await SocShared.ModernDialog.AlertAsync(this,
+            await AppPlatform.Clipboard.SetTextAsync(_message.Address);
+            await AppPlatform.AlertAsync(this,
                 _localization.GetString("messages.copied_title"),
                 _localization.GetString("messages.copied_number"),
                 _localization.GetString("common.ok"));
@@ -139,8 +139,8 @@ namespace SMSForwarder.Pages
         {
             if (_message is null) return;
 
-            await Clipboard.Default.SetTextAsync(_message.Body);
-            await SocShared.ModernDialog.AlertAsync(this,
+            await AppPlatform.Clipboard.SetTextAsync(_message.Body);
+            await AppPlatform.AlertAsync(this,
                 _localization.GetString("messages.copied_title"),
                 _localization.GetString("messages.copied_text"),
                 _localization.GetString("common.ok"));
@@ -169,7 +169,7 @@ namespace SMSForwarder.Pages
                     // Con destinos configurados se ofrecen primero: es a quien se reenvia casi siempre.
                     var other = _localization.GetString("messages.forward_other_recipient");
                     var cancel = _localization.GetString("common.cancel");
-                    var chosen = await ModernDialog.ActionSheetAsync(this,
+                    var chosen = await AppPlatform.ActionSheetAsync(this,
                         _localization.GetString("messages.forward_now_to"),
                         cancel, numbers.Append(other).ToArray());
                     if (chosen is null || chosen == cancel) return;
@@ -184,12 +184,12 @@ namespace SMSForwarder.Pages
 
                 var parameters = new ShellNavigationQueryParameters { ["body"] = body };
                 if (!string.IsNullOrWhiteSpace(to)) parameters["to"] = to;
-                await Shell.Current.GoToAsync(nameof(ComposePage), parameters);
+                await AppPlatform.GoToAsync(nameof(ComposePage), parameters);
             }
             catch (Exception ex)
             {
                 _logging.LogError("Error reenviando el mensaje desde el detalle", ex);
-                await ModernDialog.AlertAsync(this, _localization.GetString("common.error"), ex.Message,
+                await AppPlatform.AlertAsync(this, _localization.GetString("common.error"), ex.Message,
                     _localization.GetString("common.ok"));
             }
         }
@@ -215,7 +215,7 @@ namespace SMSForwarder.Pages
                     .Select(d => d.Phone)
                     .Append(newNumber)
                     .ToArray();
-                var chosen = await ModernDialog.ActionSheetAsync(this,
+                var chosen = await AppPlatform.ActionSheetAsync(this,
                     string.Format(culture, _localization.GetString("messages.forward_to_whom"), sender_),
                     _localization.GetString("common.cancel"), options);
                 if (chosen is null || chosen == _localization.GetString("common.cancel")) return;
@@ -223,7 +223,7 @@ namespace SMSForwarder.Pages
                 ForwardDestination? destination;
                 if (chosen == newNumber)
                 {
-                    var typed = await ModernDialog.PromptAsync(this,
+                    var typed = await AppPlatform.PromptAsync(this,
                         _localization.GetString("messages.forward_rule"),
                         _localization.GetString("messages.forward_new_number_hint"),
                         _localization.GetString("common.ok"), _localization.GetString("common.cancel"),
@@ -232,7 +232,7 @@ namespace SMSForwarder.Pages
                     if (number.Length == 0) return;
                     if (!IsValidPhoneNumber(number))
                     {
-                        await ModernDialog.AlertAsync(this, _localization.GetString("common.error"),
+                        await AppPlatform.AlertAsync(this, _localization.GetString("common.error"),
                             _localization.GetString("messages.forward_invalid_number"), _localization.GetString("common.ok"));
                         return;
                     }
@@ -252,7 +252,7 @@ namespace SMSForwarder.Pages
                 // 2. Que se le manda de este remitente.
                 var everything = string.Format(culture, _localization.GetString("messages.forward_all_from"), sender_);
                 var withWord = _localization.GetString("messages.forward_with_word");
-                var what = await ModernDialog.ActionSheetAsync(this,
+                var what = await AppPlatform.ActionSheetAsync(this,
                     string.Format(culture, _localization.GetString("messages.forward_what"), destination.Phone),
                     _localization.GetString("common.cancel"), everything, withWord);
                 if (what is null || what == _localization.GetString("common.cancel")) return;
@@ -260,7 +260,7 @@ namespace SMSForwarder.Pages
                 string? keyword = null;
                 if (what == withWord)
                 {
-                    keyword = (await ModernDialog.PromptAsync(this,
+                    keyword = (await AppPlatform.PromptAsync(this,
                         _localization.GetString("messages.forward_with_word"),
                         _localization.GetString("messages.forward_word_hint"),
                         _localization.GetString("common.ok"), _localization.GetString("common.cancel"),
@@ -271,7 +271,7 @@ namespace SMSForwarder.Pages
                 // 3. Si hasta ahora le llegaba todo, se avisa: al poner condiciones deja de llegarle.
                 if (destination.ForwardsEverything)
                 {
-                    var goOn = await ModernDialog.AlertAsync(this,
+                    var goOn = await AppPlatform.AlertAsync(this,
                         _localization.GetString("messages.forward_rule"),
                         string.Format(culture, _localization.GetString("messages.forward_limits"), destination.Phone),
                         _localization.GetString("common.ok"), _localization.GetString("common.cancel"));
@@ -291,12 +291,12 @@ namespace SMSForwarder.Pages
                     : destination.Keywords.Count > 0
                         ? string.Format(culture, _localization.GetString("messages.forward_done_words"), destination.Phone, sender_, string.Join(", ", destination.Keywords))
                         : string.Format(culture, _localization.GetString("messages.forward_done"), destination.Phone, sender_);
-                await ModernDialog.AlertAsync(this, _localization.GetString("messages.forward_rule"), message, _localization.GetString("common.ok"));
+                await AppPlatform.AlertAsync(this, _localization.GetString("messages.forward_rule"), message, _localization.GetString("common.ok"));
             }
             catch (Exception ex)
             {
                 _logging.LogError("Error configurando el reenvio desde el detalle", ex);
-                await ModernDialog.AlertAsync(this, _localization.GetString("common.error"), ex.Message, _localization.GetString("common.ok"));
+                await AppPlatform.AlertAsync(this, _localization.GetString("common.error"), ex.Message, _localization.GetString("common.ok"));
             }
         }
 
@@ -311,7 +311,7 @@ namespace SMSForwarder.Pages
             if (_message is null) return;
 
             var parameters = new ShellNavigationQueryParameters { ["to"] = _message.Address };
-            await Shell.Current.GoToAsync(nameof(ComposePage), parameters);
+            await AppPlatform.GoToAsync(nameof(ComposePage), parameters);
         }
     }
 }

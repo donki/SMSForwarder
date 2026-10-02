@@ -44,7 +44,7 @@ Una aplicación Android de mensajes desarrollada en .NET MAUI: gestiona tus SMS 
 ## 🚀 Instalación
 
 ### Requisitos
-- Android 5.0 (API 21) o superior; compilada contra la API 36
+- Android 7.0 (API 24) o superior; compilada contra la API 36
 - Permiso de SMS (el selector de contactos es el del sistema, no requiere permiso)
 
 ### Desde Código Fuente
@@ -128,22 +128,32 @@ SMSForwarder/
 
 ### Pruebas
 
-**90 pruebas** (xUnit), todas pasan · cobertura del código probado **99,3 %** de líneas · sobre
-toda la app **16,9 %** (654 de ~3 870 líneas; el resto es interfaz MAUI y código de Android:
-receptores de SMS, buzón del sistema, permisos) · el banco tarda **~0,2 s** (≈ 6 s con la
-cobertura). Medido el 2026-09-30.
+**135 pruebas** (xUnit), todas pasan · cobertura del código probado **92,8 %** de líneas · sobre
+toda la app **72,4 %** (2000 de 2763 líneas) · el banco tarda **~4 s** (≈ 15 s con la cobertura).
+Medido el 2026-10-02. Antes (2026-09-30): 90 pruebas, 16,9 % de toda la app con el recuento anterior.
 
 ```powershell
-dotnet test SMSForwarder.Tests
-# con cobertura (coverlet) y resumen (ReportGenerator, herramienta local del repo)
-dotnet test SMSForwarder.Tests -s SMSForwarder.Tests/coverlet.runsettings --collect:"XPlat Code Coverage"
-dotnet tool restore; dotnet tool run reportgenerator -reports:SMSForwarder.Tests/TestResults/*/coverage.cobertura.xml -targetdir:SMSForwarder.Tests/TestResults/report -reporttypes:TextSummary
+dotnet test SMSForwarder.Tests                 # solo las pruebas
+pwsh SMSForwarder.Tests/cobertura.ps1          # pruebas + las dos coberturas + tiempo
 ```
 
-Se prueban los filtros por número y por palabra (sin mayúsculas ni acentos), la comparación de
-números con y sin prefijo, la validación al añadir, el formato y recorte del reenvío, la detección
-de bucles y de duplicados, el guardado de destinos (formato nuevo y viejo), los idiomas (mismas
-claves y huecos en los dos) y el registro. Sin red, sin SMS y sin dispositivo.
+Además de la lógica (filtros por número y por palabra, comparación de números, formato y recorte
+del reenvío, bucles y duplicados, guardado de destinos, idiomas, registro), recorren todas las
+pantallas con su XAML real compilado para `net10.0` con Microsoft.Maui.Controls: Configuración
+(añadir, contactos, borrar, idioma), buzón (pestañas, permisos, selección múltiple, borrados, app
+por defecto), mensaje (enlaces, copiar, responder, reenviar ahora, reenvío automático), redactar,
+filtros de un número, Diagnósticos (estado, registro, permisos, batería, inicio automático), Acerca
+de y el atrás del menú. Lo que pedirían al dispositivo pasa por `Services/AppPlatform.cs`; el buzón y
+la agenda de Android, por dobles de `IMessageStore` e `IContactPicker`. Sin red, sin SMS y sin
+dispositivo.
+
+Cómo se cuenta «toda la app» (desde el 2026-10-01): de cada fichero C# que el banco compila, sus
+líneas ejecutables según coverlet, más las de sus bloques `#if ANDROID` como no cubiertas; de los
+que no compila (`Platforms/Android`), todas sus líneas de código como no cubiertas. Queda sin cubrir
+el código de Android: buzón del sistema (`MessageStore`, 155 líneas), permisos (`SmsPermissions`,
+129), `MainActivity` (102), reenvío en segundo plano y receptores de SMS (`ForwardingCore`,
+`SMSReceiver`, `SmsDeliverReceiver`, `HeadlessSmsSendService`, `ComposeSmsActivity`…). No llega al
+90 % de la constitución (General §8.6); el plan está en el fichero de tareas de la app.
 
 ## 🔒 Seguridad y Privacidad
 

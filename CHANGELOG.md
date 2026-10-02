@@ -5,6 +5,30 @@ Todos los cambios notables de este proyecto serán documentados en este archivo.
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/),
 y este proyecto adhiere al [Versionado Semántico](https://semver.org/lang/es/).
 
+## [2026.10.02.0] - 2026-10-02
+
+### 🐛 Corregido
+- **Los botones de idioma de «Acerca de» cambian por fin el idioma de la app.** Esa pantalla
+  guardaba su propio idioma aparte: los botones solo cambiaban sus textos y el resto de la app
+  seguía en el otro idioma (y al volver a entrar, Acerca de podía salir en un idioma distinto del
+  resto). Ahora usan el mismo idioma que Configuración. / *The About language buttons now change the
+  language of the whole app, not just the About texts.*
+
+### 🔧 Cambiado
+- **Android 7.0 como mínimo** (antes 5.0): Google Play ya no acepta paquetes con un mínimo inferior a
+  la API 24. / *Minimum Android version raised to 7.0, required by Google Play.*
+- Código muerto fuera: la pantalla de bienvenida (`SplashPage`), a la que ya no se llegaba, y
+  `AutostartHelper`, que no se llamaba desde ningún sitio.
+- Lo que las pantallas piden al dispositivo (diálogos, permisos, portapapeles, navegador, correo,
+  navegación, atrás) pasa por `Services/AppPlatform.cs`, para poder probarlo. La app hace lo mismo.
+
+### 🧪 Pruebas
+- El banco pasa de 90 a 135 pruebas y recorre ya todas las pantallas con su XAML real
+  (Configuración, buzón, mensaje, redactar, filtros de un número, Diagnósticos con sus permisos,
+  Acerca de y el botón de atrás del menú). Cobertura sobre toda la app: **72,4 %** (antes 16,9 % con
+  el recuento anterior). No llega al 90 %: lo que falta es el código de Android (buzón del sistema,
+  receptores de SMS, permisos), con el plan en el fichero de tareas.
+
 ## [2026.09.30.0] - 2026-09-30
 
 ### 🐛 Corregido

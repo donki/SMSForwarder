@@ -37,7 +37,7 @@ namespace SMSForwarder.Pages
             var to = query.TryGetValue("to", out var toValue) ? toValue as string : null;
             var body = query.TryGetValue("body", out var bodyValue) ? bodyValue as string : null;
 
-            MainThread.BeginInvokeOnMainThread(() =>
+            AppPlatform.BeginInvokeOnMainThread(() =>
             {
                 if (!string.IsNullOrWhiteSpace(to)) ToEntry.Text = to;
                 if (!string.IsNullOrEmpty(body)) BodyEditor.Text = body;
@@ -73,7 +73,7 @@ namespace SMSForwarder.Pages
 
             if (!IsValidNumber(address))
             {
-                await SocShared.ModernDialog.AlertAsync(this,
+                await AppPlatform.AlertAsync(this,
                     _localization.GetString("common.error"),
                     _localization.GetString("compose.invalid_number"),
                     _localization.GetString("common.ok"));
@@ -82,7 +82,7 @@ namespace SMSForwarder.Pages
 
             if (string.IsNullOrWhiteSpace(body))
             {
-                await SocShared.ModernDialog.AlertAsync(this,
+                await AppPlatform.AlertAsync(this,
                     _localization.GetString("common.error"),
                     _localization.GetString("compose.empty_body"),
                     _localization.GetString("common.ok"));
@@ -91,7 +91,7 @@ namespace SMSForwarder.Pages
 
             if (!await EnsureSmsPermissionAsync())
             {
-                await SocShared.ModernDialog.AlertAsync(this,
+                await AppPlatform.AlertAsync(this,
                     _localization.GetString("common.error"),
                     _localization.GetString("compose.no_permission"),
                     _localization.GetString("common.ok"));
@@ -105,15 +105,15 @@ namespace SMSForwarder.Pages
                 {
                     BodyEditor.Text = "";
                     UpdateCounter();
-                    await SocShared.ModernDialog.AlertAsync(this,
+                    await AppPlatform.AlertAsync(this,
                         _localization.GetString("common.success"),
                         _localization.GetString("compose.sent"),
                         _localization.GetString("common.ok"));
-                    await Shell.Current.GoToAsync("..");
+                    await AppPlatform.GoToAsync("..");
                 }
                 else
                 {
-                    await SocShared.ModernDialog.AlertAsync(this,
+                    await AppPlatform.AlertAsync(this,
                         _localization.GetString("common.error"),
                         _localization.GetString("compose.send_error"),
                         _localization.GetString("common.ok"));
@@ -121,7 +121,7 @@ namespace SMSForwarder.Pages
             }
             catch (Exception ex)
             {
-                await SocShared.ModernDialog.AlertAsync(this,
+                await AppPlatform.AlertAsync(this,
                     _localization.GetString("common.error"),
                     $"{_localization.GetString("compose.send_error")}: {ex.Message}",
                     _localization.GetString("common.ok"));
@@ -146,9 +146,9 @@ namespace SMSForwarder.Pages
             try
             {
                 await DefaultRolePrompt.Done;
-                var status = await Permissions.CheckStatusAsync<Permissions.Sms>();
+                var status = await AppPlatform.CheckStatusAsync<Permissions.Sms>();
                 if (status != PermissionStatus.Granted)
-                    status = await Permissions.RequestAsync<Permissions.Sms>();
+                    status = await AppPlatform.RequestAsync<Permissions.Sms>();
                 return status == PermissionStatus.Granted;
             }
             catch
@@ -168,7 +168,7 @@ namespace SMSForwarder.Pages
         }
 
         private void OnLanguageChanged(object? sender, EventArgs e)
-            => MainThread.BeginInvokeOnMainThread(UpdateLocalizedStrings);
+            => AppPlatform.BeginInvokeOnMainThread(UpdateLocalizedStrings);
 
         private void UpdateLocalizedStrings()
         {

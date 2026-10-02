@@ -54,6 +54,8 @@ namespace SMSForwarder
         protected override async void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
+            AppPlatform.MoveTaskToBack = () => MoveTaskToBack(true);
+            AppPlatform.StartEmailChooser = StartEmailChooser;
 
             ApplySystemBarInsets();
 
@@ -203,6 +205,25 @@ namespace SMSForwarder
                 if (bars is not null) view.SetPadding(bars.Left, bars.Top, bars.Right, bars.Bottom);
                 return consumed;
             }
+        }
+
+        /// <summary>
+        /// Selector del sistema con todas las apps de correo instaladas, que es mas fiable que dejar
+        /// que la plataforma elija una.
+        /// </summary>
+        private bool StartEmailChooser(string subject, string body, string chooserTitle)
+        {
+            var emailIntent = new Intent(Intent.ActionSendto);
+            emailIntent.SetData(Android.Net.Uri.Parse("mailto:jsoladelarosa@gmail.com"));
+            emailIntent.PutExtra(Intent.ExtraSubject, subject);
+            emailIntent.PutExtra(Intent.ExtraText, body);
+
+            var chooser = Intent.CreateChooser(emailIntent, chooserTitle);
+            if (chooser is null)
+                return false;
+
+            StartActivity(chooser);
+            return true;
         }
     }
 }

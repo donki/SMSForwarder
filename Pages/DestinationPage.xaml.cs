@@ -93,7 +93,7 @@ namespace SMSForwarder.Pages
             if (number.Length == 0) return;
             if (_senders.Any(s => PhoneNumbers.AreEqual(s, number)))
             {
-                await SocShared.ModernDialog.AlertAsync(this, _localization.GetString("destination.title"), _localization.GetString("destination.duplicate"), "OK");
+                await AppPlatform.AlertAsync(this, _localization.GetString("destination.title"), _localization.GetString("destination.duplicate"), "OK");
                 return;
             }
             _senders.Add(number);
@@ -133,7 +133,7 @@ namespace SMSForwarder.Pages
             if (word.Length == 0) return;
             if (_keywords.Any(k => string.Equals(k, word, StringComparison.CurrentCultureIgnoreCase)))
             {
-                await SocShared.ModernDialog.AlertAsync(this, _localization.GetString("destination.title"), _localization.GetString("destination.duplicate"), "OK");
+                await AppPlatform.AlertAsync(this, _localization.GetString("destination.title"), _localization.GetString("destination.duplicate"), "OK");
                 return;
             }
             _keywords.Add(word);

@@ -25,7 +25,7 @@ namespace SMSForwarder
 
         private void OnLanguageChanged(object? sender, EventArgs e)
         {
-            MainThread.BeginInvokeOnMainThread(async () =>
+            AppPlatform.BeginInvokeOnMainThread(async () =>
             {
                 UpdateLocalizedStrings();
                 await RefreshStatus();
@@ -71,8 +71,8 @@ namespace SMSForwarder
             try
             {
                 // Verificar permisos
-                var receiveSmsStatus = await Permissions.CheckStatusAsync<SmsPermissions.ReceiveSms>();
-                var sendSmsStatus = await Permissions.CheckStatusAsync<SmsPermissions.SendSms>();
+                var receiveSmsStatus = await AppPlatform.CheckStatusAsync<SmsPermissions.ReceiveSms>();
+                var sendSmsStatus = await AppPlatform.CheckStatusAsync<SmsPermissions.SendSms>();
 
                 PermissionsStatus.Text = string.Format(T("diagnostics.receive_sms"), StatusText(receiveSmsStatus)) + "\n" +
                                          string.Format(T("diagnostics.send_sms"), StatusText(sendSmsStatus));
@@ -92,7 +92,7 @@ namespace SMSForwarder
             catch (Exception ex)
             {
                 _loggingService.LogError("Error al actualizar diagnósticos", ex);
-                await SocShared.ModernDialog.AlertAsync(this, T("common.error"), T("diagnostics.refresh_error"), T("common.ok"));
+                await AppPlatform.AlertAsync(this, T("common.error"), T("diagnostics.refresh_error"), T("common.ok"));
             }
         }
 
@@ -110,7 +110,7 @@ namespace SMSForwarder
             }
             catch (Exception ex)
             {
-                await SocShared.ModernDialog.AlertAsync(this, T("common.error"), string.Format(T("diagnostics.clear_error"), ex.Message), T("common.ok"));
+                await AppPlatform.AlertAsync(this, T("common.error"), string.Format(T("diagnostics.clear_error"), ex.Message), T("common.ok"));
             }
         }
 
@@ -126,7 +126,7 @@ namespace SMSForwarder
             catch (Exception ex)
             {
                 _loggingService.LogError("Error al verificar permisos", ex);
-                await SocShared.ModernDialog.AlertAsync(this, T("common.error"), T("diagnostics.check_error"), T("common.ok"));
+                await AppPlatform.AlertAsync(this, T("common.error"), T("diagnostics.check_error"), T("common.ok"));
             }
         }
 
@@ -139,11 +139,11 @@ namespace SMSForwarder
 
                 if (result)
                 {
-                    await SocShared.ModernDialog.AlertAsync(this, T("common.success"), T("diagnostics.all_configured"), T("common.ok"));
+                    await AppPlatform.AlertAsync(this, T("common.success"), T("diagnostics.all_configured"), T("common.ok"));
                 }
                 else
                 {
-                    await SocShared.ModernDialog.AlertAsync(this, T("diagnostics.attention"), T("diagnostics.some_not_configured"), T("common.ok"));
+                    await AppPlatform.AlertAsync(this, T("diagnostics.attention"), T("diagnostics.some_not_configured"), T("common.ok"));
                 }
 
                 await RefreshStatus(); // Actualizar estado después de configurar
@@ -151,7 +151,7 @@ namespace SMSForwarder
             catch (Exception ex)
             {
                 _loggingService.LogError("Error al configurar permisos", ex);
-                await SocShared.ModernDialog.AlertAsync(this, T("common.error"), T("diagnostics.configure_error"), T("common.ok"));
+                await AppPlatform.AlertAsync(this, T("common.error"), T("diagnostics.configure_error"), T("common.ok"));
             }
         }
 
@@ -160,22 +160,22 @@ namespace SMSForwarder
             try
             {
                 var batteryPermission = new SmsPermissions.BatteryOptimizationPermission();
-                var status = await batteryPermission.CheckStatusAsync();
+                var status = await AppPlatform.CheckPermission(batteryPermission);
 
                 if (status == PermissionStatus.Granted)
                 {
-                    await SocShared.ModernDialog.AlertAsync(this, T("diagnostics.battery_ok_title"), T("diagnostics.battery_ok"), T("common.ok"));
+                    await AppPlatform.AlertAsync(this, T("diagnostics.battery_ok_title"), T("diagnostics.battery_ok"), T("common.ok"));
                 }
                 else
                 {
-                    var result = await SocShared.ModernDialog.AlertAsync(this,
+                    var result = await AppPlatform.AlertAsync(this,
                         T("diagnostics.battery_title"),
                         T("diagnostics.battery_on"),
                         T("common.yes"), T("common.no"));
 
                     if (result)
                     {
-                        await batteryPermission.RequestAsync();
+                        await AppPlatform.RequestPermission(batteryPermission);
                     }
                 }
 
@@ -184,7 +184,7 @@ namespace SMSForwarder
             catch (Exception ex)
             {
                 _loggingService.LogError("Error al gestionar optimización de batería", ex);
-                await SocShared.ModernDialog.AlertAsync(this, T("common.error"), T("diagnostics.battery_error"), T("common.ok"));
+                await AppPlatform.AlertAsync(this, T("common.error"), T("diagnostics.battery_error"), T("common.ok"));
             }
         }
 
@@ -194,18 +194,18 @@ namespace SMSForwarder
             {
                 var autostartPermission = new SmsPermissions.AutoStartPermission();
 
-                await SocShared.ModernDialog.AlertAsync(this,
+                await AppPlatform.AlertAsync(this,
                     T("diagnostics.autostart_title"),
                     T("diagnostics.autostart_text"),
                     T("common.understood"));
 
-                await autostartPermission.RequestAsync();
+                await AppPlatform.RequestPermission(autostartPermission);
                 await RefreshStatus(); // Actualizar estado después de gestionar autostart
             }
             catch (Exception ex)
             {
                 _loggingService.LogError("Error al gestionar autostart", ex);
-                await SocShared.ModernDialog.AlertAsync(this, T("common.error"), T("diagnostics.autostart_error"), T("common.ok"));
+                await AppPlatform.AlertAsync(this, T("common.error"), T("diagnostics.autostart_error"), T("common.ok"));
             }
         }
     }

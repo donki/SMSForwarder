@@ -16,8 +16,8 @@
     <ApplicationId>com.socratic.smsforwarder</ApplicationId>
 
     <!-- Versions -->
-    <ApplicationDisplayVersion>2026.09.30.0</ApplicationDisplayVersion>
-    <ApplicationVersion>2026093000</ApplicationVersion>
+    <ApplicationDisplayVersion>2026.10.02.0</ApplicationDisplayVersion>
+    <ApplicationVersion>2026100200</ApplicationVersion>
     
     <!-- Accept Android SDK Licenses -->
     <AcceptAndroidSDKLicenses>true</AcceptAndroidSDKLicenses>
@@ -37,7 +37,7 @@
     <Company>Socratic</Company>
 
     <!-- Platform versions -->
-    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
+    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">24.0</SupportedOSPlatformVersion>
 
     <!-- Android specific -->
     <AndroidPackageFormat>apk</AndroidPackageFormat>
@@ -48,8 +48,8 @@
     <UseInterpreter>false</UseInterpreter>
     <AndroidSdkDirectory>C:\Program Files (x86)\Android\android-sdk</AndroidSdkDirectory>
 
-    <AssemblyVersion>2026.9.30.0</AssemblyVersion>
-    <FileVersion>2026.9.30.0</FileVersion>
+    <AssemblyVersion>2026.10.2.0</AssemblyVersion>
+    <FileVersion>2026.10.2.0</FileVersion>
   </PropertyGroup>
 
   <!-- La configuracion Release (formato aab + firma) vive en ..\Shared\signing.props, que se

@@ -88,7 +88,7 @@ namespace SMSForwarder
 
         private void OnLanguageChanged(object? sender, EventArgs e)
         {
-            MainThread.BeginInvokeOnMainThread(() =>
+            AppPlatform.BeginInvokeOnMainThread(() =>
             {
                 UpdateLanguageButtons();
                 UpdateLocalizedStrings();
@@ -114,17 +114,17 @@ namespace SMSForwarder
                         else
                         {
                             if (_localizationService.CurrentLanguage == "es-ES")
-                                SocShared.ModernDialog.AlertAsync(this,"Número duplicado", "Este número ya está en la lista.", "OK");
+                                AppPlatform.AlertAsync(this,"Número duplicado", "Este número ya está en la lista.", "OK");
                             else
-                                SocShared.ModernDialog.AlertAsync(this,"Duplicate number", "This number is already in the list.", "OK");
+                                AppPlatform.AlertAsync(this,"Duplicate number", "This number is already in the list.", "OK");
                         }
                     }
                     else
                     {
                         if (_localizationService.CurrentLanguage == "es-ES")
-                            SocShared.ModernDialog.AlertAsync(this,"Número no válido", "Por favor, introduce un número de teléfono válido (7-15 dígitos).", "OK");
+                            AppPlatform.AlertAsync(this,"Número no válido", "Por favor, introduce un número de teléfono válido (7-15 dígitos).", "OK");
                         else
-                            SocShared.ModernDialog.AlertAsync(this,"Invalid number", "Please enter a valid phone number (7-15 digits).", "OK");
+                            AppPlatform.AlertAsync(this,"Invalid number", "Please enter a valid phone number (7-15 digits).", "OK");
                         _loggingService.LogWarning($"Intento de agregar número inválido: {cleanNumber}");
                     }
                 }
@@ -133,9 +133,9 @@ namespace SMSForwarder
             {
                 _loggingService.LogError("Error al agregar número", ex);
                 if (_localizationService.CurrentLanguage == "es-ES")
-                    SocShared.ModernDialog.AlertAsync(this,"Error", "Error al agregar el número", "OK");
+                    AppPlatform.AlertAsync(this,"Error", "Error al agregar el número", "OK");
                 else
-                    SocShared.ModernDialog.AlertAsync(this,"Error", "Error adding the number", "OK");
+                    AppPlatform.AlertAsync(this,"Error", "Error adding the number", "OK");
             }
         }
 
@@ -147,7 +147,7 @@ namespace SMSForwarder
                 // igual que en el buzon (un toque sin querer no debe borrar un destino).
                 if (sender is ImageButton { CommandParameter: ForwardDestination destination })
                 {
-                    var confirmed = await SocShared.ModernDialog.AlertAsync(this,
+                    var confirmed = await AppPlatform.AlertAsync(this,
                         _localizationService.GetString("main.delete"),
                         _localizationService.GetString("main.confirm_delete"),
                         _localizationService.GetString("main.delete_confirm_button"),
@@ -163,9 +163,9 @@ namespace SMSForwarder
             {
                 _loggingService.LogError("Error al eliminar número", ex);
                 if (_localizationService.CurrentLanguage == "es-ES")
-                    SocShared.ModernDialog.AlertAsync(this,"Error", "Error al eliminar el número", "OK");
+                    AppPlatform.AlertAsync(this,"Error", "Error al eliminar el número", "OK");
                 else
-                    SocShared.ModernDialog.AlertAsync(this,"Error", "Error deleting the number", "OK");
+                    AppPlatform.AlertAsync(this,"Error", "Error deleting the number", "OK");
             }
         }
 
@@ -191,7 +191,7 @@ namespace SMSForwarder
         {
             if ((sender as BindableObject)?.BindingContext is not ForwardDestination destination)
                 return;
-            await Shell.Current.GoToAsync(nameof(DestinationPage), new Dictionary<string, object> { ["destination"] = destination });
+            await AppPlatform.GoToAsync(nameof(DestinationPage), new Dictionary<string, object> { ["destination"] = destination });
         }
 
         private void OnItemSelected(object sender, SelectionChangedEventArgs e)
@@ -217,9 +217,9 @@ namespace SMSForwarder
             {
                 _loggingService.LogError("Error al abrir contactos", ex);
                 if (_localizationService.CurrentLanguage == "es-ES")
-                    await SocShared.ModernDialog.AlertAsync(this,"Error", "Error al abrir la lista de contactos", "OK");
+                    await AppPlatform.AlertAsync(this,"Error", "Error al abrir la lista de contactos", "OK");
                 else
-                    await SocShared.ModernDialog.AlertAsync(this,"Error", "Error opening contacts list", "OK");
+                    await AppPlatform.AlertAsync(this,"Error", "Error opening contacts list", "OK");
             }
         }
 
@@ -241,28 +241,28 @@ namespace SMSForwarder
                             _loggingService.LogInfo($"Número agregado desde contactos: {cleanNumber}");
 
                             // Mostrar confirmación
-                            MainThread.BeginInvokeOnMainThread(async () =>
+                            AppPlatform.BeginInvokeOnMainThread(async () =>
                             {
                                 if (_localizationService.CurrentLanguage == "es-ES")
-                                    await SocShared.ModernDialog.AlertAsync(this,"Número agregado",
+                                    await AppPlatform.AlertAsync(this,"Número agregado",
                                         $"El número {cleanNumber} ha sido agregado exitosamente",
                                         "OK");
                                 else
-                                    await SocShared.ModernDialog.AlertAsync(this,"Number added",
+                                    await AppPlatform.AlertAsync(this,"Number added",
                                         $"The number {cleanNumber} has been successfully added",
                                         "OK");
                             });
                         }
                         else
                         {
-                            MainThread.BeginInvokeOnMainThread(async () =>
+                            AppPlatform.BeginInvokeOnMainThread(async () =>
                             {
                                 if (_localizationService.CurrentLanguage == "es-ES")
-                                    await SocShared.ModernDialog.AlertAsync(this,"Número duplicado",
+                                    await AppPlatform.AlertAsync(this,"Número duplicado",
                                         "Este número ya está en la lista.",
                                         "OK");
                                 else
-                                    await SocShared.ModernDialog.AlertAsync(this,"Duplicate number",
+                                    await AppPlatform.AlertAsync(this,"Duplicate number",
                                         "This number is already in the list.",
                                         "OK");
                             });
@@ -271,14 +271,14 @@ namespace SMSForwarder
                     else
                     {
                         _loggingService.LogWarning($"Número inválido desde contactos: {cleanNumber}");
-                        MainThread.BeginInvokeOnMainThread(async () =>
+                        AppPlatform.BeginInvokeOnMainThread(async () =>
                         {
                             if (_localizationService.CurrentLanguage == "es-ES")
-                                await SocShared.ModernDialog.AlertAsync(this,"Número no válido",
+                                await AppPlatform.AlertAsync(this,"Número no válido",
                                     "El número seleccionado no es válido.",
                                     "OK");
                             else
-                                await SocShared.ModernDialog.AlertAsync(this,"Invalid number",
+                                await AppPlatform.AlertAsync(this,"Invalid number",
                                     "The selected number is invalid.",
                                     "OK");
                         });

@@ -1,18 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-  Cobertura con coverlet. El codigo de la app va enlazado dentro del ensamblado de pruebas, asi que
-  se incluye ese ensamblado y se excluyen los ficheros de las propias pruebas.
-  Uso: dotnet test SMSForwarder.Tests -s SMSForwarder.Tests/coverlet.runsettings
--->
+<!-- El codigo de la app se compila dentro del ensamblado de pruebas (ficheros enlazados): hay que
+     instrumentarlo (IncludeTestAssembly) y dejar fuera los ficheros propios de las pruebas. -->
 <RunSettings>
   <DataCollectionRunSettings>
     <DataCollectors>
-      <DataCollector friendlyName="XPlat Code Coverage">
+      <DataCollector friendlyName="XPlat code coverage">
         <Configuration>
           <Format>cobertura</Format>
           <IncludeTestAssembly>true</IncludeTestAssembly>
-          <ExcludeByFile>**/SMSForwarder.Tests/**/*.cs</ExcludeByFile>
-          <ExcludeByAttribute>GeneratedCodeAttribute,CompilerGeneratedAttribute</ExcludeByAttribute>
+          <ExcludeByFile>**/*.Tests/**/*.cs,**/obj/**,**/*.g.cs,**/*.sg.cs,**/*.Designer.cs,**/Mobile/Shared/*.cs,**/Microsoft.NET.Test.Sdk.Program.cs</ExcludeByFile>
+          <ExcludeByAttribute>GeneratedCodeAttribute</ExcludeByAttribute>
         </Configuration>
       </DataCollector>
     </DataCollectors>

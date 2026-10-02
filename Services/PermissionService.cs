@@ -44,25 +44,25 @@ namespace SMSForwarder.Services
         {
             try
             {
-                var receiveSmsStatus = await new SmsPermissions.ReceiveSms().CheckStatusAsync();
-                var sendSmsStatus = await new SmsPermissions.SendSms().CheckStatusAsync();
+                var receiveSmsStatus = await AppPlatform.CheckPermission(new SmsPermissions.ReceiveSms());
+                var sendSmsStatus = await AppPlatform.CheckPermission(new SmsPermissions.SendSms());
 
                 if (receiveSmsStatus != PermissionStatus.Granted ||
                     sendSmsStatus != PermissionStatus.Granted)
                 {
-                    var result = await SocShared.ModernDialog.AlertAsync(Host,
+                    var result = await AppPlatform.AlertAsync(Host,
                         T("perm.sms_title"),
                         T("perm.sms_text"),
                         T("common.yes"), T("common.no"));
 
                     if (result)
                     {
-                        await new SmsPermissions.ReceiveSms().RequestAsync();
-                        await new SmsPermissions.SendSms().RequestAsync();
+                        await AppPlatform.RequestPermission(new SmsPermissions.ReceiveSms());
+                        await AppPlatform.RequestPermission(new SmsPermissions.SendSms());
 
                         // Verificar nuevamente
-                        receiveSmsStatus = await new SmsPermissions.ReceiveSms().CheckStatusAsync();
-                        sendSmsStatus = await new SmsPermissions.SendSms().CheckStatusAsync();
+                        receiveSmsStatus = await AppPlatform.CheckPermission(new SmsPermissions.ReceiveSms());
+                        sendSmsStatus = await AppPlatform.CheckPermission(new SmsPermissions.SendSms());
 
                         return receiveSmsStatus == PermissionStatus.Granted &&
                                sendSmsStatus == PermissionStatus.Granted;
@@ -73,7 +73,7 @@ namespace SMSForwarder.Services
             }
             catch (Exception ex)
             {
-                await SocShared.ModernDialog.AlertAsync(Host, T("common.error"), string.Format(T("perm.sms_error"), ex.Message), T("common.ok"));
+                await AppPlatform.AlertAsync(Host, T("common.error"), string.Format(T("perm.sms_error"), ex.Message), T("common.ok"));
                 return false;
             }
         }
@@ -83,26 +83,26 @@ namespace SMSForwarder.Services
             try
             {
                 var batteryPermission = new SmsPermissions.BatteryOptimizationPermission();
-                var status = await batteryPermission.CheckStatusAsync();
+                var status = await AppPlatform.CheckPermission(batteryPermission);
 
                 if (status != PermissionStatus.Granted)
                 {
-                    var result = await SocShared.ModernDialog.AlertAsync(Host,
+                    var result = await AppPlatform.AlertAsync(Host,
                         T("diagnostics.battery_title"),
                         T("perm.battery_text"),
                         T("common.yes"), T("common.not_now"));
 
                     if (result)
                     {
-                        await batteryPermission.RequestAsync();
+                        await AppPlatform.RequestPermission(batteryPermission);
 
                         // Esperar un poco y verificar nuevamente
                         await Task.Delay(2000);
-                        status = await batteryPermission.CheckStatusAsync();
+                        status = await AppPlatform.CheckPermission(batteryPermission);
 
                         if (status != PermissionStatus.Granted)
                         {
-                            await SocShared.ModernDialog.AlertAsync(Host,
+                            await AppPlatform.AlertAsync(Host,
                                 T("perm.info"),
                                 T("perm.battery_warn"),
                                 T("common.understood"));
@@ -113,7 +113,7 @@ namespace SMSForwarder.Services
             }
             catch (Exception ex)
             {
-                await SocShared.ModernDialog.AlertAsync(Host, T("common.error"), string.Format(T("perm.battery_error"), ex.Message), T("common.ok"));
+                await AppPlatform.AlertAsync(Host, T("common.error"), string.Format(T("perm.battery_error"), ex.Message), T("common.ok"));
                 return false;
             }
         }
@@ -146,7 +146,7 @@ namespace SMSForwarder.Services
                         break;
                 }
 
-                var result = await SocShared.ModernDialog.AlertAsync(Host,
+                var result = await AppPlatform.AlertAsync(Host,
                     T("diagnostics.autostart_title"),
                     message + "\n\n" + T("perm.autostart_open"),
                     T("common.yes"), T("common.not_now"));
@@ -154,12 +154,12 @@ namespace SMSForwarder.Services
                 if (result)
                 {
                     var autostartPermission = new SmsPermissions.AutoStartPermission();
-                    await autostartPermission.RequestAsync();
+                    await AppPlatform.RequestPermission(autostartPermission);
                 }
             }
             catch (Exception ex)
             {
-                await SocShared.ModernDialog.AlertAsync(Host, T("common.error"), string.Format(T("perm.autostart_error"), ex.Message), T("common.ok"));
+                await AppPlatform.AlertAsync(Host, T("common.error"), string.Format(T("perm.autostart_error"), ex.Message), T("common.ok"));
             }
         }
 
@@ -177,7 +177,7 @@ namespace SMSForwarder.Services
             try
             {
                 var batteryPermission = new SmsPermissions.BatteryOptimizationPermission();
-                var status = await batteryPermission.CheckStatusAsync();
+                var status = await AppPlatform.CheckPermission(batteryPermission);
                 return status == PermissionStatus.Granted;
             }
             catch
@@ -190,7 +190,7 @@ namespace SMSForwarder.Services
         {
             try
             {
-                var smsStatus = await new SmsPermissions.ReceiveSms().CheckStatusAsync();
+                var smsStatus = await AppPlatform.CheckPermission(new SmsPermissions.ReceiveSms());
                 var batteryStatus = await CheckBatteryOptimizationStatusAsync();
                 var manufacturer = GetManufacturer();
 
@@ -200,11 +200,11 @@ namespace SMSForwarder.Services
                     T(batteryStatus ? "perm.battery_off" : "perm.battery_on"),
                     manufacturer);
 
-                await SocShared.ModernDialog.AlertAsync(Host, T("perm.status_title"), message, T("common.ok"));
+                await AppPlatform.AlertAsync(Host, T("perm.status_title"), message, T("common.ok"));
             }
             catch (Exception ex)
             {
-                await SocShared.ModernDialog.AlertAsync(Host, T("common.error"), string.Format(T("perm.status_error"), ex.Message), T("common.ok"));
+                await AppPlatform.AlertAsync(Host, T("common.error"), string.Format(T("perm.status_error"), ex.Message), T("common.ok"));
             }
         }
     }

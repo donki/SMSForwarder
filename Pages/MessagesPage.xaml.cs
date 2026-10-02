@@ -90,7 +90,7 @@ namespace SMSForwarder.Pages
             }
             catch (Exception ex)
             {
-                await SocShared.ModernDialog.AlertAsync(this,
+                await AppPlatform.AlertAsync(this,
                     _localization.GetString("common.error"),
                     $"{_localization.GetString("messages.load_error")}: {ex.Message}",
                     _localization.GetString("common.ok"));
@@ -107,9 +107,9 @@ namespace SMSForwarder.Pages
             try
             {
                 await DefaultRolePrompt.Done;
-                var status = await Permissions.CheckStatusAsync<Permissions.Sms>();
+                var status = await AppPlatform.CheckStatusAsync<Permissions.Sms>();
                 if (status != PermissionStatus.Granted)
-                    status = await Permissions.RequestAsync<Permissions.Sms>();
+                    status = await AppPlatform.RequestAsync<Permissions.Sms>();
                 return status == PermissionStatus.Granted;
             }
             catch
@@ -177,7 +177,7 @@ namespace SMSForwarder.Pages
             // Antes se saltaba directo a responder: no habia forma de leer un SMS largo, ni de
             // copiar el numero, ni de abrir un enlace (nota de autor del 2026-08-24).
             var parameters = new ShellNavigationQueryParameters { ["message"] = message };
-            await Shell.Current.GoToAsync(nameof(MessageDetailPage), parameters);
+            await AppPlatform.GoToAsync(nameof(MessageDetailPage), parameters);
         }
 
         // --------------------------------------------------- seleccion multiple
@@ -238,7 +238,7 @@ namespace SMSForwarder.Pages
             if (sender is not ImageButton { CommandParameter: SmsMessageItem message }) return;
             if (!await EnsureCanDeleteAsync()) return;
 
-            var confirmed = await SocShared.ModernDialog.AlertAsync(this,
+            var confirmed = await AppPlatform.AlertAsync(this,
                 _localization.GetString("common.delete"),
                 _localization.GetString("messages.confirm_delete"),
                 _localization.GetString("common.yes"),
@@ -250,14 +250,14 @@ namespace SMSForwarder.Pages
                 if (await _store.DeleteAsync(message))
                     _messages.Remove(message);
                 else
-                    await SocShared.ModernDialog.AlertAsync(this,
+                    await AppPlatform.AlertAsync(this,
                         _localization.GetString("common.error"),
                         _localization.GetString("messages.delete_error"),
                         _localization.GetString("common.ok"));
             }
             catch (Exception ex)
             {
-                await SocShared.ModernDialog.AlertAsync(this,
+                await AppPlatform.AlertAsync(this,
                     _localization.GetString("common.error"),
                     $"{_localization.GetString("messages.delete_error")}: {ex.Message}",
                     _localization.GetString("common.ok"));
@@ -272,7 +272,7 @@ namespace SMSForwarder.Pages
             if (!await EnsureCanDeleteAsync()) return;
 
             var culture = System.Globalization.CultureInfo.CurrentCulture;
-            var confirmed = await SocShared.ModernDialog.AlertAsync(this,
+            var confirmed = await AppPlatform.AlertAsync(this,
                 _localization.GetString("common.delete"),
                 string.Format(culture, _localization.GetString("messages.confirm_delete_many"), selected.Count),
                 _localization.GetString("common.yes"),
@@ -303,7 +303,7 @@ namespace SMSForwarder.Pages
             {
                 var detalle = string.Format(culture,
                     _localization.GetString("messages.delete_partial"), borrados, selected.Count);
-                await SocShared.ModernDialog.AlertAsync(this,
+                await AppPlatform.AlertAsync(this,
                     _localization.GetString("common.error"),
                     error.Length > 0 ? $"{detalle} ({error})" : detalle,
                     _localization.GetString("common.ok"));
@@ -315,7 +315,7 @@ namespace SMSForwarder.Pages
         {
             if (_store.IsDefaultSmsApp) return true;
 
-            await SocShared.ModernDialog.AlertAsync(this,
+            await AppPlatform.AlertAsync(this,
                 _localization.GetString("messages.default_title"),
                 _localization.GetString("messages.delete_needs_default"),
                 _localization.GetString("common.ok"));
@@ -341,7 +341,7 @@ namespace SMSForwarder.Pages
             // ShellNavigationQueryParameters pasa los valores tal cual, sin codificarlos en la ruta.
             var parameters = new ShellNavigationQueryParameters();
             if (!string.IsNullOrWhiteSpace(address)) parameters["to"] = address;
-            await Shell.Current.GoToAsync(nameof(ComposePage), parameters);
+            await AppPlatform.GoToAsync(nameof(ComposePage), parameters);
         }
 
         // --------------------------------------------------------------- estado
@@ -373,7 +373,7 @@ namespace SMSForwarder.Pages
             => Application.Current?.Resources.TryGetValue(key, out var s) == true ? s as Style : null;
 
         private void OnLanguageChanged(object? sender, EventArgs e)
-            => MainThread.BeginInvokeOnMainThread(UpdateLocalizedStrings);
+            => AppPlatform.BeginInvokeOnMainThread(UpdateLocalizedStrings);
 
         private void UpdateLocalizedStrings()
         {

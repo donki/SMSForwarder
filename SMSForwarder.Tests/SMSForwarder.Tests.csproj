@@ -1,10 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <!--
-    Pruebas de la logica de SMS Forwarder. La app es un solo proyecto MAUI para Android, asi que aqui
-    se enlazan los ficheros puros (modelos, reglas de reenvio, servicios sin plataforma) y se
-    compilan para net10.0. Lo que la app toma de MAUI (FileSystem, Preferences) lo sustituyen las
-    cuñas de Shims/.
+    Pruebas de SMS Forwarder (constitucion General 8.6). La app es un solo proyecto MAUI para
+    Android: aqui se enlaza todo su codigo salvo Platforms/ (modelos, reglas, servicios, paginas con
+    su XAML, Shell, App y MauiProgram) y se compila para net10.0 con Microsoft.Maui.Controls (MIT),
+    que funciona sin dispositivo ni handlers. Lo que las paginas piden al dispositivo pasa por
+    Services/AppPlatform.cs y aqui lo sustituyen dobles (Fakes.cs); el buzon y la agenda de Android,
+    dobles de IMessageStore e IContactPicker. FileSystem y Preferences, las cuñas de Shims/.
   -->
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
@@ -14,7 +16,11 @@
     <IsTestProject>true</IsTestProject>
     <RootNamespace>SMSForwarder.Tests</RootNamespace>
     <!-- El codigo enlazado de la app arrastra avisos de nulabilidad que no son de las pruebas. -->
-    <NoWarn>$(NoWarn);CS8625</NoWarn>
+    <NoWarn>$(NoWarn);CS8625;CS0436</NoWarn>
+    <UseMaui>true</UseMaui>
+    <SingleProject>false</SingleProject>
+    <EnableDefaultMauiItems>false</EnableDefaultMauiItems>
+    <RunSettingsFilePath>$(MSBuildThisFileDirectory)coverlet.runsettings</RunSettingsFilePath>
   </PropertyGroup>
 
   <ItemGroup>
@@ -25,6 +31,8 @@
     </PackageReference>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
     <PackageReference Include="xunit" Version="2.9.3" />
+    <PackageReference Include="Microsoft.Maui.Controls" Version="10.0.20" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.2" />
     <PackageReference Include="xunit.runner.visualstudio" Version="3.1.4">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -36,17 +44,14 @@
     <Using Include="Microsoft.Maui.Storage" />
   </ItemGroup>
 
-  <!-- Codigo de la app que se prueba (enlazado, no copiado). -->
+  <!-- Codigo de la app que se prueba (enlazado, no copiado): todo menos Platforms/. -->
   <ItemGroup>
-    <Compile Include="..\Models\ForwardDestination.cs" Link="App\Models\ForwardDestination.cs" />
-    <Compile Include="..\Models\SmsMessageItem.cs" Link="App\Models\SmsMessageItem.cs" />
-    <Compile Include="..\Services\DefaultRolePrompt.cs" Link="App\Services\DefaultRolePrompt.cs" />
-    <Compile Include="..\Services\DestinationStore.cs" Link="App\Services\DestinationStore.cs" />
-    <Compile Include="..\Services\ForwardingRules.cs" Link="App\Services\ForwardingRules.cs" />
-    <Compile Include="..\Services\ILocalizationService.cs" Link="App\Services\ILocalizationService.cs" />
-    <Compile Include="..\Services\ILoggingService.cs" Link="App\Services\ILoggingService.cs" />
-    <Compile Include="..\Services\LocalizationService.cs" Link="App\Services\LocalizationService.cs" />
-    <Compile Include="..\Services\LoggingService.cs" Link="App\Services\LoggingService.cs" />
+    <Compile Include="..\**\*.cs" Exclude="..\obj\**;..\bin\**;..\Platforms\**;..\SMSForwarder.Tests\**;..\constitution\**;..\_RECUPERADO_DEL_DLL\**;..\Release\**;..\artifacts\**" Link="App\%(RecursiveDir)%(Filename)%(Extension)" />
+    <MauiXaml Include="..\**\*.xaml" Exclude="..\obj\**;..\bin\**;..\Platforms\**;..\SMSForwarder.Tests\**;..\constitution\**;..\_RECUPERADO_DEL_DLL\**;..\Release\**;..\artifacts\**" Link="App\%(RecursiveDir)%(Filename)%(Extension)" />
+    <!-- Piezas comunes (repo sOCShared) que usa la app; no cuentan en la cobertura (coverlet.runsettings). -->
+    <Compile Include="..\..\Shared\AuthorNotes.cs" Link="Shared\AuthorNotes.cs" />
+    <Compile Include="..\..\Shared\ModernDialog.cs" Link="Shared\ModernDialog.cs" />
+    <Compile Include="..\..\Shared\CrashGuard.cs" Link="Shared\CrashGuard.cs" />
   </ItemGroup>
 
 </Project>

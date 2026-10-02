@@ -19,7 +19,7 @@ namespace SMSForwarder
             Routing.RegisterRoute(nameof(DestinationPage), typeof(DestinationPage));
 
             // Obtener el servicio de localización desde el contenedor de servicios
-            _localizationService = MauiApplication.Current?.Services.GetRequiredService<ILocalizationService>() ?? new LocalizationService();
+            _localizationService = IPlatformApplication.Current?.Services.GetService<ILocalizationService>() ?? new LocalizationService();
             _localizationService.LanguageChanged += OnLanguageChanged;
 
             // Actualizar strings localizados
@@ -53,17 +53,12 @@ namespace SMSForwarder
                 CurrentItem = MessagesItem;
                 return true;
             }
-#if ANDROID
-            Platform.CurrentActivity?.MoveTaskToBack(true);
-            return true;
-#else
-            return base.OnBackButtonPressed();
-#endif
+            return AppPlatform.MoveTaskToBack() || base.OnBackButtonPressed();
         }
 
         private void OnLanguageChanged(object? sender, EventArgs e)
         {
-            MainThread.BeginInvokeOnMainThread(UpdateLocalizedStrings);
+            AppPlatform.BeginInvokeOnMainThread(UpdateLocalizedStrings);
         }
 
         private void UpdateLocalizedStrings()
@@ -79,7 +74,7 @@ namespace SMSForwarder
 
             // Actualizar footer
             // La version se lee del paquete: escrita a mano se quedaba vieja (decia 2026.08.02.0).
-            FooterVersion.Text = $"v{AppInfo.Current.VersionString}";
+            FooterVersion.Text = $"v{AppPlatform.AppInfo.VersionString}";
         }
     }
 }

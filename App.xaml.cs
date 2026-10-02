@@ -15,13 +15,5 @@ namespace SMSForwarder
 #endif
             return window;
         }
-
-        public static void NavigateToMainApp()
-        {
-            if (Current?.Windows?.FirstOrDefault() is Window window)
-            {
-                window.Page = new AppShell();
-            }
-        }
     }
 }
