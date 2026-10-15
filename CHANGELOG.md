@@ -5,6 +5,15 @@ Todos los cambios notables de este proyecto serán documentados en este archivo.
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/),
 y este proyecto adhiere al [Versionado Semántico](https://semver.org/lang/es/).
 
+## [2026.10.15.0] - 2026-10-15
+
+### ✨ Añadido
+- **Elegir un contacto de la agenda al reenviar.** En el detalle de un mensaje, «Reenviar» y
+  «Reenvío automático» ofrecen ahora **Contactos** junto a los números ya configurados: se abre el
+  selector del sistema (sin permiso de contactos) y el número elegido se usa sin espacios, guiones
+  ni paréntesis. Antes solo se podía elegir un número ya configurado o escribirlo a mano.
+  «Reenviar» enseña la lista también cuando aún no hay números configurados.
+
 ## [2026.10.02.0] - 2026-10-02
 
 ### 🐛 Corregido

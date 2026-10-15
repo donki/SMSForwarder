@@ -351,7 +351,7 @@ public sealed class MessageDetailPageTests : IDisposable
 
     private MessageDetailPage Open(string address = "600111222", string body = "Mira www.example.com y https://a.b/c ya")
     {
-        var page = new MessageDetailPage(_h.Localization, _h.Logging);
+        var page = new MessageDetailPage(_h.Localization, _h.Logging, _h.Contacts);
         page.ApplyQueryAttributes(new Dictionary<string, object> { ["message"] = new SmsMessageItem { Address = address, Body = body, Date = new DateTime(2026, 10, 2, 9, 30, 0) } });
         return page;
     }
@@ -405,7 +405,7 @@ public sealed class MessageDetailPageTests : IDisposable
         Assert.Equal(2, _h.Alerts.Count);
         Assert.Equal("600111222", _h.Navigations[0].Parameters!["to"]);
 
-        var empty = new MessageDetailPage(_h.Localization, _h.Logging);   // sin mensaje: nada
+        var empty = new MessageDetailPage(_h.Localization, _h.Logging, _h.Contacts);   // sin mensaje: nada
         Ui.Call(empty, "OnCopyAddressClicked", null, EventArgs.Empty);
         Ui.Call(empty, "OnCopyBodyClicked", null, EventArgs.Empty);
         Ui.Call(empty, "OnReplyClicked", null, EventArgs.Empty);
@@ -439,14 +439,65 @@ public sealed class MessageDetailPageTests : IDisposable
     }
 
     [Fact]
-    public async Task ForwardNow_WithoutDestinations_GoesStraightToCompose()
+    public async Task ForwardNow_WithoutDestinations_OffersContactsOrAnother()
     {
         var page = Open(address: "", body: "codigo");
 
+        _h.Answers.Enqueue(_h.Localization.GetString("messages.forward_other_recipient"));
         Ui.Call(page, "OnForwardClicked", null, EventArgs.Empty);
 
         await Ui.Until(() => _h.Navigations.Count == 1);
         Assert.Equal("codigo", _h.Navigations[0].Parameters!["body"]);
+        Assert.False(_h.Navigations[0].Parameters!.ContainsKey("to"));
+    }
+
+    [Fact]
+    public async Task ForwardNow_ToAContact_FromTheAddressBook()
+    {
+        var page = Open(body: "hola");
+        var contacts = _h.Localization.GetString("main.from_contacts");
+
+        _h.Contacts.Number = "+34 699-00 00 00";
+        _h.Answers.Enqueue(contacts);
+        Ui.Call(page, "OnForwardClicked", null, EventArgs.Empty);
+        await Ui.Until(() => _h.Navigations.Count == 1);
+        Assert.Equal("+34699000000", _h.Navigations[0].Parameters!["to"]);
+
+        // Cancelado en la agenda (o el contacto no tiene numero): no se abre la redaccion.
+        _h.Contacts.Number = null;
+        _h.Answers.Enqueue(contacts);
+        Ui.Call(page, "OnForwardClicked", null, EventArgs.Empty);
+        // Y si la agenda falla, tampoco (queda en el registro).
+        _h.Contacts.Throws = new InvalidOperationException("sin agenda");
+        _h.Answers.Enqueue(contacts);
+        Ui.Call(page, "OnForwardClicked", null, EventArgs.Empty);
+        await Task.Delay(20);
+        Assert.Single(_h.Navigations);
+    }
+
+    [Fact]
+    public async Task ForwardRule_ToAContact_FromTheAddressBook()
+    {
+        var page = Open(address: "BANCO");
+
+        _h.Contacts.Number = "(699) 000-000";
+        _h.Answers.Enqueue(_h.Localization.GetString("main.from_contacts"));
+        _h.Answers.Enqueue(string.Format(_h.Localization.GetString("messages.forward_all_from"), "BANCO"));
+        _h.AlertAnswers.Enqueue(true);
+        Ui.Call(page, "OnForwardRuleClicked", null, EventArgs.Empty);
+        await Ui.Until(() => _h.Alerts.Count == 2);
+
+        var destination = Assert.Single(DestinationStore.Items);
+        Assert.Equal("699000000", destination.Phone);
+        Assert.Equal(new[] { "BANCO" }, destination.Senders);
+
+        // Cancelado en la agenda: no cambia nada.
+        _h.Contacts.Number = null;
+        _h.Answers.Enqueue(_h.Localization.GetString("main.from_contacts"));
+        Ui.Call(page, "OnForwardRuleClicked", null, EventArgs.Empty);
+        await Task.Delay(20);
+        Assert.Single(DestinationStore.Items);
+        Assert.Equal(2, _h.Alerts.Count);
     }
 
     [Fact]

@@ -22,13 +22,15 @@ namespace SMSForwarder.Pages
 
         private readonly ILocalizationService _localization;
         private readonly ILoggingService _logging;
+        private readonly IContactPicker _contactPicker;
         private SmsMessageItem? _message;
 
-        public MessageDetailPage(ILocalizationService localization, ILoggingService logging)
+        public MessageDetailPage(ILocalizationService localization, ILoggingService logging, IContactPicker contactPicker)
         {
             InitializeComponent();
             _localization = localization;
             _logging = logging;
+            _contactPicker = contactPicker;
         }
 
         public void ApplyQueryAttributes(IDictionary<string, object> query)
@@ -148,8 +150,8 @@ namespace SMSForwarder.Pages
 
         /// <summary>
         /// Reenvia este mensaje ahora mismo: se elige a quien (los numeros ya configurados como
-        /// destino o cualquier otro) y se abre la redaccion con el texto ya puesto, para poder
-        /// retocarlo antes de enviarlo. No toca las reglas de reenvio automatico.
+        /// destino, un contacto de la agenda o cualquier otro) y se abre la redaccion con el texto ya
+        /// puesto, para poder retocarlo antes de enviarlo. No toca las reglas de reenvio automatico.
         /// </summary>
         private async void OnForwardClicked(object? sender, EventArgs e)
         {
@@ -164,16 +166,23 @@ namespace SMSForwarder.Pages
                     .Select(d => d.Phone)
                     .ToList();
 
-                if (numbers.Count > 0)
+                // Los destinos configurados primero (es a quien se reenvia casi siempre), luego la
+                // agenda y por ultimo escribir otro en la redaccion.
+                var contacts = _localization.GetString("main.from_contacts");
+                var other = _localization.GetString("messages.forward_other_recipient");
+                var cancel = _localization.GetString("common.cancel");
+                var chosen = await AppPlatform.ActionSheetAsync(this,
+                    _localization.GetString("messages.forward_now_to"),
+                    cancel, numbers.Append(contacts).Append(other).ToArray());
+                if (chosen is null || chosen == cancel) return;
+                if (chosen == contacts)
                 {
-                    // Con destinos configurados se ofrecen primero: es a quien se reenvia casi siempre.
-                    var other = _localization.GetString("messages.forward_other_recipient");
-                    var cancel = _localization.GetString("common.cancel");
-                    var chosen = await AppPlatform.ActionSheetAsync(this,
-                        _localization.GetString("messages.forward_now_to"),
-                        cancel, numbers.Append(other).ToArray());
-                    if (chosen is null || chosen == cancel) return;
-                    if (chosen != other) to = chosen;
+                    to = await PickContactAsync();
+                    if (to is null) return;
+                }
+                else if (chosen != other)
+                {
+                    to = chosen;
                 }
 
                 var culture = System.Globalization.CultureInfo.CurrentCulture;
@@ -209,10 +218,12 @@ namespace SMSForwarder.Pages
             {
                 DestinationStore.Load();
 
-                // 1. A quien.
+                // 1. A quien: uno de los configurados, uno de la agenda o uno escrito a mano.
+                var contacts = _localization.GetString("main.from_contacts");
                 var newNumber = _localization.GetString("messages.forward_new_number");
                 var options = DestinationStore.Items
                     .Select(d => d.Phone)
+                    .Append(contacts)
                     .Append(newNumber)
                     .ToArray();
                 var chosen = await AppPlatform.ActionSheetAsync(this,
@@ -221,13 +232,15 @@ namespace SMSForwarder.Pages
                 if (chosen is null || chosen == _localization.GetString("common.cancel")) return;
 
                 ForwardDestination? destination;
-                if (chosen == newNumber)
+                if (chosen == newNumber || chosen == contacts)
                 {
-                    var typed = await AppPlatform.PromptAsync(this,
-                        _localization.GetString("messages.forward_rule"),
-                        _localization.GetString("messages.forward_new_number_hint"),
-                        _localization.GetString("common.ok"), _localization.GetString("common.cancel"),
-                        placeholder: _localization.GetString("main.placeholder"));
+                    var typed = chosen == contacts
+                        ? await PickContactAsync()
+                        : await AppPlatform.PromptAsync(this,
+                            _localization.GetString("messages.forward_rule"),
+                            _localization.GetString("messages.forward_new_number_hint"),
+                            _localization.GetString("common.ok"), _localization.GetString("common.cancel"),
+                            placeholder: _localization.GetString("main.placeholder"));
                     var number = (typed ?? string.Empty).Replace(" ", "").Trim();
                     if (number.Length == 0) return;
                     if (!IsValidPhoneNumber(number))
@@ -297,6 +310,24 @@ namespace SMSForwarder.Pages
             {
                 _logging.LogError("Error configurando el reenvio desde el detalle", ex);
                 await AppPlatform.AlertAsync(this, _localization.GetString("common.error"), ex.Message, _localization.GetString("common.ok"));
+            }
+        }
+
+        /// <summary>
+        /// Un numero de la agenda con el selector del sistema (sin permiso de contactos, ver
+        /// <c>ContactPicker</c>), sin espacios, guiones ni parentesis; null si se cancela o el contacto no tiene numero.
+        /// </summary>
+        private async Task<string?> PickContactAsync()
+        {
+            try
+            {
+                var number = await _contactPicker.PickPhoneNumberAsync();
+                return string.IsNullOrWhiteSpace(number) ? null : Regex.Replace(number, @"[\s\-\(\)\.]", "");
+            }
+            catch (Exception ex)
+            {
+                _logging.LogError("Error al abrir contactos", ex);
+                return null;
             }
         }
 
